@@ -19,18 +19,20 @@ import argparse
 from argparse import Namespace
 from pprint import pprint
 from functools import partial
-
+import json
 import numpy # for gradio hot reload
 import gradio as gr
 
 import torch
+from tqdm import tqdm
 
+import watermarks
 from transformers import (AutoTokenizer,
                           AutoModelForSeq2SeqLM,
                           AutoModelForCausalLM,
                           LogitsProcessorList)
 
-from watermark_processor import WatermarkLogitsProcessor, WatermarkDetector
+# from watermark_processor import WatermarkLogitsProcessor, WatermarkDetector
 
 def str2bool(v):
     """Util function for user friendly boolean flag args"""
@@ -69,7 +71,7 @@ def parse_args():
     parser.add_argument(
         "--model_name_or_path",
         type=str,
-        default="facebook/opt-6.7b",
+        default="facebook/opt-1.3b",
         help="Main model, path to pretrained model or model identifier from huggingface.co/models.",
     )
     parser.add_argument(
@@ -174,6 +176,17 @@ def parse_args():
         default=False,
         help="Whether to run model in float16 precsion.",
     )
+    parser.add_argument(
+        "--prompt_file",
+        type=str,
+        default='/home/jkl6486/sok-llm-watermark/dataset/sample.jsonl'
+    )
+    
+    #xuandong23b
+    parser.add_argument("--fraction", type=float, default=0.5)
+    parser.add_argument("--strength", type=float, default=2.0)
+    parser.add_argument("--wm_key", type=int, default=0)
+    
     args = parser.parse_args()
     return args
 
@@ -212,12 +225,29 @@ def generate(prompt, args, model=None, device=None, tokenizer=None):
        as a logits processor. """
     
     print(f"Generating with {args}")
-
-    watermark_processor = WatermarkLogitsProcessor(vocab=list(tokenizer.get_vocab().values()),
+    match args.watermark:
+        case 'john23':
+            watermark_processor = watermarks.john23_WatermarkLogitsProcessor(vocab=list(tokenizer.get_vocab().values()),
                                                     gamma=args.gamma,
                                                     delta=args.delta,
                                                     seeding_scheme=args.seeding_scheme,
                                                     select_green_tokens=args.select_green_tokens)
+        case 'xuandong23b':
+            watermark_processor = watermarks.xuandong23b_WatermarkLogitsProcessor(fraction=args.fraction,
+                                                    strength=args.strength,
+                                                    vocab_size=model.config.vocab_size,
+                                                    watermark_key=args.wm_key)
+        case 'rohit23':
+            pass
+        case _:
+            raise ValueError(f"Unknown watermark type: {args.watermark}")
+            
+            
+    # watermark_processor = WatermarkLogitsProcessor(vocab=list(tokenizer.get_vocab().values()),
+    #                                                 gamma=args.gamma,
+    #                                                 delta=args.delta,
+    #                                                 seeding_scheme=args.seeding_scheme,
+    #                                                 select_green_tokens=args.select_green_tokens)
 
     gen_kwargs = dict(max_new_tokens=args.max_new_tokens)
 
@@ -310,7 +340,10 @@ def list_format_scores(score_dict, detection_threshold):
 def detect(input_text, args, device=None, tokenizer=None):
     """Instantiate the WatermarkDetection object and call detect on
         the input text returning the scores and outcome of the test"""
-    watermark_detector = WatermarkDetector(vocab=list(tokenizer.get_vocab().values()),
+        
+    match args.watermark:
+        case 'john23':
+            watermark_detector = watermarks.john23_WatermarkDetector(vocab=list(tokenizer.get_vocab().values()),
                                         gamma=args.gamma,
                                         seeding_scheme=args.seeding_scheme,
                                         device=device,
@@ -319,6 +352,26 @@ def detect(input_text, args, device=None, tokenizer=None):
                                         normalizers=args.normalizers,
                                         ignore_repeated_bigrams=args.ignore_repeated_bigrams,
                                         select_green_tokens=args.select_green_tokens)
+        case 'xuandong23b':
+            vocab_size = 50272 if "opt" in args.model_name else tokenizer.vocab_size
+            watermark_detector = watermarks.xuandong23b_WatermarkDetector(fraction=args.fraction,
+                                    strength=args.strength,
+                                    vocab_size=vocab_size,
+                                    watermark_key=args.wm_key)
+        case 'rohit23':
+            pass
+        case _:
+            raise ValueError(f"Unknown watermark type: {args.watermark}")
+        
+    # watermark_detector = WatermarkDetector(vocab=list(tokenizer.get_vocab().values()),
+    #                                     gamma=args.gamma,
+    #                                     seeding_scheme=args.seeding_scheme,
+    #                                     device=device,
+    #                                     tokenizer=tokenizer,
+    #                                     z_threshold=args.detection_z_threshold,
+    #                                     normalizers=args.normalizers,
+    #                                     ignore_repeated_bigrams=args.ignore_repeated_bigrams,
+    #                                     select_green_tokens=args.select_green_tokens)
     if len(input_text)-1 > watermark_detector.min_prefix_len:
         score_dict = watermark_detector.detect(input_text)
         # output = str_format_scores(score_dict, watermark_detector.z_threshold)
@@ -619,6 +672,11 @@ def run_gradio(args, model=None, device=None, tokenizer=None):
     else:
         demo.launch()
 
+
+def read_json_file(filename):
+    with open(filename, "r") as f:
+        return [json.loads(line) for line in f.read().strip().split("\n")]
+    
 def main(args): 
     """Run a command line version of the generation and detection operations
         and optionally launch and serve the gradio demo"""
@@ -633,65 +691,51 @@ def main(args):
 
     # Generate and detect, report to stdout
     if not args.skip_model_load:
-        input_text = (
-        "The diamondback terrapin or simply terrapin (Malaclemys terrapin) is a "
-        "species of turtle native to the brackish coastal tidal marshes of the "
-        "Northeastern and southern United States, and in Bermuda.[6] It belongs "
-        "to the monotypic genus Malaclemys. It has one of the largest ranges of "
-        "all turtles in North America, stretching as far south as the Florida Keys "
-        "and as far north as Cape Cod.[7] The name 'terrapin' is derived from the "
-        "Algonquian word torope.[8] It applies to Malaclemys terrapin in both "
-        "British English and American English. The name originally was used by "
-        "early European settlers in North America to describe these brackish-water "
-        "turtles that inhabited neither freshwater habitats nor the sea. It retains "
-        "this primary meaning in American English.[8] In British English, however, "
-        "other semi-aquatic turtle species, such as the red-eared slider, might "
-        "also be called terrapins. The common name refers to the diamond pattern "
-        "on top of its shell (carapace), but the overall pattern and coloration "
-        "vary greatly. The shell is usually wider at the back than in the front, "
-        "and from above it appears wedge-shaped. The shell coloring can vary "
-        "from brown to grey, and its body color can be grey, brown, yellow, "
-        "or white. All have a unique pattern of wiggly, black markings or spots "
-        "on their body and head. The diamondback terrapin has large webbed "
-        "feet.[9] The species is"
-        )
+        data = read_json_file(args.prompt_file)
 
-        args.default_prompt = input_text
+        outputs = []
 
-        term_width = 80
-        print("#"*term_width)
-        print("Prompt:")
-        print(input_text)
+        for idx, cur_data in tqdm(enumerate(data)):
+            input_text = cur_data['question']
 
-        _, _, decoded_output_without_watermark, decoded_output_with_watermark, _ = generate(input_text, 
-                                                                                            args, 
-                                                                                            model=model, 
-                                                                                            device=device, 
-                                                                                            tokenizer=tokenizer)
-        without_watermark_detection_result = detect(decoded_output_without_watermark, 
+
+            # batch = tokenizer(prefix, truncation=True, return_tensors="pt")
+            # num_tokens = len(batch['input_ids'][0])
+     
+            term_width = 80
+            print("#"*term_width)
+            print("Prompt: ")
+            print(input_text)
+
+            _, _, decoded_output_without_watermark, decoded_output_with_watermark, _ = generate(input_text, 
+                                                                                                args, 
+                                                                                                model=model, 
+                                                                                                device=device, 
+                                                                                                tokenizer=tokenizer)
+            without_watermark_detection_result = detect(decoded_output_without_watermark, 
+                                                        args, 
+                                                        device=device, 
+                                                        tokenizer=tokenizer)
+            with_watermark_detection_result = detect(decoded_output_with_watermark, 
                                                     args, 
                                                     device=device, 
                                                     tokenizer=tokenizer)
-        with_watermark_detection_result = detect(decoded_output_with_watermark, 
-                                                 args, 
-                                                 device=device, 
-                                                 tokenizer=tokenizer)
 
-        print("#"*term_width)
-        print("Output without watermark:")
-        print(decoded_output_without_watermark)
-        print("-"*term_width)
-        print(f"Detection result @ {args.detection_z_threshold}:")
-        pprint(without_watermark_detection_result)
-        print("-"*term_width)
+            print("#"*term_width)
+            print("Output without watermark:")
+            print(decoded_output_without_watermark)
+            print("-"*term_width)
+            print(f"Detection result @ {args.detection_z_threshold}:")
+            pprint(without_watermark_detection_result)
+            print("-"*term_width)
 
-        print("#"*term_width)
-        print("Output with watermark:")
-        print(decoded_output_with_watermark)
-        print("-"*term_width)
-        print(f"Detection result @ {args.detection_z_threshold}:")
-        pprint(with_watermark_detection_result)
-        print("-"*term_width)
+            print("#"*term_width)
+            print("Output with watermark:")
+            print(decoded_output_with_watermark)
+            print("-"*term_width)
+            print(f"Detection result @ {args.detection_z_threshold}:")
+            pprint(with_watermark_detection_result)
+            print("-"*term_width)
 
 
     # Launch the app to generate and detect interactively (implements the hf space demo)
