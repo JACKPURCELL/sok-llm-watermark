@@ -359,7 +359,8 @@ def detect(input_text, args, device=None, tokenizer=None):
                                     vocab_size=vocab_size,
                                     watermark_key=args.wm_key)
         case 'rohit23':
-            pass
+            vocab_size = 50272 if "opt" in args.model_name else tokenizer.vocab_size
+            watermark_detector = watermarks.rohith23_WatermarkLogitsProcessor(vocab_size=vocab_size)
         case _:
             raise ValueError(f"Unknown watermark type: {args.watermark}")
         
