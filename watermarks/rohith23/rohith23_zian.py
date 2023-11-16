@@ -53,7 +53,7 @@ class rohith23_WatermarkLogitsProcessor(LogitsProcessor,WatermarkBase):
     def __int__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-        self.shift = torch.randint(n, (1,))
+        self.shift = torch.randint(self.n, (1,))
         self.xi = torch.tensor([self.rng.rand() for _ in range(n * self.vocab_size)]).view(n, self.vocab_size)
         self.i = 0
         ### If we use the same logits processor, this i will be cumulatively added
@@ -84,7 +84,7 @@ class rohith23_WatermarkDetector(WatermarkBase):
 
         return np.min(A)
 
-    def detect(self,tokens, n_runs=100):
+    def detect(self,tokens):
         k = len(tokens)
         xi = np.array([self.rng.rand() for _ in range(self.n * self.vocab_size)], dtype=np.float32).reshape(self.n, self.vocab_size)
         test_result = self._detect(tokens, self.n, k, xi)
