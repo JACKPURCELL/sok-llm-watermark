@@ -26,15 +26,12 @@ from nltk.util import ngrams
 
 
 class rohith23_WatermarkLogitsProcessor(LogitsProcessor):
-    def __int__(self, model, prompt, m, n, key, seed):
+    def __int__(self, vocab_size, prompt, m, n, key, seed):
         self.m = m  # seems not useful?
         self.n = n
-        self.device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
-        self.tokenizer = AutoTokenizer.from_pretrained(model)
-        self.model = AutoModelForCausalLM.from_pretrained(model).to(self.device)
         self.shift = torch.randint(n, (1,))
         ### !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-        self.vocab_size = len(self.tokenizer) #could be a problem?
+        self.vocab_size = vocab_size
         rng = mersenne_rng(key)
         self.xi = torch.tensor([rng.rand() for _ in range(n * self.vocab_size)]).view(n, self.vocab_size)
         torch.manual_seed(seed) ### works?
