@@ -187,6 +187,13 @@ def parse_args():
     parser.add_argument("--strength", type=float, default=2.0)
     parser.add_argument("--wm_key", type=int, default=0)
     
+    
+    ######################################################################
+    # Add your code here
+    ######################################################################
+    # If you have specific arguments for your watermark, add them here
+    ######################################################################
+    
     args = parser.parse_args()
     return args
 
@@ -239,7 +246,14 @@ def generate(prompt, args, model=None, device=None, tokenizer=None):
                                                     watermark_key=args.wm_key)
         case 'rohit23':
             watermark_processor = watermarks.rohith23_WatermarkLogitsProcessor(vocab_size=model.config.vocab_size)
-            
+    
+    
+    ######################################################################
+    # Add your code here
+    ######################################################################
+    # If you have new watermark, add them here
+    ######################################################################   
+     
         case _:
             raise ValueError(f"Unknown watermark type: {args.watermark}")
             
@@ -363,6 +377,11 @@ def detect(input_text, args, device=None, tokenizer=None):
         case 'rohit23':
             vocab_size = 50272 if "opt" in args.model_name_or_path else tokenizer.vocab_size
             watermark_detector = watermarks.rohith23_WatermarkDetector(vocab_size=vocab_size,tokenizer=tokenizer)
+    ######################################################################
+    # Add your code here
+    ######################################################################
+    # If you have new watermark, add them here
+    ######################################################################   
         case _:
             raise ValueError(f"Unknown watermark type: {args.watermark}")
         
