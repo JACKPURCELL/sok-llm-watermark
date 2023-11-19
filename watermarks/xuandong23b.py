@@ -33,7 +33,7 @@ class GPTWatermarkBase:
         self.green_list_mask = torch.tensor(mask, dtype=torch.float32)
         self.strength = strength
         self.fraction = fraction
-
+        self.min_prefix_len = 1
     @staticmethod
     def _hash_fn(x: int) -> int:
         """solution from https://stackoverflow.com/questions/67219691/python-hash-function-that-returns-32-or-64-bits"""

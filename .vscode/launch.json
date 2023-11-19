@@ -5,14 +5,14 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "Python: 当前文件",
+            "name": "Python: main",
             "type": "python",
             "request": "launch",
-            "program": "${file}",
+            "program": "main.py",
             "console": "integratedTerminal",
             "justMyCode": true,
             "env": {"CUDA_VISIBLE_DEVICES":"1"},
-            "args": ["--prompt","How to be happy"]
+            "args": ["--watermark","rohit23"]
         }
     ]
 }

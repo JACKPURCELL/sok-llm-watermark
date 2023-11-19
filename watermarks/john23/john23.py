@@ -27,7 +27,7 @@ from transformers import LogitsProcessor
 
 from nltk.util import ngrams
 
-from normalizers import normalization_strategy_lookup
+from .normalizers import normalization_strategy_lookup
 
 
 class WatermarkBase:
@@ -176,7 +176,7 @@ class john23_WatermarkDetector(WatermarkBase):
             # Method that only counts a green/red hit once per unique bigram.
             # New num total tokens scored (T) becomes the number unique bigrams.
             # We iterate over all unqiue token bigrams in the input, computing the greenlist
-            # induced by the first token in each, and then checking whether the second
+            # induced by the first token in each, and then chcking whether the second
             # token falls in that greenlist.
             assert return_green_token_mask is False, "Can't return the green/red mask when ignoring repeats."
             bigram_table = {}

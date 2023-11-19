@@ -238,7 +238,8 @@ def generate(prompt, args, model=None, device=None, tokenizer=None):
                                                     vocab_size=model.config.vocab_size,
                                                     watermark_key=args.wm_key)
         case 'rohit23':
-            pass
+            watermark_processor = watermarks.rohith23_WatermarkLogitsProcessor(vocab_size=model.config.vocab_size)
+            
         case _:
             raise ValueError(f"Unknown watermark type: {args.watermark}")
             
@@ -353,14 +354,15 @@ def detect(input_text, args, device=None, tokenizer=None):
                                         ignore_repeated_bigrams=args.ignore_repeated_bigrams,
                                         select_green_tokens=args.select_green_tokens)
         case 'xuandong23b':
-            vocab_size = 50272 if "opt" in args.model_name else tokenizer.vocab_size
+            vocab_size = 50272 if "opt" in args.model_name_or_path else tokenizer.vocab_size
             watermark_detector = watermarks.xuandong23b_WatermarkDetector(fraction=args.fraction,
+                                                                          tokenizer=tokenizer,
                                     strength=args.strength,
                                     vocab_size=vocab_size,
                                     watermark_key=args.wm_key)
         case 'rohit23':
-            vocab_size = 50272 if "opt" in args.model_name else tokenizer.vocab_size
-            watermark_detector = watermarks.rohith23_WatermarkLogitsProcessor(vocab_size=vocab_size)
+            vocab_size = 50272 if "opt" in args.model_name_or_path else tokenizer.vocab_size
+            watermark_detector = watermarks.rohith23_WatermarkDetector(vocab_size=vocab_size,tokenizer=tokenizer)
         case _:
             raise ValueError(f"Unknown watermark type: {args.watermark}")
         
