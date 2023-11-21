@@ -10,7 +10,7 @@
             "console": "integratedTerminal",
             "justMyCode": true,
             "env": {"CUDA_VISIBLE_DEVICES":"1"},
-            "args": ["--watermark","rohit23"]
+            "args": ["--watermark","john23","--attack","dipper","--skip_model_load","True"]
         }
     ]
 }
