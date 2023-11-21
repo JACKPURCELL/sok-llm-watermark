@@ -186,6 +186,22 @@ def parse_args():
     parser.add_argument("--fraction", type=float, default=0.5)
     parser.add_argument("--strength", type=float, default=2.0)
     parser.add_argument("--wm_key", type=int, default=0)
+
+    #lean23
+    parser.add_argument("--lean_delta", type=float, default=1.5)
+    parser.add_argument("--lm_prefix_len", type=int, default=10)
+    parser.add_argument("--lm_top_k", type=int, default=-1),
+    parser.add_argument("--message_code_len", type=int, default=20)
+    parser.add_argument("--random_permutation_num", type=int, default=100)
+    parser.add_argument("--encode_ratio", type=float, default=10.0)
+    parser.add_argument("--max_confidence_lbd", type=float, default=0.5)
+    parser.add_argument("--message_model_strategy", type=str, default="vanilla")
+    parser.add_argument("--message", type=list, default=[9,10,100])
+    parser.add_argument("--top_k", type=int, default=1000)
+    parser.add_argument("--repeat_penalty", type=float, default=1.5)
+    parser.add_argument("--generated_length", type=int, default=200)
+    parser.add_argument("--prompt_length", type=int, default=300)
+
     
     
     ######################################################################
@@ -246,7 +262,25 @@ def generate(prompt, args, model=None, device=None, tokenizer=None):
                                                     watermark_key=args.wm_key)
         case 'rohit23':
             watermark_processor = watermarks.rohith23_WatermarkLogitsProcessor(vocab_size=model.config.vocab_size)
-    
+
+        case 'lean23':
+            #tokenizer = load_local_model_or_tokenizer(args.model_name, 'tokenizer')
+            watermark_processor = \
+                watermarks.lean23_BalanceMarkingWatermarkLogitsProcessor(tokenizer=tokenizer,
+                                                                         lm_tokenizer=tokenizer,
+                                                                         lm_model=model,
+                                                                         delta=args.lean_delta,
+                                                                         lm_prefix_len=args.lm_prefix_len,
+                                                                         lm_top_k=args.lm_top_k,
+                                                                         message_code_len=args.message_code_len,
+                                                                         random_permutation_num=args.random_permutation_num,
+                                                                         encode_ratio=args.encode_ratio,
+                                                                         max_confidence_lbd=args.max_confidence_lbd,
+                                                                         message_model_strategy=args.message_model_strategy,
+                                                                         message=args.message,
+                                                                         top_k=args.top_k,
+                                                                         repeat_penalty=args.repeat_penalty
+                                                                         )
     
     ######################################################################
     # Add your code here
@@ -317,7 +351,8 @@ def generate(prompt, args, model=None, device=None, tokenizer=None):
             int(truncation_warning),
             decoded_output_without_watermark, 
             decoded_output_with_watermark,
-            args) 
+            args,
+            watermark_processor) ### return watermark_processor
             # decoded_output_with_watermark)
 
 def format_names(s):
@@ -352,7 +387,7 @@ def list_format_scores(score_dict, detection_threshold):
         lst_2d.insert(-1,["z-score Threshold", f"{detection_threshold}"])
     return lst_2d
 
-def detect(input_text, args, device=None, tokenizer=None):
+def detect(input_text, args, device=None, tokenizer=None, watermark_processor=None, prompt=None):
     """Instantiate the WatermarkDetection object and call detect on
         the input text returning the scores and outcome of the test"""
         
@@ -377,6 +412,18 @@ def detect(input_text, args, device=None, tokenizer=None):
         case 'rohit23':
             vocab_size = 50272 if "opt" in args.model_name_or_path else tokenizer.vocab_size
             watermark_detector = watermarks.rohith23_WatermarkDetector(vocab_size=vocab_size,tokenizer=tokenizer)
+        case 'lean23':
+            watermark_detector = watermarks.lean23_WatermarkDetector(watermark_processor=watermark_processor,
+                                                                     generated_length=args.generated_length,
+                                                                     message_code_len=args.message_code_len,
+                                                                     encode_ratio=args.encode_ratio,
+                                                                     tokenizer=tokenizer,
+                                                                     prompt_length=args.prompt_length,
+                                                                     message=args.message
+                                                                     )
+            output_list = watermark_detector.detect(input_text, prompt)
+            return output_list
+
     ######################################################################
     # Add your code here
     ######################################################################
@@ -696,7 +743,7 @@ def run_gradio(args, model=None, device=None, tokenizer=None):
 
 
 def read_json_file(filename):
-    with open(filename, "r") as f:
+    with open(filename, "r", encoding="utf-8") as f:
         return [json.loads(line) for line in f.read().strip().split("\n")]
     
 def main(args): 
@@ -729,7 +776,7 @@ def main(args):
             print("Prompt: ")
             print(input_text)
 
-            _, _, decoded_output_without_watermark, decoded_output_with_watermark, _ = generate(input_text, 
+            _, _, decoded_output_without_watermark, decoded_output_with_watermark, _, WP = generate(input_text,
                                                                                                 args, 
                                                                                                 model=model, 
                                                                                                 device=device, 
@@ -737,11 +784,15 @@ def main(args):
             without_watermark_detection_result = detect(decoded_output_without_watermark, 
                                                         args, 
                                                         device=device, 
-                                                        tokenizer=tokenizer)
+                                                        tokenizer=tokenizer,
+                                                        watermark_processor=WP,
+                                                        prompt=input_text)
             with_watermark_detection_result = detect(decoded_output_with_watermark, 
                                                     args, 
                                                     device=device, 
-                                                    tokenizer=tokenizer)
+                                                    tokenizer=tokenizer,
+                                                     watermark_processor=WP,
+                                                     prompt=input_text)
 
             print("#"*term_width)
             print("Output without watermark:")
@@ -769,6 +820,10 @@ def main(args):
 if __name__ == "__main__":
 
     args = parse_args()
+    args.use_gpu = False   ### Tested on a laptop without gpu
+    args.prompt_file = "./dataset/sample.jsonl"
+    args.watermark = "lean23"
+    args.max_new_tokens = 100
     print(args)
 
     main(args)
