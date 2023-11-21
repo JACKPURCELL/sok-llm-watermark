@@ -1,1 +1,4 @@
 paper_code/watermark
+*__pycache__*
+*pyc
+.idea
