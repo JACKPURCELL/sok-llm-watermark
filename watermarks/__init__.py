@@ -2,6 +2,7 @@ from .john23.john23 import john23_WatermarkLogitsProcessor, john23_WatermarkDete
 from .rohith23.rohith23 import rohith23_WatermarkLogitsProcessor, rohith23_WatermarkDetector
 from .xuandong23 import xuandong23_WatermarkLogitsProcessor
 from .xuandong23b import xuandong23b_WatermarkLogitsProcessor, xuandong23b_WatermarkDetector
+from .lean23.lean23 import lean23_BalanceMarkingWatermarkLogitsProcessor, lean23_WatermarkDetector
     ######################################################################
     # Add your code here
     ######################################################################
