@@ -97,7 +97,7 @@ class xuandong23b_WatermarkDetector(GPTWatermarkBase):
         tau = factor * norm.ppf(1 - alpha)
         return tau
 
-    def detect(self, sequence: List[int]) -> float:
+    def detect(self, sequence: List[int],**kwargs) -> float:
         """Detect the watermark in a sequence of tokens and return the z value."""
         green_tokens = int(sum(self.green_list_mask[i] for i in sequence))
 

@@ -94,7 +94,7 @@ class lean23_WatermarkDetector:
         self.min_prefix_len = min_prefix_len
         self.message = message
 
-    def detect(self, text, prompt):
+    def detect(self, text, prompt, **kwargs):
         tokenized_input = self.tokenizer(prompt, return_tensors='pt').to("cpu")
         tokenized_input = truncate(tokenized_input, max_length=self.prompt_length)
         self.watermark_processor.start_length = tokenized_input['input_ids'].shape[-1]
@@ -105,7 +105,7 @@ class lean23_WatermarkDetector:
         acc = decoded_message[:available_message_num] == self.message[:available_message_num]
         result = {"decoded_message": decoded_message,
                   "confidences": confidences,
-                  "accuracy": acc}
+                  "prediction": acc}
         return result
 
 

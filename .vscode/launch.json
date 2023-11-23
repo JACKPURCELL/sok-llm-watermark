@@ -2,15 +2,26 @@
 
     "version": "0.2.0",
     "configurations": [
+
         {
-            "name": "Python: main",
+            "name": "inject",
             "type": "python",
             "request": "launch",
             "program": "main.py",
             "console": "integratedTerminal",
             "justMyCode": true,
-            "env": {"CUDA_VISIBLE_DEVICES":"1"},
-            "args": ["--watermark","john23","--attack","dipper","--skip_model_load","True"]
+            "env": {"CUDA_VISIBLE_DEVICES":"1,2"},
+            "args": ["--watermark","lean23"]
+        },
+        {
+            "name": "attack",
+            "type": "python",
+            "request": "launch",
+            "program": "main.py",
+            "console": "integratedTerminal",
+            "justMyCode": true,
+            "env": {"CUDA_VISIBLE_DEVICES":"1,2"},
+            "args": ["--watermark","lean23","--attack","dipper"]
         }
     ]
 }

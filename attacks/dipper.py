@@ -14,7 +14,11 @@ class DipperParaphraser(object):
         self.model = T5ForConditionalGeneration.from_pretrained(model)
         if verbose:
             print(f"{model} model loaded in {time.time() - time1}")
-        self.model.cuda()
+        if torch.cuda.device_count() > 1:
+            self.device = 'cuda:1'
+        else:
+            self.device = 'cuda:0'
+        self.model.to(self.device)
         self.model.eval()
 
     def paraphrase(self, input_text, lex_diversity, order_diversity, prefix="", sent_interval=3, **kwargs):
@@ -45,7 +49,7 @@ class DipperParaphraser(object):
             final_input_text += f" <sent> {curr_sent_window} </sent>"
 
             final_input = self.tokenizer([final_input_text], return_tensors="pt")
-            final_input = {k: v.cuda() for k, v in final_input.items()}
+            final_input = {k: v.to(self.device) for k, v in final_input.items()}
 
             with torch.inference_mode():
                 outputs = self.model.generate(**final_input, **kwargs)

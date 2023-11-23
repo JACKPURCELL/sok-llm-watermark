@@ -102,6 +102,7 @@ class rohith23_WatermarkDetector:
         self.vocab_size = vocab_size
         self.min_prefix_len = 1
         self.tokenizer=tokenizer
+
         # pval = permutation_test(tokens,args.key,args.n,len(tokens),len(tokenizer))
     
     @staticmethod
@@ -116,7 +117,7 @@ class rohith23_WatermarkDetector:
 
         return np.min(A)
 
-    def detect(self,text,n_runs=100):
+    def detect(self,text,n_runs=100,**kwargs):
         tokenized_text = self.tokenizer(text, return_tensors="pt", add_special_tokens=False)["input_ids"][0].cuda()
         if tokenized_text[0] == self.tokenizer.bos_token_id:
             tokenized_text = tokenized_text[1:]

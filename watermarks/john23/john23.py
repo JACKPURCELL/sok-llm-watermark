@@ -171,6 +171,7 @@ class john23_WatermarkDetector(WatermarkBase):
         return_green_token_mask: bool = False,
         return_z_score: bool = True,
         return_p_value: bool = True,
+        **kwargs,
     ):
         if self.ignore_repeated_bigrams:
             # Method that only counts a green/red hit once per unique bigram.
