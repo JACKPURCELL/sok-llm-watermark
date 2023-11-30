@@ -95,6 +95,10 @@ class lean23_WatermarkDetector:
         self.message = message
 
     def detect(self, text, prompt, **kwargs):
+        if len(self.tokenizer.tokenize(text))<12:
+            return {"decoded_message": "\n\n212 shares",
+                  "confidences": 1,
+                  "prediction": False}
         tokenized_input = self.tokenizer(prompt, return_tensors='pt').to("cpu")
         tokenized_input = truncate(tokenized_input, max_length=self.prompt_length)
         self.watermark_processor.start_length = tokenized_input['input_ids'].shape[-1]

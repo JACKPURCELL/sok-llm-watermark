@@ -26,7 +26,7 @@ class GPTWatermarkBase:
         watermark_key: The random seed for the green-listing.
     """
 
-    def __init__(self, fraction: float = 0.5, strength: float = 2.0, vocab_size: int = 50257, watermark_key: int = 0):
+    def __init__(self, fraction: float = 0.5, tokenizer=None, strength: float = 2.0, vocab_size: int = 50257, watermark_key: int = 0, **kwargs):
         rng = np.random.default_rng(self._hash_fn(watermark_key))
         mask = np.array([True] * int(fraction * vocab_size) + [False] * (vocab_size - int(fraction * vocab_size)))
         rng.shuffle(mask)
@@ -34,6 +34,7 @@ class GPTWatermarkBase:
         self.strength = strength
         self.fraction = fraction
         self.min_prefix_len = 1
+        self.tokenizer = tokenizer
     @staticmethod
     def _hash_fn(x: int) -> int:
         """solution from https://stackoverflow.com/questions/67219691/python-hash-function-that-returns-32-or-64-bits"""
@@ -97,12 +98,15 @@ class xuandong23b_WatermarkDetector(GPTWatermarkBase):
         tau = factor * norm.ppf(1 - alpha)
         return tau
 
-    def detect(self, sequence: List[int],**kwargs) -> float:
+    def detect(self, text,threshold=6.0,**kwargs) -> float:
         """Detect the watermark in a sequence of tokens and return the z value."""
-        green_tokens = int(sum(self.green_list_mask[i] for i in sequence))
-
-        return self._z_score(green_tokens, len(sequence), self.fraction)
-
+        tokenized_text = self.tokenizer(text, add_special_tokens=False)["input_ids"]
+        green_tokens = int(sum(self.green_list_mask[i] for i in tokenized_text))
+        output_dict = {}
+        output_dict["z_score"] = self._z_score(green_tokens, len(tokenized_text), self.fraction)        
+        output_dict["prediction"] = bool(output_dict["z_score"] > threshold)
+        return output_dict
+    
     def unidetect(self, sequence: List[int]) -> float:
         """Detect the watermark in a sequence of tokens and return the z value. Just for unique tokens."""
         sequence = list(set(sequence))
@@ -113,4 +117,7 @@ class xuandong23b_WatermarkDetector(GPTWatermarkBase):
         """Dynamic thresholding for watermark detection. True if the sequence is watermarked, False otherwise."""
         z_score = self.unidetect(sequence)
         tau = self._compute_tau(len(list(set(sequence))), vocab_size, alpha)
-        return z_score > tau, z_score
+        output_dict = {}
+        output_dict["z_score"] = z_score        
+        output_dict["prediction"] = z_score > tau
+        return output_dict

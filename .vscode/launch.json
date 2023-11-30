@@ -10,7 +10,7 @@
             "program": "main.py",
             "console": "integratedTerminal",
             "justMyCode": true,
-            "env": {"CUDA_VISIBLE_DEVICES":"1,2"},
+            "env": {"CUDA_VISIBLE_DEVICES":"2"},
             "args": ["--watermark","lean23"]
         },
         {
@@ -21,7 +21,7 @@
             "console": "integratedTerminal",
             "justMyCode": true,
             "env": {"CUDA_VISIBLE_DEVICES":"1,2"},
-            "args": ["--watermark","lean23","--attack","dipper"]
+            "args": ["--watermark","john23","--attack","dipper"]
         }
     ]
 }

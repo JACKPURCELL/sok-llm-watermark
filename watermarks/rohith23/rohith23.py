@@ -143,6 +143,7 @@ class rohith23_WatermarkDetector:
         output_dict["n_runs"] = n_runs
         
         output_dict["p-value"] = (p_val + 1.0) / (n_runs + 1.0)
+        output_dict["prediction"] = output_dict["p-value"] < 0.02
         return output_dict
 
       

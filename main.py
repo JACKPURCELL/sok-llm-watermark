@@ -28,14 +28,14 @@ from tqdm import tqdm
 
 import watermarks
 import attacks
-
+from utils.logger import MetricLogger
 from transformers import (AutoTokenizer,
                           AutoModelForSeq2SeqLM,
                           AutoModelForCausalLM,
                           LogitsProcessorList)
+os.environ['TRANSFORMERS_CACHE'] = '/data/jc/model'
 
 # from watermark_processor import WatermarkLogitsProcessor, WatermarkDetector
-
 def str2bool(v):
     """Util function for user friendly boolean flag args"""
     if isinstance(v, bool):
@@ -73,7 +73,7 @@ def parse_args():
     parser.add_argument(
         "--model_name_or_path",
         type=str,
-        default="facebook/opt-1.3b",
+        default="facebook/opt-6.7b",
         help="Main model, path to pretrained model or model identifier from huggingface.co/models.",
     )
     parser.add_argument(
@@ -183,7 +183,12 @@ def parse_args():
         type=str,
         default='/home/jkl6486/sok-llm-watermark/dataset/sample.jsonl'
     )
-    
+    parser.add_argument(
+        "--skip_inject",
+        type=str2bool,
+        default=False,
+        help="Skip the model loading to debug the interface.",
+    )
     #xuandong23b
     parser.add_argument("--fraction", type=float, default=0.5)
     parser.add_argument("--strength", type=float, default=2.0)
@@ -214,6 +219,7 @@ def parse_args():
     
     
     parser.add_argument("--attack", type=str)
+    parser.add_argument("--log_dir", type=str)
     
     args = parser.parse_args()
     return args
@@ -389,18 +395,57 @@ def detect(watermark_detector, input_text, prompt, args, device=None, tokenizer=
     return output, args
 
 
-def evaluate(watermark_detector, input_text, args, device=None, tokenizer=None):
-    pass
+from sklearn.metrics import roc_auc_score
+from jiwer import wer
+from bert_score import score as bert_score
+from nltk.translate.bleu_score import sentence_bleu, SmoothingFunction
+import warnings
+def compare(gt_text,  modify_text, args, device=None, tokenizer=None, **kwargs):
+    # Initialize results dictionary
 
+
+    # Word Error Rate TODO: make sure this metric work for us
+    # Note: WER is calculated between the ground truth and the watermarked text.
+    if isinstance(gt_text, str):
+        gt_text = [gt_text]
+    word_error_rate = wer(gt_text[0], modify_text)
+
+    # BERT-S (BERT Score)
+    # Note: BERT Score requires tokenized sentences. Adjust the code to fit your context.
+    # Some weights of the model checkpoint at roberta-large were not used when initializing RobertaModel: ['lm_head.layer_norm.bias', 'lm_head.layer_norm.weight', 'lm_head.dense.bias', 'lm_head.bias', 'lm_head.dense.weight']
+# - This IS expected if you are initializing RobertaModel from the checkpoint of a model trained on another task or with another architecture (e.g. initializing a BertForSequenceClassification model from a BertForPreTraining model).
+# - This IS NOT expected if you are initializing RobertaModel from the checkpoint of a model that you expect to be exactly identical (initializing a BertForSequenceClassification model from a BertForSequenceClassification model).
+# Some weights of RobertaModel were not initialized from the model checkpoint at roberta-large and are newly initialized: ['roberta.pooler.dense.bias', 'roberta.pooler.dense.weight']
+# You should probably TRAIN this model on a down-stream task to be able to use it for predictions and inference.
+    with warnings.catch_warnings():
+        warnings.filterwarnings("ignore")
+        P, R, F1 = bert_score([modify_text], [gt_text], lang='en', device=device)
+    BERT_S = F1.mean().item() # Considering F1 here. Adjust as needed.
+
+    # BLEU-4
+    # Note: BLEU-4 requires tokenized sentences. Adjust as per your data.
+    reference = []
+    for i in gt_text:
+        reference.append(tokenizer.tokenize(i))
+    candidate = tokenizer.tokenize(modify_text)
+    smoothing = SmoothingFunction().method1
+    BLEU_4 = sentence_bleu(reference, candidate, smoothing_function=smoothing)
+
+    return  word_error_rate, BERT_S, BLEU_4
+
+# def evaluate(gt_text, modify_text, args, device=None, tokenizer=None, **kwargs):
+    
+    
 def attack(args, dp=None, prompt=None, output_text=None):
 
     output2 = None
     match args.attack:
         case 'dipper':
+            output = dp.paraphrase(output_text, lex_diversity=40, order_diversity=0, prefix=prompt, do_sample=True, top_p=0.75, top_k=None, max_length=512)
             # output_l60_o60_greedy
-            output = dp.paraphrase(output_text, lex_diversity=80, order_diversity=60, prefix=prompt, do_sample=False, max_length=512)
+            # output = dp.paraphrase(output_text, lex_diversity=80, order_diversity=60, prefix=prompt, do_sample=False, max_length=512)
             # output_l60_sample
-            output2 = dp.paraphrase(output_text, lex_diversity=80, order_diversity=0, prefix=prompt, do_sample=True, top_p=0.75, top_k=None, max_length=512)
+            # output2 = dp.paraphrase(output_text, lex_diversity=80, order_diversity=0, prefix=prompt, do_sample=True, top_p=0.75, top_k=None, max_length=512)
         ######################################################################
         # Add your attack code here
         ######################################################################
@@ -424,17 +469,32 @@ def main(args):
     # Initial arg processing and log
     args.normalizers = (args.normalizers.split(",") if args.normalizers else [])
     print(args)
-
-    if args.attack is None:
-        model, tokenizer, device = load_model(args)
-    else:
+    logger = MetricLogger()
+    if args.skip_inject:
         tokenizer,device = load_tokenizer(args)
+    else:
+        model, tokenizer, device = load_model(args)
+
+    if args.log_dir is None:
+        log_dir = 'runs/'+str(args.watermark)
+    else:
+        log_dir = 'runs/'+args.log_dir
+    
+    try:
+        os.mkdir(log_dir)
+    except:
+        print( "Directory %s already exists" % log_dir)
 
 
-    # Generate and detect, report to stdout
-    if args.attack is None:
+    with open(os.path.join(log_dir,'args.txt'), mode='w') as f:
+        json.dump(args.__dict__, f, indent=2)
         
-        with open("output.json", "w+") as f:
+
+        
+    # Generate and detect, report to stdout
+    if not args.skip_inject:
+        
+        with open(os.path.join(log_dir, "output.json"), "w+") as f:
             pass
         data = read_json_file(args.prompt_file)
 
@@ -466,7 +526,7 @@ def main(args):
                                                         strength=args.strength,
                                                         vocab_size=model.config.vocab_size,
                                                         watermark_key=args.wm_key)
-            case 'rohit23':
+            case 'rohith23':
                 watermark_processor = watermarks.rohith23_WatermarkLogitsProcessor(vocab_size=model.config.vocab_size)
                 watermark_detector = watermarks.rohith23_WatermarkDetector(vocab_size=model.config.vocab_size,tokenizer=tokenizer)
                 
@@ -503,9 +563,12 @@ def main(args):
         
             case _:
                 raise ValueError(f"Unknown watermark type: {args.watermark}")
-        
-        for idx, cur_data in tqdm(enumerate(data)):
+ 
+        for idx, cur_data in enumerate(tqdm(data)):
             prompt = cur_data['question']
+            human_answers = []
+            for human_answer in cur_data['human_answers']:
+                human_answers.append(human_answer)
 
 
             # batch = tokenizer(prefix, truncation=True, return_tensors="pt")
@@ -537,37 +600,61 @@ def main(args):
                                                     device=device, 
                                                     tokenizer=tokenizer)
 
-            # print("#"*term_width)
-            # print("Output without watermark:")
-            # print(decoded_output_without_watermark)
-            # print("-"*term_width)
-            # print(f"Detection result @ {args.detection_z_threshold}:")
-            # pprint(without_watermark_detection_result)
-            # print("-"*term_width)
-
-            # print("#"*term_width)
-            # print("Output with watermark:")
-            # print(decoded_output_with_watermark)
-            # print("-"*term_width)
-            # print(f"Detection result @ {args.detection_z_threshold}:")
-            # pprint(with_watermark_detection_result)
-            # print("-"*term_width)
-            
+          
+            if with_watermark_detection_result['prediction'] == True:
+                logger.update(TPR_count=1)
+            else:
+                logger.update(TPR_count=0)
+            if without_watermark_detection_result['prediction'] == True:
+                logger.update(FPR_count=1)
+            else:
+                logger.update(FPR_count=0)
             output = {
                 "prompt": prompt,
+                "human_answers": human_answers,
                 "decoded_output_without_watermark": decoded_output_without_watermark,
                 "decoded_output_with_watermark": decoded_output_with_watermark,
                 "without_watermark_detection_result": without_watermark_detection_result,
                 "with_watermark_detection_result": with_watermark_detection_result,
             }
-            with open("output.json", "a+") as f:
+            with open(os.path.join(log_dir, "output.json"), "a+") as f:
                 json.dump(output, f)
                 f.write('\n')
+            result_hm_wo = compare(human_answers,decoded_output_without_watermark,args,device,tokenizer)
+            logger.update(hm_wo_word_error_rate=result_hm_wo[0], hm_wo_BERT_S=result_hm_wo[1], hm_wo_BLEU_4=result_hm_wo[2])
+            result_hm_wm = compare(human_answers,decoded_output_with_watermark,args,device,tokenizer)
+            logger.update(hm_wm_word_error_rate=result_hm_wm[0], hm_wm_BERT_S=result_hm_wm[1], hm_wm_BLEU_4=result_hm_wm[2])
+            result_wo_wm = compare(decoded_output_without_watermark,decoded_output_with_watermark,args,device,tokenizer)
+            logger.update(wo_wm_word_error_rate=result_wo_wm[0], wo_wm_BERT_S=result_wo_wm[1], wo_wm_BLEU_4=result_wo_wm[2])
+        hm_wo_word_error_rate, hm_wo_BERT_S, hm_wo_BLEU_4 = logger.meters['hm_wo_word_error_rate'].global_avg, logger.meters['hm_wo_BERT_S'].global_avg, logger.meters['hm_wo_BLEU_4'].global_avg
+        hm_wm_word_error_rate, hm_wm_BERT_S, hm_wm_BLEU_4 = logger.meters['hm_wm_word_error_rate'].global_avg, logger.meters['hm_wm_BERT_S'].global_avg, logger.meters['hm_wm_BLEU_4'].global_avg
+        wo_wm_word_error_rate, wo_wm_BERT_S, wo_wm_BLEU_4 = logger.meters['wo_wm_word_error_rate'].global_avg, logger.meters['wo_wm_BERT_S'].global_avg, logger.meters['wo_wm_BLEU_4'].global_avg
+        TPR_count,FPR_count = logger.meters['TPR_count'].global_avg, logger.meters['FPR_count'].global_avg
+        results = {
+        'hm_wo_word_error_rate': hm_wo_word_error_rate,
+        'hm_wo_BERT_S': hm_wo_BERT_S,
+        'hm_wo_BLEU_4': hm_wo_BLEU_4,
+        'hm_wm_word_error_rate': hm_wm_word_error_rate,
+        'hm_wm_BERT_S': hm_wm_BERT_S,
+        'hm_wm_BLEU_4': hm_wm_BLEU_4,
+        'wo_wm_word_error_rate': wo_wm_word_error_rate,
+        'wo_wm_BERT_S': wo_wm_BERT_S,
+        'wo_wm_BLEU_4': wo_wm_BLEU_4,
+        'TPR_count': TPR_count,
+        'FPR_count': FPR_count
+        }
 
+        with open(os.path.join(log_dir,"log.csv"), 'w') as f:
+            # 第一行是所有的键，用逗号分隔
+            f.write(','.join(results.keys()) + '\n')
+            # 第二行是所有的值，用逗号分隔
+            f.write(','.join(map(str, results.values())) + '\n')
+            
+        
     if args.attack is not None:
-        with open("output_attack.json", "w+") as f:
+        with open(os.path.join(log_dir,args.attack+".json"), "w+") as f:
             pass
-        data = read_json_file("output.json")
+        data = read_json_file(os.path.join(log_dir, "output.json"))
         match args.watermark:
             case 'john23':
                 watermark_detector = watermarks.john23_WatermarkDetector(vocab=list(tokenizer.get_vocab().values()),
@@ -585,7 +672,7 @@ def main(args):
                                                         strength=args.strength,
                                                         vocab_size=tokenizer.vocab_size,
                                                         watermark_key=args.wm_key)
-            case 'rohit23':
+            case 'rohith23':
                 watermark_detector = watermarks.rohith23_WatermarkDetector(vocab_size=tokenizer.vocab_size,tokenizer=tokenizer)
         
             case 'lean23':
@@ -631,8 +718,11 @@ def main(args):
                 raise ValueError(f"Unknown attack type: {args.attack}")
                 
             
-        for idx, cur_data in tqdm(enumerate(data)):
+        for idx, cur_data in enumerate(tqdm(data)):
             prompt = cur_data["prompt"]
+            human_answers = []
+            for human_answer in cur_data['human_answers']:
+                human_answers.append(human_answer)
             decoded_output_with_watermark = cur_data["decoded_output_with_watermark"]
             
             attack_output, output2 = attack(args, dp, prompt, decoded_output_with_watermark)
@@ -643,14 +733,38 @@ def main(args):
                                         args, 
                                         device=device, 
                                         tokenizer=tokenizer)
-            
+            if after_attack_detection_result['prediction'] == True:
+                logger.update(TPR_count=1)
+            else:
+                logger.update(TPR_count=0)
             cur_data["attack_output"] = attack_output
             cur_data["attack_output_result"] = after_attack_detection_result
-            with open("output_attack.json", "a+") as f:
+            result_hm_at = compare(human_answers,attack_output,args,device,tokenizer)
+            result_wm_at = compare(decoded_output_with_watermark,attack_output,args,device,tokenizer)
+            logger.update(hm_at_word_error_rate=result_hm_at[0], hm_at_BERT_S=result_hm_at[1], hm_at_BLEU_4=result_hm_at[2])
+            logger.update(wm_at_word_error_rate=result_wm_at[0], wm_at_BERT_S=result_wm_at[1], wm_at_BLEU_4=result_wm_at[2])
+            
+            with open(os.path.join(log_dir,args.attack+".json"), "a+") as f:
                 json.dump(cur_data, f)
                 f.write('\n')
-                
+        hm_at_word_error_rate, hm_at_BERT_S, hm_at_BLEU_4 = logger.meters['hm_at_word_error_rate'].global_avg, logger.meters['hm_at_BERT_S'].global_avg, logger.meters['hm_at_BLEU_4'].global_avg
+        wm_at_word_error_rate, wm_at_BERT_S, wm_at_BLEU_4 = logger.meters['wm_at_word_error_rate'].global_avg, logger.meters['wm_at_BERT_S'].global_avg, logger.meters['wm_at_BLEU_4'].global_avg
+        results = {
+            'hm_at_word_error_rate': hm_at_word_error_rate,
+            'hm_at_BERT_S': hm_at_BERT_S,
+            'hm_at_BLEU_4': hm_at_BLEU_4,
+            'wm_at_word_error_rate': wm_at_word_error_rate,
+            'wm_at_BERT_S': wm_at_BERT_S,
+            'wm_at_BLEU_4': wm_at_BLEU_4,
+        }
 
+        with open(os.path.join(log_dir,"log.csv"), 'a+') as f:
+            # 第一行是所有的键，用逗号分隔
+            f.write(','.join(results.keys()) + '\n')
+            # 第二行是所有的值，用逗号分隔
+            f.write(','.join(map(str, results.values())) + '\n')
+            
+            
     # Launch the app to generate and detect interactively (implements the hf space demo)
     # if args.run_gradio:
     #     run_gradio(args, model=model, tokenizer=tokenizer, device=device)
