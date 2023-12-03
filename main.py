@@ -22,6 +22,7 @@ from functools import partial
 import json
 import numpy # for gradio hot reload
 import gradio as gr
+import pickle
 
 import torch
 from tqdm import tqdm
@@ -209,8 +210,24 @@ def parse_args():
     parser.add_argument("--generated_length", type=int, default=200)
     parser.add_argument("--prompt_length", type=int, default=300)
 
-    
-    
+    #aiwei23
+    parser.add_argument("--bit_number", type=int, default=16) ### This is log2(vocab_size), which depends on the model, for opt, it is 16
+    parser.add_argument("--layers", type=int, default=5)
+    parser.add_argument("--window_size", type=int, default=3)
+    parser.add_argument("--llm_name", type=str, default="opt-6.7b")
+    parser.add_argument("--gamma", type=float, default=0.6)
+    parser.add_argument("--delta", type=float, default= 2.0)
+    parser.add_argument("--model_dir", type=str, default="./model/")
+    parser.add_argument("--beam_size", type=int, default=0)
+    parser.add_argument("--data_dir", type=str, default="./data")
+    parser.add_argument("--z_value", type=int, default=4)
+    parser.add_argument("--sample_number", type=int, default=2000, help="Number of samples for training generator.")
+    parser.add_argument("--num_samples", type=int, default=10000, help="Number of samples for training detector.")
+    parser.add_argument("--dataset_name", type=str, default="c4", help="The dataset used for training detector.")
+    parser.add_argument("--sampling_temp", type=float, default=0.7)
+    parser.add_argument("--max_new_token", type=int, default=200)
+    parser.add_argument("--aiwei_trained", type=bool, default=False)
+
     ######################################################################
     # Add your code here
     ######################################################################
@@ -554,6 +571,35 @@ def main(args):
                                                                      prompt_length=args.prompt_length,
                                                                      message=args.message
                                                                      )
+
+            case 'aiwei23':
+                if args.aiwei_trained:
+                    watermark_detector = pickle.load(open('./data/trained/trained_detector.pkl', 'rb'))
+                    watermark_processor = pickle.load(open('./data/trained/trained_processor.pkl', 'rb'))
+                else:
+                    watermarks.prepare_generator(bit_number=args.bit_number,
+                                      layers=args.layers,
+                                      sample_number=args.sample_number,
+                                      window_size=args.window_size)
+                    watermark_detector = watermarks.aiwei23_WatermarkDetector(bit_number=args.bit_number,
+                                                         window_size=args.window_size,
+                                                         layers=args.layers,
+                                                         gamma=args.gamma,
+                                                         delta=args.delta,
+                                                         model_dir=args.model_dir,
+                                                         beam_size=args.beam_size,
+                                                         llm_name=args.llm_name,
+                                                         data_dir=args.data_dir,
+                                                         z_value=args.z_value)
+
+                    watermark_detector.generate_and_save_train_data(num_samples=args.num_samples)
+                    watermark_processor = watermark_detector.generate_and_save_test_data(dataset_name=args.dataset_name,
+                                                                               sampling_temp=args.sampling_temp,
+                                                                               max_new_tokens=args.max_new_token)
+                    watermark_detector.train_model()
+                    pickle.dump(watermark_detector, open('./data/trained/trained_detector.pkl', 'wb'))
+                    pickle.dump(watermark_processor, open('./data/trained/trained_processor.pkl', 'wb'))
+
     
             ######################################################################
             # Add your code here
@@ -700,6 +746,34 @@ def main(args):
                                                                      prompt_length=args.prompt_length,
                                                                      message=args.message
                                                                      )
+
+            case 'aiwei23':
+                if args.aiwei_trained:
+                    watermark_detector = pickle.load(open('./data/trained/trained_detector.pkl', 'rb'))
+                    watermark_processor = pickle.load(open('./data/trained/trained_processor.pkl', 'rb'))
+                else:
+                    watermarks.prepare_generator(bit_number=args.bit_number,
+                                                 layers=args.layers,
+                                                 sample_number=args.sample_number,
+                                                 window_size=args.window_size)
+                    watermark_detector = watermarks.aiwei23_WatermarkDetector(bit_number=args.bit_number,
+                                                                              window_size=args.window_size,
+                                                                              layers=args.layers,
+                                                                              gamma=args.gamma,
+                                                                              delta=args.delta,
+                                                                              model_dir=args.model_dir,
+                                                                              beam_size=args.beam_size,
+                                                                              llm_name=args.llm_name,
+                                                                              data_dir=args.data_dir,
+                                                                              z_value=args.z_value)
+
+                    watermark_detector.generate_and_save_train_data(num_samples=args.num_samples)
+                    watermark_processor = watermark_detector.generate_and_save_test_data(dataset_name=args.dataset_name,
+                                                                                         sampling_temp=args.sampling_temp,
+                                                                                         max_new_tokens=args.max_new_token)
+                    watermark_detector.train_model()
+                    pickle.dump(watermark_detector, open('./data/trained/trained_detector.pkl', 'wb'))
+                    pickle.dump(watermark_processor, open('./data/trained/trained_processor.pkl', 'wb'))
 
            
         
