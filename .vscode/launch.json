@@ -11,7 +11,7 @@
             "console": "integratedTerminal",
             "justMyCode": true,
             "env": {"CUDA_VISIBLE_DEVICES":"2"},
-            "args": ["--watermark","lean23"]
+            "args": ["--watermark","rohith23"]
         },
         {
             "name": "attack",

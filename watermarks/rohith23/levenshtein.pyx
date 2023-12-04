@@ -5,7 +5,7 @@ from libc.math cimport sqrt, log
 
 @cython.boundscheck(False)
 @cython.wraparound(False)
-def levenshtein(long[:] x, float[:,:] y, float gamma=0.0):
+def levenshtein(long long[:] x, float[:,:] y, float gamma=0.0):
     cdef int i, j
     cdef float cost,tmp
 

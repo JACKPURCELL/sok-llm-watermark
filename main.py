@@ -215,8 +215,9 @@ def parse_args():
     parser.add_argument("--layers", type=int, default=5)
     parser.add_argument("--window_size", type=int, default=3)
     parser.add_argument("--llm_name", type=str, default="opt-6.7b")
-    parser.add_argument("--gamma", type=float, default=0.6)
-    parser.add_argument("--delta", type=float, default= 2.0)
+
+    # parser.add_argument("--gamma", type=float, default=0.6)
+    # parser.add_argument("--delta", type=float, default= 2.0)
     parser.add_argument("--model_dir", type=str, default="./model/")
     parser.add_argument("--beam_size", type=int, default=0)
     parser.add_argument("--data_dir", type=str, default="./data")
@@ -224,7 +225,7 @@ def parse_args():
     parser.add_argument("--sample_number", type=int, default=2000, help="Number of samples for training generator.")
     parser.add_argument("--num_samples", type=int, default=10000, help="Number of samples for training detector.")
     parser.add_argument("--dataset_name", type=str, default="c4", help="The dataset used for training detector.")
-    parser.add_argument("--sampling_temp", type=float, default=0.7)
+    # parser.add_argument("--sampling_temp", type=float, default=0.7)
     parser.add_argument("--max_new_token", type=int, default=200)
     parser.add_argument("--aiwei_trained", type=bool, default=False)
 

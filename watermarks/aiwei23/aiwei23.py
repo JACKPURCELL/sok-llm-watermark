@@ -16,7 +16,7 @@ import numpy as np
 from torch.utils.data import TensorDataset, DataLoader
 from torch import nn
 from functools import partial
-from util import (get_model,
+from .util import (get_model,
                   int_to_bin_list,
                   load_data,
                   max_number,

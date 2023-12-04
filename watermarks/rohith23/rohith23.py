@@ -4,32 +4,35 @@ from transformers import LogitsProcessor
 from .mersenne import mersenne_rng
 import numpy as np
 
+import os, sys, argparse, time
+import pyximport
+pyximport.install(reload_support=True, language_level=sys.version_info[0],
+                  setup_args={'include_dirs':np.get_include()})
+from .levenshtein import levenshtein
 
+# from math import sqrt, log
 
+# def levenshtein(x, y, gamma=0.0):
+#     n = len(x)
+#     m = len(y)
 
-from math import sqrt, log
+#     A = np.zeros((n+1, m+1), dtype=np.float32)
 
-def levenshtein(x, y, gamma=0.0):
-    n = len(x)
-    m = len(y)
+#     for i in range(0, n+1):
+#         for j in range(0, m+1):
+#             if i == 0:
+#                 A[i][j] = j * gamma
+#             elif j == 0:
+#                 A[i][j] = i * gamma
+#             else:
+#                 cost = log(1 - y[j-1, x[i-1]])
+#                 A[i][j] = A[i-1][j] + gamma
+#                 if A[i][j-1] + gamma < A[i][j]:
+#                     A[i][j] = A[i][j-1] + gamma
+#                 if A[i-1][j-1] + cost < A[i][j]:
+#                     A[i][j] = A[i-1][j-1] + cost
 
-    A = np.zeros((n+1, m+1), dtype=np.float32)
-
-    for i in range(0, n+1):
-        for j in range(0, m+1):
-            if i == 0:
-                A[i][j] = j * gamma
-            elif j == 0:
-                A[i][j] = i * gamma
-            else:
-                cost = log(1 - y[j-1, x[i-1]])
-                A[i][j] = A[i-1][j] + gamma
-                if A[i][j-1] + gamma < A[i][j]:
-                    A[i][j] = A[i][j-1] + gamma
-                if A[i-1][j-1] + cost < A[i][j]:
-                    A[i][j] = A[i-1][j-1] + cost
-
-    return A[n][m]
+#     return A[n][m]
 
 
 # @misc{kuditipudi2023robust,
@@ -118,7 +121,8 @@ class rohith23_WatermarkDetector:
         return np.min(A)
 
     def detect(self,text,n_runs=100,**kwargs):
-        tokenized_text = self.tokenizer(text, return_tensors="pt", add_special_tokens=False)["input_ids"][0].cuda()
+        # tokenized_text = self.tokenizer(text, return_tensors="pt", add_special_tokens=False)["input_ids"][0].cuda()
+        tokenized_text = self.tokenizer.encode(text, return_tensors='pt', truncation=True, max_length=2048).numpy()[0]
         if tokenized_text[0] == self.tokenizer.bos_token_id:
             tokenized_text = tokenized_text[1:]
             
@@ -127,7 +131,7 @@ class rohith23_WatermarkDetector:
         k = len(tokenized_text)
         output_dict["Tnum_tokens_scored"] = k
         
-        xi = torch.from_numpy(self.rng.random((self.n, self.vocab_size), np.float32))
+        xi = self.rng.random((self.n, self.vocab_size), np.float32)
         
         # xi = np.array([self.rng.rand() for _ in range(self.n * self.vocab_size)], dtype=np.float32).reshape(self.n, self.vocab_size)
         test_result = self._detect(tokenized_text,  k, xi)
