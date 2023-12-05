@@ -33,6 +33,7 @@ from utils.logger import MetricLogger
 from transformers import (AutoTokenizer,
                           AutoModelForSeq2SeqLM,
                           AutoModelForCausalLM,
+                          LlamaTokenizer,
                           LogitsProcessorList)
 os.environ['TRANSFORMERS_CACHE'] = '/data/jc/model'
 
@@ -74,7 +75,7 @@ def parse_args():
     parser.add_argument(
         "--model_name_or_path",
         type=str,
-        default="facebook/opt-6.7b",
+        default="meta-llama/Llama-2-13b-chat-hf",
         help="Main model, path to pretrained model or model identifier from huggingface.co/models.",
     )
     parser.add_argument(
@@ -241,50 +242,80 @@ def parse_args():
     
     args = parser.parse_args()
     return args
-
 def load_model(args):
     """Load and return the model and tokenizer"""
 
-    args.is_seq2seq_model = any([(model_type in args.model_name_or_path) for model_type in ["t5","T0"]])
-    args.is_decoder_only_model = any([(model_type in args.model_name_or_path) for model_type in ["gpt","opt","bloom"]])
+    args.is_seq2seq_model = any(
+        [(model_type in args.model_name_or_path) for model_type in ["t5", "T0"]]
+    )
+    args.is_decoder_only_model = any(
+        [(model_type in args.model_name_or_path) for model_type in ["gpt", "opt", "bloom", "llama"]]
+    )
     if args.is_seq2seq_model:
         model = AutoModelForSeq2SeqLM.from_pretrained(args.model_name_or_path)
     elif args.is_decoder_only_model:
         if args.load_fp16:
-            model = AutoModelForCausalLM.from_pretrained(args.model_name_or_path,torch_dtype=torch.float16, device_map='auto')
+            model = AutoModelForCausalLM.from_pretrained(
+                args.model_name_or_path, torch_dtype=torch.float16, device_map="auto"
+            )
         else:
-            model = AutoModelForCausalLM.from_pretrained(args.model_name_or_path)
+            model = AutoModelForCausalLM.from_pretrained(args.model_name_or_path, device_map="auto")
     else:
         raise ValueError(f"Unknown model type: {args.model_name_or_path}")
 
     if args.use_gpu:
         device = "cuda" if torch.cuda.is_available() else "cpu"
-        if args.load_fp16: 
+        if args.load_fp16:
             pass
-        else: 
-            model = model.to(device)
+        else:
+            pass
+            # model = model.to(device)
     else:
         device = "cpu"
     model.eval()
 
-    tokenizer = AutoTokenizer.from_pretrained(args.model_name_or_path)
+    if args.is_decoder_only_model:
+        padding_side = "left"
+    else:
+        raise NotImplementedError(
+            "Need to check how to handle padding for seq2seq models when calling generate"
+        )
+
+    if "llama" in args.model_name_or_path:
+        tokenizer = LlamaTokenizer.from_pretrained(
+            args.model_name_or_path, padding_side=padding_side
+        )
+        model.config.pad_token_id = tokenizer.pad_token_id = 0  # unk
+        model.config.bos_token_id = 1
+        model.config.eos_token_id = 2
+    else:
+        tokenizer = AutoTokenizer.from_pretrained(
+            args.model_name_or_path, padding_side=padding_side
+        )
+
+    args.model_max_length = model.config.max_position_embeddings
 
     return model, tokenizer, device
 
+
+
 def load_tokenizer(args):
-    """Load and return the model and tokenizer"""
-
-    args.is_seq2seq_model = any([(model_type in args.model_name_or_path) for model_type in ["t5","T0"]])
-    args.is_decoder_only_model = any([(model_type in args.model_name_or_path) for model_type in ["gpt","opt","bloom"]])
-
-
-    tokenizer = AutoTokenizer.from_pretrained(args.model_name_or_path)
+    """Load and return the tokenizer"""
+    
+    model_name = args.model_name_or_path
+    print(f"Loading tokenizer for: {model_name}")
+    if "llama" in model_name:
+        tokenizer = LlamaTokenizer.from_pretrained(model_name)
+        tokenizer.pad_token_id = 0  # unk
+    else:
+        tokenizer = AutoTokenizer.from_pretrained(model_name)
+    
     if args.use_gpu:
         device = "cuda" if torch.cuda.is_available() else "cpu"
     else:
         device = "cpu"
-        
     return tokenizer, device
+
 
 def generate(watermark_processor, prompt, args, model=None, device=None, tokenizer=None):
     """Instatiate the WatermarkLogitsProcessor according to the watermark parameters
@@ -339,7 +370,7 @@ def generate(watermark_processor, prompt, args, model=None, device=None, tokeniz
     if args.seed_separately: 
         torch.manual_seed(args.generation_seed)
     output_with_watermark = generate_with_watermark(**tokd_input)
-
+    
     if args.is_decoder_only_model:
         # need to isolate the newly generated tokens
         output_without_watermark = output_without_watermark[:,tokd_input["input_ids"].shape[-1]:]
@@ -673,10 +704,10 @@ def main(args):
             logger.update(hm_wm_word_error_rate=result_hm_wm[0], hm_wm_BERT_S=result_hm_wm[1], hm_wm_BLEU_4=result_hm_wm[2])
             result_wo_wm = compare(decoded_output_without_watermark,decoded_output_with_watermark,args,device,tokenizer)
             logger.update(wo_wm_word_error_rate=result_wo_wm[0], wo_wm_BERT_S=result_wo_wm[1], wo_wm_BLEU_4=result_wo_wm[2])
-        hm_wo_word_error_rate, hm_wo_BERT_S, hm_wo_BLEU_4 = logger.meters['hm_wo_word_error_rate'].global_avg, logger.meters['hm_wo_BERT_S'].global_avg, logger.meters['hm_wo_BLEU_4'].global_avg
-        hm_wm_word_error_rate, hm_wm_BERT_S, hm_wm_BLEU_4 = logger.meters['hm_wm_word_error_rate'].global_avg, logger.meters['hm_wm_BERT_S'].global_avg, logger.meters['hm_wm_BLEU_4'].global_avg
-        wo_wm_word_error_rate, wo_wm_BERT_S, wo_wm_BLEU_4 = logger.meters['wo_wm_word_error_rate'].global_avg, logger.meters['wo_wm_BERT_S'].global_avg, logger.meters['wo_wm_BLEU_4'].global_avg
-        TPR_count,FPR_count = logger.meters['TPR_count'].global_avg, logger.meters['FPR_count'].global_avg
+        hm_wo_word_error_rate, hm_wo_BERT_S, hm_wo_BLEU_4 = logger.meters['hm_wo_word_error_rate'].global_stat, logger.meters['hm_wo_BERT_S'].global_stat, logger.meters['hm_wo_BLEU_4'].global_stat
+        hm_wm_word_error_rate, hm_wm_BERT_S, hm_wm_BLEU_4 = logger.meters['hm_wm_word_error_rate'].global_stat, logger.meters['hm_wm_BERT_S'].global_stat, logger.meters['hm_wm_BLEU_4'].global_stat
+        wo_wm_word_error_rate, wo_wm_BERT_S, wo_wm_BLEU_4 = logger.meters['wo_wm_word_error_rate'].global_stat, logger.meters['wo_wm_BERT_S'].global_stat, logger.meters['wo_wm_BLEU_4'].global_stat
+        TPR_count,FPR_count = logger.meters['TPR_count'].global_stat, logger.meters['FPR_count'].global_stat
         results = {
         'hm_wo_word_error_rate': hm_wo_word_error_rate,
         'hm_wo_BERT_S': hm_wo_BERT_S,
@@ -814,16 +845,21 @@ def main(args):
                 logger.update(TPR_count=0)
             cur_data["attack_output"] = attack_output
             cur_data["attack_output_result"] = after_attack_detection_result
+            
             result_hm_at = compare(human_answers,attack_output,args,device,tokenizer)
             result_wm_at = compare(decoded_output_with_watermark,attack_output,args,device,tokenizer)
+            result_wo_at = compare(decoded_output_without_watermark, attack_output, args, device, tokenizer)
+            
             logger.update(hm_at_word_error_rate=result_hm_at[0], hm_at_BERT_S=result_hm_at[1], hm_at_BLEU_4=result_hm_at[2])
             logger.update(wm_at_word_error_rate=result_wm_at[0], wm_at_BERT_S=result_wm_at[1], wm_at_BLEU_4=result_wm_at[2])
+            logger.update(wo_at_word_error_rate=result_wo_at[0], wo_at_BERT_S=result_wo_at[1], wo_at_BLEU_4=result_wo_at[2])
             
             with open(os.path.join(log_dir,args.attack+".json"), "a+") as f:
                 json.dump(cur_data, f)
                 f.write('\n')
-        hm_at_word_error_rate, hm_at_BERT_S, hm_at_BLEU_4 = logger.meters['hm_at_word_error_rate'].global_avg, logger.meters['hm_at_BERT_S'].global_avg, logger.meters['hm_at_BLEU_4'].global_avg
-        wm_at_word_error_rate, wm_at_BERT_S, wm_at_BLEU_4 = logger.meters['wm_at_word_error_rate'].global_avg, logger.meters['wm_at_BERT_S'].global_avg, logger.meters['wm_at_BLEU_4'].global_avg
+        hm_at_word_error_rate, hm_at_BERT_S, hm_at_BLEU_4 = logger.meters['hm_at_word_error_rate'].global_stat, logger.meters['hm_at_BERT_S'].global_stat, logger.meters['hm_at_BLEU_4'].global_stat
+        wm_at_word_error_rate, wm_at_BERT_S, wm_at_BLEU_4 = logger.meters['wm_at_word_error_rate'].global_stat, logger.meters['wm_at_BERT_S'].global_stat, logger.meters['wm_at_BLEU_4'].global_stat
+        wo_at_word_error_rate, wo_at_BERT_S, wo_at_BLEU_4 = logger.meters['wo_at_word_error_rate'].global_stat, logger.meters['wo_at_BERT_S'].global_stat, logger.meters['wo_at_BLEU_4'].global_stat
         results = {
             'hm_at_word_error_rate': hm_at_word_error_rate,
             'hm_at_BERT_S': hm_at_BERT_S,
@@ -831,6 +867,9 @@ def main(args):
             'wm_at_word_error_rate': wm_at_word_error_rate,
             'wm_at_BERT_S': wm_at_BERT_S,
             'wm_at_BLEU_4': wm_at_BLEU_4,
+            'wo_at_word_error_rate': wo_at_word_error_rate,
+            'wo_at_BERT_S': wo_at_BERT_S,
+            'wo_at_BLEU_4': wo_at_BLEU_4,
         }
 
         with open(os.path.join(log_dir,"log.csv"), 'a+') as f:

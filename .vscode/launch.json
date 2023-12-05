@@ -10,8 +10,8 @@
             "program": "main.py",
             "console": "integratedTerminal",
             "justMyCode": true,
-            "env": {"CUDA_VISIBLE_DEVICES":"2"},
-            "args": ["--watermark","rohith23"]
+            "env": {"CUDA_VISIBLE_DEVICES":"1,2,3"},
+            "args": ["--watermark","john23","--model_name_or_path","meta-llama/Llama-2-7b-chat-hf"]
         },
         {
             "name": "attack",

@@ -145,6 +145,28 @@ class SmoothedValue:
             return 0.0
 
     @property
+    def global_div(self) -> float:
+        try:
+            values = self.deque
+            mean = self.total / self.count
+            variance = sum((x - mean) ** 2 for x in values) / len(values)
+            deviation = variance ** 0.5
+            return mean, deviation
+        except Exception:
+            return 0.0
+
+    @property
+    def global_stat(self) -> float:
+        try:
+            values = self.deque
+            mean = self.total / self.count
+            variance = sum((x - mean) ** 2 for x in values) / len(values)
+            deviation = variance ** 0.5
+            return mean, deviation
+        except Exception:
+            return 0.0
+
+    @property
     def max(self) -> float:
         try:
             return max(self.deque)
