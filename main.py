@@ -245,7 +245,7 @@ def parse_args():
                         choices=['adjacent', 'child', 'child_dep', "na"])
     parser.add_argument("--custom_keywords", type=str, default=['watermarking', 'watermark'])
     parser.add_argument("--message", type=str, default="")
-    parser.add_argument("--spacy_model", type=str, default="ec_core_web_sm")
+    parser.add_argument("--spacy_model", type=str, default="en_core_web_sm")
     parser.add_argument("--exclude_cc", type=str2bool, default=True)
 
     ######################################################################
@@ -628,7 +628,7 @@ def main(args):
 
             case 'kiyoon23':
                 watermark_processor = watermarks.kiyoon23(args.dtype, args.embed, args.exp_name_generic, args.exp_name_infill, args.extract,
-                                    args.num_sample, args.spacy_model, args.custom_keywords, args.keyword_mask,
+                                    args.num_sample, args.spacy_model, args.exclude_cc, args.custom_keywords, args.keyword_mask,
                                     args.keyword_ratio, args.mask_order_by, args.mask_select_method, args.num_epochs,
                                     args.topk)
 
