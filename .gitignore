@@ -9,3 +9,4 @@ dataset
 runs copy
 nohup.out
 runs copy 2/
+wandb/

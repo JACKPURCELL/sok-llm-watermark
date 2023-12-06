@@ -22,6 +22,16 @@
             "justMyCode": true,
             "env": {"CUDA_VISIBLE_DEVICES":"1,2"},
             "args": ["--watermark","john23","--attack","dipper"]
-        }
+        },
+        {
+            "name": "new_inject",
+            "type": "python",
+            "request": "launch",
+            "program": "watermark_reliability_release/generation_pipeline.py",
+            "console": "integratedTerminal",
+            "justMyCode": true,
+            "env": {"CUDA_VISIBLE_DEVICES":"1,2,3"},
+            "args": ["--watermark","xuandong23b","--run_name","test-gen-xuandong23b"]
+        },
     ]
 }
