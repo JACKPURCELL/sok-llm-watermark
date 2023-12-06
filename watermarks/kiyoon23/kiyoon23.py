@@ -33,37 +33,38 @@ class kiyoon23():
         Class for embedding watermark in raw text.
 
         Args:
-            tokenizer: The tokenizer object for the main language model (in which we want to inject watermark).
-            lm_model: The proxy model.
-            lm_tokenizer: The tokenizer of the proxy model.
+            SPACYM: type of spacy model used for dependency parsing
+            KR: keyword ratio that determines the number of keywords and masks (see Table 11 for configuration)
+            TOPK: topk infill words used to infill selected masks (see Table 11 for configuration)
+            MASK_S: mask selection method, choose from {keyword_connected, grammar}
+            MASK_ORDR_BY: ordering of masks by {dep, pos}. This is only relevant when using dependency component
+            EXCLUDE_CC: exlucde the cc dependency as detailed in Section 5.2
+            K_MASK: how mask is selected when using keyword component; only relvant when using keyword component, choose from {adjacent, child}
 
-            strength: The strength of the green-listing. Higher values result in higher logit scores for green-listed tokens.
-            vocab_size: The size of the vocabulary.
-            watermark_key: The random seed for the green-listing.
+# Below are other variables
+CKPT: checkpoint to the finetuned robust infill model
     """
 
-    def __init__(self, debug_mode, dtype, embed, exp_name_generic, exp_name_infill, extract, extract_corrupted, metric_only,
-                 num_sample, spacy_model, custom_keywords, do_watermark, eval_only, exclude_cc,
-                 keyword_mask, keyword_ratio, mask_order_by, mask_select_method, model_ckpt, model_name,
-                 num_epochs, topk, train_infill):
+    def __init__(self, dtype, embed, exp_name_generic, exp_name_infill, extract, num_sample, spacy_model, exclude_cc,
+                 custom_keywords, keyword_mask, keyword_ratio, mask_order_by, mask_select_method, num_epochs, topk, message):
         self.generic_args = argparse.ArgumentParser(description="Generic argument parser")
         self.generic_args.add_argument("--exp_name", type=str, default=exp_name_generic)
         self.generic_args.add_argument("--embed", type=str2bool, default=embed)
         self.generic_args.add_argument("--extract", type=str2bool, default=extract)
-        self.generic_args.add_argument("--extract_corrupted", type=str2bool, default=extract_corrupted)
+        self.generic_args.add_argument("--extract_corrupted", type=str2bool, default=False)
         self.generic_args.add_argument("--dtype", type=str, default=dtype)
         self.generic_args.add_argument("--num_sample", type=int, default=num_sample)
         self.generic_args.add_argument("--spacy_model", type=str, default=spacy_model)
-        self.generic_args.add_argument("--debug_mode", type=str2bool, default=debug_mode)
-        self.generic_args.add_argument("--metric_only", type=str2bool, default=metric_only)
+        self.generic_args.add_argument("--debug_mode", type=str2bool, default=False)
+        self.generic_args.add_argument("--metric_only", type=str2bool, default=False)
 
         self.infill_args = argparse.ArgumentParser(description="For the watermarking module")
-        self.infill_args.add_argument("--debug_mode", type=str2bool, default=debug_mode)
-        self.infill_args.add_argument("--eval_only", type=str2bool, default=eval_only)
-        self.infill_args.add_argument("--do_watermark", type=str2bool, default=do_watermark)
-        self.infill_args.add_argument("--train_infill", type=str2bool, default=train_infill)
-        self.infill_args.add_argument("--model_ckpt", type=str, nargs="?", const=model_ckpt)
-        self.infill_args.add_argument("--model_name", type=str, default=model_name)
+        self.infill_args.add_argument("--debug_mode", type=str2bool, default=False)
+        self.infill_args.add_argument("--eval_only", type=str2bool, default=False)
+        self.infill_args.add_argument("--do_watermark", type=str2bool, default=True)
+        self.infill_args.add_argument("--train_infill", type=str2bool, default=False)
+        self.infill_args.add_argument("--model_ckpt", type=str, nargs="?", const=None)
+        self.infill_args.add_argument("--model_name", type=str, default="bert-large-cased")
         self.infill_args.add_argument("--exp_name", type=str, default=exp_name_infill)
         self.infill_args.add_argument("--num_epochs", type=int, default=num_epochs)
         self.infill_args.add_argument("--dtype", type=str, default=dtype)
@@ -78,8 +79,9 @@ class kiyoon23():
 
         self.infill_args, _ = self.infill_args.parse_known_args()
         self.generic_args, _ = self.generic_args.parse_known_args()
+        self.message = message
 
-    def generate_with_watermark(self, raw_text):
+    def embed_watermark(self, raw_text, message):
 
         cover_texts = preprocess2sentence([raw_text], corpus_name="custom",
                                           start_sample_idx=0, cutoff_q=(0.0, 1.0), use_cache=False)
@@ -129,6 +131,7 @@ class kiyoon23():
         if not os.path.exists(result_dir):
             os.makedirs(os.path.dirname(result_dir), exist_ok=True)
 
+        result = ""
         for c_idx, sentences in enumerate(cover_texts):
             corpus_level_watermarks = []
             for s_idx, sen in enumerate(sentences):
@@ -197,13 +200,8 @@ class kiyoon23():
 
             num_options = reduce(lambda x, y: x * y, [len(vw) for vw in corpus_level_watermarks])
             available_bit = math.floor(math.log2(num_options))
-            print(num_options)
-            print(f"Input message to embed (max bit:{available_bit}):")
-            message = input().replace(" ", "")
+            message = message.replace(" ", "")
             # left pad to available bit if given message is short
-            if available_bit > 8:
-                print(f"Available bit is large: {available_bit} > 8.. "
-                      f"We recommend using shorter text segments as it may take a while")
             message = "0" * (available_bit - len(message)) + message
             if len(message) > available_bit:
                 print(f"Given message longer than capacity. Truncating...: {len(message)}>{available_bit}")
@@ -217,108 +215,20 @@ class kiyoon23():
                 cnt += 1
                 watermarked_text = next(available_candidates)
 
-            print("---- Watermarked text ----")
             for wt in watermarked_text:
-                print("".join(wt))
+                result = result.join(wt).join(" ")
 
+        ### Delete the last blank we addded
+        result = result.strip()
 
-
-class lean23_BalanceMarkingWatermarkLogitsProcessor(LogitsProcessor):
-    """
-        Class for detecting watermarks in a sequence of tokens.
-
-        Args:
-            tokenizer: The tokenizer object for the main language model (in which we want to inject watermark).
-            lm_model: The proxy model.
-            lm_tokenizer: The tokenizer of the proxy model.
-
-            strength: The strength of the green-listing. Higher values result in higher logit scores for green-listed tokens.
-            vocab_size: The size of the vocabulary.
-            watermark_key: The random seed for the green-listing.
-    """
-    def __init__(self,
-                 tokenizer,
-                 lm_tokenizer,
-                 lm_model,
-                 delta,
-                 lm_prefix_len,
-                 lm_top_k,
-                 message_code_len,
-                 random_permutation_num,
-                 encode_ratio,
-                 max_confidence_lbd,
-                 message_model_strategy,
-                 message,
-                 top_k,
-                 repeat_penalty):
-        self.lm_message_model = LMMessageModel(tokenizer=tokenizer, lm_model=lm_model,
-                                          lm_tokenizer=lm_tokenizer,
-                                          delta=delta, lm_prefix_len=lm_prefix_len,
-                                          lm_topk=lm_top_k, message_code_len=message_code_len,
-                                          random_permutation_num=random_permutation_num)
-
-        self.watermark_processor = WmProcessorMessageModel(message_model=self.lm_message_model,
-                                                      tokenizer=tokenizer,
-                                                      encode_ratio=encode_ratio,
-                                                      max_confidence_lbd=max_confidence_lbd,
-                                                      strategy=message_model_strategy,
-                                                      message=message,
-                                                      top_k=top_k,
-                                                      )
-
-        self.min_length_processor = MinLengthLogitsProcessor(min_length=10000,
-                                                        # just to make sure there's no EOS
-                                                        eos_token_id=tokenizer.eos_token_id)
-        self.rep_processor = RepetitionPenaltyLogitsProcessor(penalty=repeat_penalty)
-
-        self.logit_processor = LogitsProcessorList(
-            [self.min_length_processor, self.rep_processor, self.watermark_processor])
-
-    def __call__(self, input_ids: torch.LongTensor, scores: torch.FloatTensor) -> torch.FloatTensor:
-        return self.logit_processor(input_ids, scores)
-
-def truncate(d, max_length=200):
-    for k, v in d.items():
-        if isinstance(v, torch.Tensor) and len(v.shape) == 2:
-            d[k] = v[:, :max_length]
-    return d
-class lean23_WatermarkDetector:
-    def __init__(self,
-                 watermark_processor,
-                 generated_length,
-                 message_code_len,
-                 encode_ratio,
-                 tokenizer,
-                 prompt_length,
-                 message,
-                 min_prefix_len=0
-                 ):
-        self.watermark_processor = watermark_processor
-        self.generated_length = generated_length
-        self.message_code_len = message_code_len
-        self.encode_ratio = encode_ratio
-        self.tokenizer = tokenizer
-        self.prompt_length = prompt_length
-        self.min_prefix_len = min_prefix_len
-        self.message = message
-
-    def detect(self, text, prompt, **kwargs):
-        if len(self.tokenizer.tokenize(text))<12:
-            return {"decoded_message": "\n\n212 shares",
-                  "confidences": 1,
-                  "prediction": False}
-        tokenized_input = self.tokenizer(prompt, return_tensors='pt').to("cpu")
-        tokenized_input = truncate(tokenized_input, max_length=self.prompt_length)
-        self.watermark_processor.start_length = tokenized_input['input_ids'].shape[-1]
-        decoded_message, other_information = self.watermark_processor.watermark_processor.decode(text, disable_tqdm=True)
-        confidences = other_information[1]
-        available_message_num = self.generated_length // (
-            int(self.message_code_len * self.encode_ratio))
-        acc = decoded_message[:available_message_num] == self.message[:available_message_num]
-        result = {"decoded_message": decoded_message,
-                  "confidences": confidences,
-                  "prediction": acc}
         return result
+
+
+    def generate_with_watermark(self, tokd_input, generate_without_watermark):
+        output_without_watermark = generate_without_watermark(tokd_input)
+        output_with_watermark = self.embed_watermark(output_without_watermark, self.message)
+        return output_with_watermark
+
 
 
 

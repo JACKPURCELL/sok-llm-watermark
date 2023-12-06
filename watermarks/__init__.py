@@ -4,6 +4,7 @@ from .xuandong23 import xuandong23_WatermarkLogitsProcessor
 from .xuandong23b import xuandong23b_WatermarkLogitsProcessor, xuandong23b_WatermarkDetector
 from .lean23.lean23 import lean23_BalanceMarkingWatermarkLogitsProcessor, lean23_WatermarkDetector
 from .aiwei23.aiwei23 import aiwei23_WatermarkLogitsProcessor, aiwei23_WatermarkDetector, prepare_generator
+from .kiyoon23.kiyoon23 import kiyoon23
     ######################################################################
     # Add your code here
     ######################################################################
