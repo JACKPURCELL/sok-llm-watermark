@@ -265,6 +265,8 @@ class LMMessageModel(BaseMessageModelFast):
         encodings['input_ids'] = encodings['input_ids'][:, -self.lm_prefix_len:]
         encodings['attention_mask'] = encodings['attention_mask'][:, -self.lm_prefix_len:]
         encodings = encodings.to(self.lm_model.device)
+        if "token_type_ids" in encodings.keys():
+            encodings.pop("token_type_ids")
         with torch.no_grad():
             logits = self.lm_model(**encodings).logits
         final_pos = (encodings['input_ids'] != self.lm_tokenizer.pad_token_id).sum(dim=1) - 1

@@ -3,6 +3,7 @@
     "version": "0.2.0",
     "configurations": [
 
+
         {
             "name": "inject",
             "type": "python",
@@ -11,7 +12,7 @@
             "console": "integratedTerminal",
             "justMyCode": true,
             "env": {"CUDA_VISIBLE_DEVICES":"1,2,3"},
-            "args": ["--watermark","john23","--model_name_or_path","meta-llama/Llama-2-7b-chat-hf"]
+            "args": ["--watermark","lean23"]
         },
         {
             "name": "attack",
@@ -30,8 +31,8 @@
             "program": "watermark_reliability_release/generation_pipeline.py",
             "console": "integratedTerminal",
             "justMyCode": true,
-            "env": {"CUDA_VISIBLE_DEVICES":"1,2,3"},
-            "args": ["--watermark","xuandong23b","--run_name","test-gen-xuandong23b"]
+            "env": {"CUDA_VISIBLE_DEVICES":"0,1,2,3"},
+            "args": ["--watermark","lean23","--dataset_name","hc3","--run_name","test-gen-lean23","--model_name_or_path","meta-llama/Llama-2-7b-chat-hf","--min_generations","1"]
         },
     ]
 }

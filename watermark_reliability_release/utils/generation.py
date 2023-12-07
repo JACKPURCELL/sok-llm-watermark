@@ -77,8 +77,8 @@ def load_model(args):
         )
 
     if "llama" in args.model_name_or_path:
-        tokenizer = LlamaTokenizer.from_pretrained(
-            args.model_name_or_path, padding_side=padding_side
+        tokenizer = AutoTokenizer.from_pretrained(
+            args.model_name_or_path, padding_side=padding_side,return_token_type_ids=False
         )
         model.config.pad_token_id = tokenizer.pad_token_id = 0  # unk
         model.config.bos_token_id = 1
@@ -359,6 +359,8 @@ def tokenize_only(
     if tokenize_ref_output:
         # NOTE not sure this logic is useful/required
         if ref_output_col_name is not None:
+            if isinstance(example[ref_output_col_name], list):
+                example[ref_output_col_name] = example[ref_output_col_name][0]
             # tokenize ref output
             ref_output_ids = tokenizer(
                 example[ref_output_col_name],

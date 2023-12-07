@@ -153,7 +153,7 @@ def load_tokenizer(args):
     model_name = args.model_name_or_path
     print(f"Loading tokenizer for: {model_name}")
     if "llama" in model_name:
-        tokenizer = LlamaTokenizer.from_pretrained(model_name)
+        tokenizer = AutoTokenizer.from_pretrained(model_name,return_token_type_ids=False)
         tokenizer.pad_token_id = 0  # unk
     else:
         tokenizer = AutoTokenizer.from_pretrained(model_name)
@@ -162,7 +162,7 @@ def load_tokenizer(args):
 
 def load_detector(args):
     if "llama" in args.model_name_or_path:
-        tokenizer = LlamaTokenizer.from_pretrained(args.model_name_or_path)
+        tokenizer = AutoTokenizer.from_pretrained(args.model_name_or_path,return_token_type_ids=False)
         tokenizer.pad_token_id = 0  # unk
     else:
         tokenizer = AutoTokenizer.from_pretrained(args.model_name_or_path)
@@ -464,7 +464,7 @@ def load_oracle_model(args):
     else:
         oracle_model = AutoModelForCausalLM.from_pretrained(oracle_model_name)
     if "llama" in oracle_model_name:
-        oracle_tokenizer = LlamaTokenizer.from_pretrained(oracle_model_name)
+        oracle_tokenizer = AutoTokenizer.from_pretrained(oracle_model_name,return_token_type_ids=False)
         oracle_model.config.pad_token_id = oracle_tokenizer.pad_token_id = 0  # unk
         oracle_model.config.bos_token_id = 1
         oracle_model.config.eos_token_id = 2

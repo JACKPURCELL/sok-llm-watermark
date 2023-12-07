@@ -67,7 +67,7 @@ def prepare_data(filepath, train_or_test="train", llm_name="gpt2", bit=16, z_val
                     tokenizer = AutoTokenizer.from_pretrained("facebook/opt-1.3b", use_fast=False)
                     inputs = tokenizer(inputs, return_tensors="pt", add_special_tokens=True)
                 elif llm_name == "llama-7b":
-                    tokenizer = LlamaTokenizer.from_pretrained("decapoda-research/llama-7b-hf")
+                    tokenizer = AutoTokenizer.from_pretrained("decapoda-research/llama-7b-hf")
                     inputs = tokenizer(inputs, return_tensors="pt", add_special_tokens=True)
 
                 inputs_bin = [int_to_bin_list(n, bit) for n in inputs["input_ids"].squeeze()]

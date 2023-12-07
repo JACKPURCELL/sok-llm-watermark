@@ -706,10 +706,10 @@ if __name__ == "__main__":
 
     ####### load base tokenizer ########
     if "llama" in args.base_model_name:
-        from transformers import LlamaTokenizer
+        from transformers import AutoTokenizer
 
-        base_tokenizer = LlamaTokenizer.from_pretrained(
-            args.base_model_name, padding_side="left", **optional_tok_kwargs
+        base_tokenizer = AutoTokenizer.from_pretrained(
+            args.base_model_name, padding_side="left", **optional_tok_kwargs,return_token_type_ids=False
         )
     else:
         base_tokenizer = transformers.AutoTokenizer.from_pretrained(

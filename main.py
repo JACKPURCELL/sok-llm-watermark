@@ -60,215 +60,185 @@ def parse_args():
         default='',
         help="Select the watermark type",
     )
+    parser.add_argument(
+        "--run_gradio",
+        type=str2bool,
+        default=True,
+        help="Whether to launch as a gradio demo. Set to False if not installed and want to just run the stdout version.",
+    )
+    parser.add_argument(
+        "--demo_public",
+        type=str2bool,
+        default=False,
+        help="Whether to expose the gradio demo to the internet.",
+    )
+    parser.add_argument(
+        "--model_name_or_path",
+        type=str,
+        default="facebook/opt-1.3b",
+        help="Main model, path to pretrained model or model identifier from huggingface.co/models.",
+    )
+    parser.add_argument(
+        "--prompt_max_length",
+        type=int,
+        default=None,
+        help="Truncation length for prompt, overrides model config's max length field.",
+    )
+    parser.add_argument(
+        "--max_new_tokens",
+        type=int,
+        default=200,
+        help="Maximmum number of new tokens to generate.",
+    )
+    parser.add_argument(
+        "--generation_seed",
+        type=int,
+        default=123,
+        help="Seed for setting the torch global rng prior to generation.",
+    )
+    parser.add_argument(
+        "--use_sampling",
+        type=str2bool,
+        default=True,
+        help="Whether to generate using multinomial sampling.",
+    )
+    parser.add_argument(
+        "--sampling_temp",
+        type=float,
+        default=0.7,
+        help="Sampling temperature to use when generating using multinomial sampling.",
+    )
+    parser.add_argument(
+        "--n_beams",
+        type=int,
+        default=1,
+        help="Number of beams to use for beam search. 1 is normal greedy decoding",
+    )
+    parser.add_argument(
+        "--use_gpu",
+        type=str2bool,
+        default=True,
+        help="Whether to run inference and watermark hashing/seeding/permutation on gpu.",
+    )
+    parser.add_argument(
+        "--seeding_scheme",
+        type=str,
+        default="simple_1",
+        help="Seeding scheme to use to generate the greenlists at each generation and verification step.",
+    )
+    parser.add_argument(
+        "--gamma",
+        type=float,
+        default=0.25,
+        help="The fraction of the vocabulary to partition into the greenlist at each generation and verification step.",
+    )
+    parser.add_argument(
+        "--delta",
+        type=float,
+        default=2.0,
+        help="The amount/bias to add to each of the greenlist token logits before each token sampling step.",
+    )
+    parser.add_argument(
+        "--normalizers",
+        type=str,
+        default="",
+        help="Single or comma separated list of the preprocessors/normalizer names to use when performing watermark detection.",
+    )
+    parser.add_argument(
+        "--ignore_repeated_bigrams",
+        type=str2bool,
+        default=False,
+        help="Whether to use the detection method that only counts each unqiue bigram once as either a green or red hit.",
+    )
+    parser.add_argument(
+        "--detection_z_threshold",
+        type=float,
+        default=4.0,
+        help="The test statistic threshold for the detection hypothesis test.",
+    )
+    parser.add_argument(
+        "--select_green_tokens",
+        type=str2bool,
+        default=True,
+        help="How to treat the permuation when selecting the greenlist tokens at each step. Legacy is (False) to pick the complement/reds first.",
+    )
+    parser.add_argument(
+        "--skip_model_load",
+        type=str2bool,
+        default=False,
+        help="Skip the model loading to debug the interface.",
+    )
+    parser.add_argument(
+        "--seed_separately",
+        type=str2bool,
+        default=True,
+        help="Whether to call the torch seed function before both the unwatermarked and watermarked generate calls.",
+    )
+    parser.add_argument(
+        "--load_fp16",
+        type=str2bool,
+        default=False,
+        help="Whether to run model in float16 precsion.",
+    )
+    parser.add_argument(
+        "--prompt_file",
+        type=str,
+        default='/home/jkl6486/sok-llm-watermark/dataset/sample.jsonl'
+    )
+    parser.add_argument(
+        "--skip_inject",
+        type=str2bool,
+        default=False,
+        help="Skip the model loading to debug the interface.",
+    )
+    #xuandong23b
+    parser.add_argument("--fraction", type=float, default=0.5)
+    parser.add_argument("--strength", type=float, default=2.0)
+    parser.add_argument("--wm_key", type=int, default=0)
+
+    #lean23
+    parser.add_argument("--lean_delta", type=float, default=1.5)
+    parser.add_argument("--lm_prefix_len", type=int, default=10)
+    parser.add_argument("--lm_top_k", type=int, default=-1),
+    parser.add_argument("--message_code_len", type=int, default=20)
+    parser.add_argument("--random_permutation_num", type=int, default=100)
+    parser.add_argument("--encode_ratio", type=float, default=10.0)
+    parser.add_argument("--max_confidence_lbd", type=float, default=0.5)
+    parser.add_argument("--message_model_strategy", type=str, default="vanilla")
+    parser.add_argument("--message", type=list, default=[9,10,100])
+    parser.add_argument("--top_k", type=int, default=1000)
+    parser.add_argument("--repeat_penalty", type=float, default=1.5)
+    parser.add_argument("--generated_length", type=int, default=200)
+    parser.add_argument("--prompt_length", type=int, default=300)
+
+    #aiwei23
+    parser.add_argument("--bit_number", type=int, default=16) ### This is log2(vocab_size), which depends on the model, for opt, it is 16
+    parser.add_argument("--layers", type=int, default=5)
+    parser.add_argument("--window_size", type=int, default=3)
+    parser.add_argument("--llm_name", type=str, default="opt-6.7b")
+
+    # parser.add_argument("--gamma", type=float, default=0.6)
+    # parser.add_argument("--delta", type=float, default= 2.0)
+    parser.add_argument("--model_dir", type=str, default="./model/")
+    parser.add_argument("--beam_size", type=int, default=0)
+    parser.add_argument("--data_dir", type=str, default="./data")
+    parser.add_argument("--z_value", type=int, default=4)
+    parser.add_argument("--sample_number", type=int, default=2000, help="Number of samples for training generator.")
+    parser.add_argument("--num_samples", type=int, default=10000, help="Number of samples for training detector.")
+    parser.add_argument("--dataset_name", type=str, default="c4", help="The dataset used for training detector.")
+    # parser.add_argument("--sampling_temp", type=float, default=0.7)
+    parser.add_argument("--max_new_token", type=int, default=200)
+    parser.add_argument("--aiwei_trained", type=bool, default=False)
+
+    ######################################################################
+    # Add your code here
+    ######################################################################
+    # If you have specific arguments for your watermark, add them here
+    ######################################################################
+    
+    
     parser.add_argument("--attack", type=str)
     parser.add_argument("--log_dir", type=str)
-    args = parser.parse_args()
-    
-    match args.watermark:
-        case 'john23':
-            parser.add_argument(
-                "--seeding_scheme",
-                type=str,
-                default="simple_1",
-                help="The seeding procedure to use for the watermark.",
-            )
-            parser.add_argument(
-                "--gamma",
-                type=float,
-                default=0.25,
-                help="The ratio of tokens to put in the greenlist when splitting the vocabulary",
-            )
-            parser.add_argument(
-                "--delta",
-                type=float,
-                default=2.0,
-                help="The amount of bias (absolute) to add to the logits in the whitelist half of the vocabulary at every step",
-            )
-            parser.add_argument(
-                "--store_spike_ents",
-                type=str2bool,
-                default=True,
-                help=("Whether to store the spike entropies while generating with watermark processor. "),
-            )    
-
-            
-            
-            parser.add_argument(
-                "--run_gradio",
-                type=str2bool,
-                default=True,
-                help="Whether to launch as a gradio demo. Set to False if not installed and want to just run the stdout version.",
-            )
-            parser.add_argument(
-                "--demo_public",
-                type=str2bool,
-                default=False,
-                help="Whether to expose the gradio demo to the internet.",
-            )
-            parser.add_argument(
-                "--model_name_or_path",
-                type=str,
-                default="meta-llama/Llama-2-13b-chat-hf",
-                help="Main model, path to pretrained model or model identifier from huggingface.co/models.",
-            )
-            parser.add_argument(
-                "--prompt_max_length",
-                type=int,
-                default=None,
-                help="Truncation length for prompt, overrides model config's max length field.",
-            )
-            parser.add_argument(
-                "--max_new_tokens",
-                type=int,
-                default=200,
-                help="Maximmum number of new tokens to generate.",
-            )
-            parser.add_argument(
-                "--generation_seed",
-                type=int,
-                default=123,
-                help="Seed for setting the torch global rng prior to generation.",
-            )
-            parser.add_argument(
-                "--use_sampling",
-                type=str2bool,
-                default=True,
-                help="Whether to generate using multinomial sampling.",
-            )
-            parser.add_argument(
-                "--sampling_temp",
-                type=float,
-                default=0.7,
-                help="Sampling temperature to use when generating using multinomial sampling.",
-            )
-            parser.add_argument(
-                "--n_beams",
-                type=int,
-                default=1,
-                help="Number of beams to use for beam search. 1 is normal greedy decoding",
-            )
-            parser.add_argument(
-                "--use_gpu",
-                type=str2bool,
-                default=True,
-                help="Whether to run inference and watermark hashing/seeding/permutation on gpu.",
-            )
-            parser.add_argument(
-                "--seeding_scheme",
-                type=str,
-                default="simple_1",
-                help="Seeding scheme to use to generate the greenlists at each generation and verification step.",
-            )
-            parser.add_argument(
-                "--gamma",
-                type=float,
-                default=0.25,
-                help="The fraction of the vocabulary to partition into the greenlist at each generation and verification step.",
-            )
-            parser.add_argument(
-                "--delta",
-                type=float,
-                default=2.0,
-                help="The amount/bias to add to each of the greenlist token logits before each token sampling step.",
-            )
-            parser.add_argument(
-                "--normalizers",
-                type=str,
-                default="",
-                help="Single or comma separated list of the preprocessors/normalizer names to use when performing watermark detection.",
-            )
-            parser.add_argument(
-                "--ignore_repeated_bigrams",
-                type=str2bool,
-                default=False,
-                help="Whether to use the detection method that only counts each unqiue bigram once as either a green or red hit.",
-            )
-            parser.add_argument(
-                "--detection_z_threshold",
-                type=float,
-                default=4.0,
-                help="The test statistic threshold for the detection hypothesis test.",
-            )
-            parser.add_argument(
-                "--select_green_tokens",
-                type=str2bool,
-                default=True,
-                help="How to treat the permuation when selecting the greenlist tokens at each step. Legacy is (False) to pick the complement/reds first.",
-            )
-            parser.add_argument(
-                "--skip_model_load",
-                type=str2bool,
-                default=False,
-                help="Skip the model loading to debug the interface.",
-            )
-            parser.add_argument(
-                "--seed_separately",
-                type=str2bool,
-                default=True,
-                help="Whether to call the torch seed function before both the unwatermarked and watermarked generate calls.",
-            )
-            parser.add_argument(
-                "--load_fp16",
-                type=str2bool,
-                default=False,
-                help="Whether to run model in float16 precsion.",
-            )
-            parser.add_argument(
-                "--prompt_file",
-                type=str,
-                default='/home/jkl6486/sok-llm-watermark/dataset/sample.jsonl'
-            )
-            parser.add_argument(
-                "--skip_inject",
-                type=str2bool,
-                default=False,
-                help="Skip the model loading to debug the interface.",
-            )
-        case 'xuandong23b':    
-
-            parser.add_argument("--fraction", type=float, default=0.5)
-            parser.add_argument("--strength", type=float, default=2.0)
-            parser.add_argument("--wm_key", type=int, default=0)
-        case 'lean23':    
-            parser.add_argument("--lean_delta", type=float, default=1.5)
-            parser.add_argument("--lm_prefix_len", type=int, default=10)
-            parser.add_argument("--lm_top_k", type=int, default=-1),
-            parser.add_argument("--message_code_len", type=int, default=20)
-            parser.add_argument("--random_permutation_num", type=int, default=100)
-            parser.add_argument("--encode_ratio", type=float, default=10.0)
-            parser.add_argument("--max_confidence_lbd", type=float, default=0.5)
-            parser.add_argument("--message_model_strategy", type=str, default="vanilla")
-            parser.add_argument("--message", type=list, default=[9,10,100])
-            parser.add_argument("--top_k", type=int, default=1000)
-            parser.add_argument("--repeat_penalty", type=float, default=1.5)
-            parser.add_argument("--generated_length", type=int, default=200)
-            parser.add_argument("--prompt_length", type=int, default=300)
-        case 'aiwei23':    
-            parser.add_argument("--bit_number", type=int, default=16) ### This is log2(vocab_size), which depends on the model, for opt, it is 16
-            parser.add_argument("--layers", type=int, default=5)
-            parser.add_argument("--window_size", type=int, default=3)
-            parser.add_argument("--llm_name", type=str, default="opt-6.7b")
-            parser.add_argument("--gamma", type=float, default=0.6)
-            parser.add_argument("--delta", type=float, default= 2.0)
-            parser.add_argument("--model_dir", type=str, default="./model/")
-            parser.add_argument("--beam_size", type=int, default=0)
-            parser.add_argument("--data_dir", type=str, default="./data")
-            parser.add_argument("--z_value", type=int, default=4)
-            parser.add_argument("--sample_number", type=int, default=2000, help="Number of samples for training generator.")
-            parser.add_argument("--num_samples", type=int, default=10000, help="Number of samples for training detector.")
-            parser.add_argument("--dataset_name", type=str, default="c4", help="The dataset used for training detector.")
-            parser.add_argument("--sampling_temp", type=float, default=0.7)
-            parser.add_argument("--max_new_token", type=int, default=200)
-            parser.add_argument("--aiwei_trained", type=bool, default=False)
-
-            ######################################################################
-            # Add your code here
-            ######################################################################
-            # If you have specific arguments for your watermark, add them here
-            ######################################################################
-            
-            
-
     
     args = parser.parse_args()
     return args
@@ -312,8 +282,8 @@ def load_model(args):
         )
 
     if "llama" in args.model_name_or_path:
-        tokenizer = LlamaTokenizer.from_pretrained(
-            args.model_name_or_path, padding_side=padding_side
+        tokenizer = AutoTokenizer.from_pretrained(
+            args.model_name_or_path, padding_side=padding_side,return_token_type_ids=False
         )
         model.config.pad_token_id = tokenizer.pad_token_id = 0  # unk
         model.config.bos_token_id = 1
@@ -335,7 +305,7 @@ def load_tokenizer(args):
     model_name = args.model_name_or_path
     print(f"Loading tokenizer for: {model_name}")
     if "llama" in model_name:
-        tokenizer = LlamaTokenizer.from_pretrained(model_name)
+        tokenizer = AutoTokenizer.from_pretrained(model_name,return_token_type_ids=False)
         tokenizer.pad_token_id = 0  # unk
     else:
         tokenizer = AutoTokenizer.from_pretrained(model_name)

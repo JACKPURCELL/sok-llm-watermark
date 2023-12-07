@@ -383,7 +383,7 @@ class aiwei23_WatermarkDetector:
             model = AutoModelForCausalLM.from_pretrained("facebook/opt-6.7b", torch_dtype=torch.float16).cuda()
             model = model.to(device)
         elif self.llm_name == "llama-7b":
-            tokenizer = LlamaTokenizer.from_pretrained("decapoda-research/llama-7b-hf")
+            tokenizer = AutoTokenizer.from_pretrained("decapoda-research/llama-7b-hf")
             model = AutoModelForCausalLM.from_pretrained("decapoda-research/llama-7b-hf", device_map='auto')
 
         watermark_processor = aiwei23_WatermarkLogitsProcessor(vocab=list(tokenizer.get_vocab().values()),

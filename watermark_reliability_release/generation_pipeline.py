@@ -187,7 +187,7 @@ def main(args):
                                                                         max_confidence_lbd=args.max_confidence_lbd,
                                                                         message_model_strategy=args.message_model_strategy,
                                                                         message=args.message,
-                                                                        top_k=args.top_k,
+                                                                        top_k=args.lean23_top_k,
                                                                         repeat_penalty=args.repeat_penalty
                                                                         )
 
@@ -627,7 +627,7 @@ if __name__ == "__main__":
     parser.add_argument(
         "--output_dir",
         type=str,
-        default="./output",
+        default=None,
         help="The unique name for the run.",
     )
     parser.add_argument(
@@ -679,7 +679,7 @@ if __name__ == "__main__":
             parser.add_argument("--max_confidence_lbd", type=float, default=0.5)
             parser.add_argument("--message_model_strategy", type=str, default="vanilla")
             parser.add_argument("--message", type=list, default=[9,10,100])
-            parser.add_argument("--top_k", type=int, default=1000)
+            parser.add_argument("--lean23_top_k", type=int, default=1000)
             parser.add_argument("--repeat_penalty", type=float, default=1.5)
             parser.add_argument("--generated_length", type=int, default=200)
             parser.add_argument("--prompt_length", type=int, default=300)
@@ -744,4 +744,8 @@ if __name__ == "__main__":
     else:
         args.wandb_tags = []
 
+    if args.output_dir is None:
+        args.output_dir = 'runs/'+str(args.watermark)+'/'+str(args.dataset_name)
+    else:
+        args.output_dir = 'runs/'+args.output_dir
     main(args)
