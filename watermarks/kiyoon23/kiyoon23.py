@@ -42,6 +42,14 @@ def str2bool(v):
     else:
         raise argparse.ArgumentTypeError('Boolean value expected.')
 
+def format_result(watermarked_text_temp):
+    result_list = []
+    for wt in watermarked_text_temp:
+        result = "".join(wt)
+        result = result.strip()
+        result_list.append(result)
+    result = " ".join(result_list)
+    return result
 
 class kiyoon23():
     """
@@ -144,7 +152,6 @@ class kiyoon23():
         if not os.path.exists(result_dir):
             os.makedirs(os.path.dirname(result_dir), exist_ok=True)
 
-        result = ""
         for c_idx, sentences in enumerate(cover_texts):
             corpus_level_watermarks = []
             for s_idx, sen in enumerate(sentences):
@@ -185,7 +192,7 @@ class kiyoon23():
                         if mask_match_flag:
                             text2print = [t.text_with_ws for t in wm_tokenized]
                             for m_idx in mask_idx:
-                                text2print[m_idx] = f"\033[92m{text2print[m_idx]}\033[00m"
+                                text2print[m_idx] = text2print[m_idx]
                             valid_watermarks.append(text2print)
                             mask_match_cnt += 1
 
@@ -228,21 +235,20 @@ class kiyoon23():
                 cnt += 1
                 watermarked_text = next(available_candidates)
 
+            result_list = []
             for wt in watermarked_text:
-                result = result.join(wt).join(" ")
+                result = "".join(wt)
+                result = result.strip()
+                result_list.append(result)
 
-        ### Delete the last blank we addded
-        result = result.strip()
-
-        return result
+        return " ".join(result_list)
 
     def extract_message(self, watermarked_text):
-
         cover_texts = preprocess2sentence([watermarked_text], corpus_name="custom",
                                           start_sample_idx=0, cutoff_q=(0.0, 1.0), use_cache=False)
         # you can add your own entity / keyword that should NOT be masked.
         # This list will need to be saved when extracting
-        self.infill_args.custom_keywords = ["watermarking", "watermark"]
+        self.infill_args.custom_keywords = ["watermarking", "watermark"] ###check here
 
         DEBUG_MODE = self.generic_args.debug_mode
         dtype = "custom"
@@ -327,7 +333,7 @@ class kiyoon23():
                         if mask_match_flag:
                             text2print = [t.text_with_ws for t in wm_tokenized]
                             for m_idx in mask_idx:
-                                text2print[m_idx] = f"\033[92m{text2print[m_idx]}\033[00m" ### Check here
+                                text2print[m_idx] = text2print[m_idx] ### Check here
                             valid_watermarks.append(text2print)
                             mask_match_cnt += 1
 
@@ -356,20 +362,44 @@ class kiyoon23():
             num_options = reduce(lambda x, y: x * y, [len(vw) for vw in corpus_level_watermarks])
             available_bit = math.floor(math.log2(num_options))
             cnt = 0
-            while watermarked_text != corpus_level_watermarks:
+            available_candidates = product(*corpus_level_watermarks)
+            watermarked_text_temp = next(available_candidates)
+            result = format_result(watermarked_text_temp)
+            while result != watermarked_text:
                 cnt += 1
-            message = str(bin(cnt))[2:]
+                watermarked_text_temp = next(available_candidates)
+                result = format_result(watermarked_text_temp)
+
+            message = format(cnt, "b")
+            message = message.zfill(available_bit)
             return message
-
-
-
-
 
     def generate_with_watermark(self, tokd_input, generate_without_watermark):
         output_without_watermark = generate_without_watermark(tokd_input)
         output_with_watermark = self.embed_watermark(output_without_watermark, self.message)
-        return output_with_watermark
+        return output_without_watermark, output_with_watermark
 
+    def detect(self, wm_text):
+        decoded_msg = self.extract_message(wm_text)
+        watermark_rate = len(decoded_msg)/len(self.message)
+        msg = self.message[-len(decoded_msg):]
+        error_count = 0
+        for t in range(len(decoded_msg)):
+            if decoded_msg[t] != msg[t]:
+                error_count += 1
+        error_rate = error_count/len(decoded_msg)
+        return decoded_msg ,watermark_rate, error_rate
+
+
+
+'''
+#special case for kiyoon23
+    if args.watermark == "kiyoon23":
+        generate_with_watermark = partial(
+            watermark_processor.generate_with_watermark,
+            generate_without_watermark=generate_without_watermark
+        )
+        '''
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--exp_name_generic", type=str, default="tmp")
@@ -391,18 +421,24 @@ if __name__ == "__main__":
     parser.add_argument("--spacy_model", type=str, default="en_core_web_sm")
     parser.add_argument("--exclude_cc", type=str2bool, default=True)
     args = parser.parse_args()
+    message = "01"
     watermark_processor = kiyoon23(args.dtype, args.embed, args.exp_name_generic, args.exp_name_infill,
                                               args.extract,
                                               args.num_sample, args.spacy_model, args.exclude_cc, args.custom_keywords,
                                               args.keyword_mask,
                                               args.keyword_ratio, args.mask_order_by, args.mask_select_method,
                                               args.num_epochs,
-                                              args.topk, 101)
+                                              args.topk, message)
     raw_text = """
     The White House said it is monitoring the shooting reported at the University of Nevada, Las Vegas (UNLV) “very closely.” The second gentleman is already scheduled to deliver remarks tonight at the Newtown Action Alliance Foundation’s 11th Annual National Vigil for All Victims of Gun Violence, the White House added.
     """
-    wm_text = watermark_processor.embed_watermark(raw_text=raw_text, message="101")
-    decoded_msg = watermark_processor.extract_message(wm_text)
+    wm_text = watermark_processor.embed_watermark(raw_text=raw_text, message=message)
+    #decoded_msg = watermark_processor.extract_message(wm_text)
+    #print(decoded_msg)
+    decoded_msg ,watermark_rate, error_rate = watermark_processor.detect(wm_text)
+    print(decoded_msg)
+    print(watermark_rate)
+    print(error_rate)
     print()
 
 
