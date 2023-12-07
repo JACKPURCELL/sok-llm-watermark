@@ -433,12 +433,16 @@ if __name__ == "__main__":
     The White House said it is monitoring the shooting reported at the University of Nevada, Las Vegas (UNLV) “very closely.” The second gentleman is already scheduled to deliver remarks tonight at the Newtown Action Alliance Foundation’s 11th Annual National Vigil for All Victims of Gun Violence, the White House added.
     """
     wm_text = watermark_processor.embed_watermark(raw_text=raw_text, message=message)
-    #decoded_msg = watermark_processor.extract_message(wm_text)
-    #print(decoded_msg)
     decoded_msg ,watermark_rate, error_rate = watermark_processor.detect(wm_text)
     print(decoded_msg)
     print(watermark_rate)
     print(error_rate)
+    ### Notice!!!
+    ### This method has a limited capacity for embedding messages, which means that not all bits of the input raw
+    ### message can be embedded. If the length of the raw message exceeds this capacity limit, it will be truncated to
+    ### the maximum capacity length. In such cases, the error rate could be higher than anticipated. Therefore, I will
+    ### only compare the truncated version of the raw message, adjusted to the maximum capacity length, with the message
+    ### extracted from the watermarked text.
     print()
 
 
