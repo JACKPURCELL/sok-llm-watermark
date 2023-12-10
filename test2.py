@@ -1,7 +1,7 @@
-from transformers import AutoTokenizer,LlamaTokenizer
+# from transformers import AutoTokenizer,LlamaTokenizer
 
-tokenizer = AutoTokenizer.from_pretrained('meta-llama/Llama-2-7b-chat-hf')
-tokenizerb = LlamaTokenizer.from_pretrained('meta-llama/Llama-2-7b-chat-hf')
+# tokenizer = AutoTokenizer.from_pretrained('meta-llama/Llama-2-7b-chat-hf')
+# tokenizerb = LlamaTokenizer.from_pretrained('meta-llama/Llama-2-7b-chat-hf')
 
 
 # import argparse
@@ -23,5 +23,12 @@ tokenizerb = LlamaTokenizer.from_pretrained('meta-llama/Llama-2-7b-chat-hf')
     
 # args = parser.parse_args()
 
-print("aaa")
+# print("aaa")
 
+from jiwer import wer
+
+reference = "hello world"
+hypothesis = "hello duck   duck duck duck"
+
+error = wer(reference, hypothesis)
+print(error)

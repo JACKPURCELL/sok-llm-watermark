@@ -122,6 +122,8 @@ class LMPredictions:
         shuffled_lm_probs = single_lm_probs.gather(-1, shuffle_idxs)
 
         shuffled_lm_probs_black_mask = (shuffled_lm_probs.cumsum(-1) < 0.5).float() * (-self.delta)
+        if single_lm_probs.dtype == torch.float16:
+            shuffled_lm_probs_black_mask = shuffled_lm_probs_black_mask.to(torch.float16)
         # TO DO here we change single_lm_probs in-place!
         p_message = single_lm_probs.scatter_(dim=-1, index=shuffle_idxs,
                                              src=shuffled_lm_probs_black_mask)

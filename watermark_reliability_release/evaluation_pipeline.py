@@ -39,6 +39,7 @@ from utils.evaluation import (
     NO_CHECK_ARGS,
     ROC_TEST_STAT_SUFFIXES,
     FILTER_BY_COLUMNS,
+    compute_sentiment,
     conditional_no_check_args,
     load_oracle_model,
     evaluate_ppl,
@@ -55,7 +56,7 @@ from utils.evaluation import (
     concat_rows,
 )
 
-print(f"Current huggingface cache dir: {os.environ['HF_HOME']}")
+# print(f"Current huggingface cache dir: {os.environ['HF_HOME']}")
 
 from datasets import disable_caching
 
@@ -188,15 +189,15 @@ def main(args):
     ###########################################################################
     # Extract the seeding scheme fine grained parameters
     ###########################################################################
-    from utils.evaluation import scheme_hparam_extractor
+    # from utils.evaluation import scheme_hparam_extractor
 
-    args.__dict__.update(scheme_hparam_extractor(args.seeding_scheme))
+    # args.__dict__.update(scheme_hparam_extractor(args.seeding_scheme))
 
-    print(f"seeding_scheme: {args.seeding_scheme}")
-    print(f"prf_type: {args.prf_type}")
-    print(f"anchored: {args.anchored}")
-    print(f"context_width: {args.context_width}")
-    print(f"self_salt: {args.self_salt}")
+    # print(f"seeding_scheme: {args.seeding_scheme}")
+    # print(f"prf_type: {args.prf_type}")
+    # print(f"anchored: {args.anchored}")
+    # print(f"context_width: {args.context_width}")
+    # print(f"self_salt: {args.self_salt}")
 
     ###########################################################################
     # Concat logic for multiple generations
@@ -327,10 +328,22 @@ def main(args):
 
     ###########################################################################
     # Cheap to load, and required for all detectors so load it first
-    watermark_detector = load_detector(args)
+    watermark_detector,tokenizer = load_detector(args)
 
     # Map setup for all dataset operations:
     map_setup = dict(batched=False, load_from_cache_file=False)
+    
+    
+    ###########################################################################
+    # P-SP evaluation
+    ###########################################################################
+
+    if "sentiment" in args.evaluation_metrics:
+        print(f"Loading the sentiment model and computing sentiment")
+        gen_table_w_ppl_ds = compute_sentiment(gen_table_w_ppl_ds,tokenizer)
+    else:
+        gen_table_w_ppl_ds = gen_table_w_ppl_ds
+        
     ###########################################################################
     # z-score evaluation
     # NOTE: requires a gpu because if original source of watermark randomness,
@@ -355,42 +368,42 @@ def main(args):
     # Windowed z-score evaluation
     ###########################################################################
 
-    if "windowed-z-score" in args.evaluation_metrics:
-        # set up the windowed partial
-        compute_windowed_z_scores_partial = partial(
-            compute_windowed_z_scores,
-            watermark_detector=watermark_detector,
-            args=args,
-        )
+    # if "windowed-z-score" in args.evaluation_metrics:
+    #     # set up the windowed partial
+    #     compute_windowed_z_scores_partial = partial(
+    #         compute_windowed_z_scores,
+    #         watermark_detector=watermark_detector,
+    #         args=args,
+    #     )
 
-        gen_table_w_windowed_zscore_ds = gen_table_w_zscore_ds.map(
-            compute_windowed_z_scores_partial, **map_setup, desc="Computing windowed z-scores"
-        )
-    else:
-        gen_table_w_windowed_zscore_ds = gen_table_w_zscore_ds
+    #     gen_table_w_windowed_zscore_ds = gen_table_w_zscore_ds.map(
+    #         compute_windowed_z_scores_partial, **map_setup, desc="Computing windowed z-scores"
+    #     )
+    # else:
+    #     gen_table_w_windowed_zscore_ds = gen_table_w_zscore_ds
 
     ###########################################################################
     # run-len-chisqrd evaluation
     ###########################################################################
-    if "run-len-chisqrd" in args.evaluation_metrics:
-        assert "w_wm_output_green_token_mask" in gen_table_w_windowed_zscore_ds.column_names, (
-            f"Currently, run-len-chisqrd metric requires the green token masks to be computed previously "
-            f"by one of the z-score metrics."
-        )
-        # this ^ is unused currently, but we will need it to remove the assert condition above
+    # if "run-len-chisqrd" in args.evaluation_metrics:
+    #     assert "w_wm_output_green_token_mask" in gen_table_w_windowed_zscore_ds.column_names, (
+    #         f"Currently, run-len-chisqrd metric requires the green token masks to be computed previously "
+    #         f"by one of the z-score metrics."
+    #     )
+    #     # this ^ is unused currently, but we will need it to remove the assert condition above
 
-        # set up the run len chisqrd partial
-        compute_run_len_chisqrd_partial = partial(
-            compute_run_len_chsqrd_stats,
-            watermark_detector=watermark_detector,
-            args=args,
-        )
+    #     # set up the run len chisqrd partial
+    #     compute_run_len_chisqrd_partial = partial(
+    #         compute_run_len_chsqrd_stats,
+    #         watermark_detector=watermark_detector,
+    #         args=args,
+    #     )
 
-        gen_table_w_run_len_chisqrd_ds = gen_table_w_windowed_zscore_ds.map(
-            compute_run_len_chisqrd_partial, **map_setup, desc="Computing runlength tests"
-        )
-    else:
-        gen_table_w_run_len_chisqrd_ds = gen_table_w_windowed_zscore_ds
+    #     gen_table_w_run_len_chisqrd_ds = gen_table_w_windowed_zscore_ds.map(
+    #         compute_run_len_chisqrd_partial, **map_setup, desc="Computing runlength tests"
+    #     )
+    # else:
+    #     gen_table_w_run_len_chisqrd_ds = gen_table_w_windowed_zscore_ds
 
     ###########################################################################
     # Diversity and Repetition evaluation
@@ -404,12 +417,13 @@ def main(args):
             include_diversity=("diversity" in args.evaluation_metrics),
         )
 
-        gen_table_w_repetition_ds = gen_table_w_run_len_chisqrd_ds.map(
+        gen_table_w_repetition_ds = gen_table_w_zscore_ds.map(
             compute_repetition_partial, **map_setup, desc="Computing text repetition and diversity"
         )
     else:
-        gen_table_w_repetition_ds = gen_table_w_run_len_chisqrd_ds
+        gen_table_w_repetition_ds = gen_table_w_zscore_ds
 
+        
     ###########################################################################
     # P-SP evaluation
     ###########################################################################
@@ -1170,7 +1184,7 @@ if __name__ == "__main__":
     parser.add_argument(
         "--wandb_entity",
         type=str,
-        default="jwkirchenbauer",
+        default="ljcpro",
         help="The wandb entity/user for the project.",
     )
     parser.add_argument(
@@ -1243,7 +1257,12 @@ if __name__ == "__main__":
         default=True,
         help="Whether to log the raw tabular metric data to wandb.",
     )
-    
+    parser.add_argument(
+                "--normalizers",
+                type=Union[str, NoneType],
+                default=None,
+                help="Single or comma separated list of the preprocessors/normalizer names to use when performing watermark detection.",
+    )
     
     args = parser.parse_args()
     
@@ -1261,12 +1280,7 @@ if __name__ == "__main__":
                 default=None,
                 help="The fraction of the vocabulary to partition into the greenlist at each generation and verification step.",
             )
-            parser.add_argument(
-                "--normalizers",
-                type=Union[str, NoneType],
-                default=None,
-                help="Single or comma separated list of the preprocessors/normalizer names to use when performing watermark detection.",
-            )
+
             parser.add_argument(
                 "--ignore_repeated_ngrams",
                 type=str2bool,
@@ -1312,7 +1326,7 @@ if __name__ == "__main__":
             parser.add_argument("--max_confidence_lbd", type=float, default=0.5)
             parser.add_argument("--message_model_strategy", type=str, default="vanilla")
             parser.add_argument("--message", type=list, default=[9,10,100])
-            parser.add_argument("--top_k", type=int, default=1000)
+            parser.add_argument("--lean23_top_k", type=int, default=1000)
             parser.add_argument("--repeat_penalty", type=float, default=1.5)
             parser.add_argument("--generated_length", type=int, default=200)
             parser.add_argument("--prompt_length", type=int, default=300)
@@ -1393,6 +1407,6 @@ if __name__ == "__main__":
         args.wandb_tags = []
 
     # split window settings
-    args.window_settings = args.window_settings.split(",")
+    # args.window_settings = args.window_settings.split(",")
 
     main(args)

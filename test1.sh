@@ -9,8 +9,10 @@
 
 # CUDA_VISIBLE_DEVICES=1  python main.py --watermark rohith23  --prompt_file /home/jkl6486/sok-llm-watermark/dataset/1000.jsonl 
 
-CUDA_VISIBLE_DEVICES=2,0,1,3 nohup python watermark_reliability_release/generation_pipeline.py --watermark john23 --dataset_name hc3 --run_name gen-hc3-john23 --model_name_or_path meta-llama/Llama-2-7b-chat-hf --min_generations 500 &
-CUDA_VISIBLE_DEVICES=1,0,2,3 nohup python watermark_reliability_release/generation_pipeline.py --watermark xuandong23b --dataset_name hc3 --run_name gen-hc3-xuandong23b --model_name_or_path meta-llama/Llama-2-7b-chat-hf --min_generations 500 &
+CUDA_VISIBLE_DEVICES=1,2,3 nohup python watermark_reliability_release/generation_pipeline.py --watermark john23 --dataset_name hc3 --run_name gen-hc3-john23 --model_name_or_path meta-llama/Llama-2-7b-chat-hf --min_generations 1000 &
+CUDA_VISIBLE_DEVICES=1,2,3 nohup python watermark_reliability_release/generation_pipeline.py --watermark xuandong23b --dataset_name hc3 --run_name gen-hc3-xuandong23b --model_name_or_path meta-llama/Llama-2-7b-chat-hf --min_generations 1000 &
+CUDA_VISIBLE_DEVICES=0,1,2 nohup python watermark_reliability_release/generation_pipeline.py --watermark rohith23 --dataset_name hc3 --run_name gen-hc3-rohith23 --model_name_or_path meta-llama/Llama-2-7b-chat-hf --min_generations 500 &
+CUDA_VISIBLE_DEVICES=0,1,3 nohup python watermark_reliability_release/generation_pipeline.py --watermark lean23 --dataset_name hc3 --run_name gen-hc3-lean23 --model_name_or_path meta-llama/Llama-2-7b-chat-hf --min_generations 500 &
 
 # CUDA_VISIBLE_DEVICES=2,0,1,3 nohup python watermark_reliability_release/generation_pipeline.py --watermark john23 --dataset_name c4 --run_name gen-c4-john23 --model_name_or_path meta-llama/Llama-2-7b-chat-hf --min_generations 500 &
 # CUDA_VISIBLE_DEVICES=1,0,2,3 nohup python watermark_reliability_release/generation_pipeline.py --watermark xuandong23b --dataset_name c4 --run_name gen-c4-xuandong23b --model_name_or_path meta-llama/Llama-2-7b-chat-hf --min_generations 500 &

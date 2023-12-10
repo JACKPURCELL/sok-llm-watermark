@@ -36,7 +36,7 @@ from utils.attack import (
     scramble_attack,
 )
 
-print(f"Current huggingface cache dir: {os.environ['HF_HOME']}")
+# print(f"Current huggingface cache dir: {os.environ['HF_HOME']}")
 
 
 def main(args):
@@ -377,7 +377,7 @@ if __name__ == "__main__":
     parser.add_argument(
         "--wandb_entity",
         type=str,
-        default="jwkirchenbauer",
+        default="ljcpro",
         help="The wandb entity/user for the project.",
     )
     parser.add_argument(

@@ -67,8 +67,8 @@ def evaluate_p_sp(input1, input2, use_sent_transformers=False):
 
     args = {
         'gpu': 1 if torch.cuda.is_available() else 0,
-        'load_file': './metrics/p_sp_utils/paraphrase-at-scale-english/model.para.lc.100.pt',
-        'sp_model': './metrics/p_sp_utils/paraphrase-at-scale-english/paranmt.model',
+        'load_file': '/home/jkl6486/sok-llm-watermark/watermark_reliability_release/metrics/p_sp_utils/paraphrase-at-scale-english/model.para.lc.100.pt',
+        'sp_model': '/home/jkl6486/sok-llm-watermark/watermark_reliability_release/metrics/p_sp_utils/paraphrase-at-scale-english/paranmt.model',
     }
 
     # Check if the required files exist

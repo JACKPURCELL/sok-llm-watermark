@@ -17,6 +17,7 @@
 import pickle
 import torch
 import numpy as np
+from tqdm import tqdm
 
 from transformers import AutoTokenizer, AutoModelForCausalLM, LlamaTokenizer
 from utils.generation import tokenize_and_truncate, collate_batch
@@ -25,6 +26,8 @@ from metrics.repetition_diversity import (
     dummy_rep_div_result,
 )
 from metrics.p_sp import evaluate_p_sp
+from metrics.berts import evaluate_sentiment
+
 from metrics.detect_retrieval import detect_retrieval
 from metrics.coherence import get_coherence_score
 from metrics.mauve import get_mauve_score
@@ -74,6 +77,7 @@ SUPPORTED_METRICS = [
     "ppl",
     "diversity",
     "repetition",
+    "sentiment",
     "p-sp",
     "coherence",
     "mauve",
@@ -188,8 +192,7 @@ def load_detector(args):
                                     device=device,
                                     tokenizer=tokenizer,
                                     z_threshold=args.detection_z_threshold,
-                                    normalizers=args.normalizers,
-                                    ignore_repeated_bigrams=args.ignore_repeated_bigrams)
+                                    normalizers=args.normalizers)
         case 'xuandong23b':
             watermark_detector = watermarks.xuandong23b_WatermarkDetector(fraction=args.fraction,
                                                     tokenizer=tokenizer,
@@ -259,7 +262,7 @@ def load_detector(args):
         case _:
             raise ValueError(f"Unknown watermark type: {args.watermark}")
             
-    return watermark_detector
+    return watermark_detector,tokenizer
 
 
 def compute_z_score(
@@ -272,25 +275,27 @@ def compute_z_score(
 ):
     # for now, don't get the green token mask
     # if we're using normalizers
-    return_green_token_mask = args.return_green_token_mask
-    if args.normalizers != []:
-        return_green_token_mask = None
+    # return_green_token_mask = args.return_green_token_mask
+    # if args.normalizers != []:
+        # return_green_token_mask = None
 
     input_text = example[text_column_name]
+    prompt = example['question']
     error = False
     if input_text == "":
         error = True
     else:
         try:
-            score_dict = watermark_detector.detect(
-                input_text,
-                window_size=window_size,
-                window_stride=window_stride,
-                return_green_token_mask=return_green_token_mask,
-                return_prediction=False,  # this conversion to "decision" only desired in demo context
-                convert_to_float=True,  # this helps with integrity under NaNs
-                return_z_at_T=args.compute_scores_at_T,
-            )
+            score_dict = watermark_detector.detect(text=input_text,prompt=prompt)
+            # score_dict = watermark_detector.detect(
+            #     input_text,
+            #     window_size=window_size,
+            #     window_stride=window_stride,
+            #     return_green_token_mask=return_green_token_mask,
+            #     return_prediction=False,  # this conversion to "decision" only desired in demo context
+            #     convert_to_float=True,  # this helps with integrity under NaNs
+            #     return_z_at_T=args.compute_scores_at_T,
+            # )
         except Exception as e:
             print(e)
             error = True
@@ -699,6 +704,81 @@ def compute_p_sp(dataset):
                 )
                 dataset = dataset.remove_columns([f"{column_pair[0]}_vs_{column_pair[1]}_p_sp"])
             dataset = dataset.add_column(f"{column_pair[0]}_vs_{column_pair[1]}_p_sp", p_sp_scores)
+    return dataset
+
+def compute_sentiment(dataset, tokenizer):
+    for column_pair in tqdm(P_SP_TEXT_PAIR_COLUMN_NAMES, desc="Processing sentiment"):
+        if column_pair[0] in dataset.features and column_pair[1] in dataset.features:
+            wer_score, bert_results, bleu, bleu_1, bleu_2, bleu_3, bleu_4 = evaluate_sentiment(dataset[column_pair[0]], dataset[column_pair[1]], tokenizer)
+            
+            #BERT_S is different for each row
+            if f"{column_pair[0]}_vs_{column_pair[1]}_BERTS" in dataset.features:
+                print(
+                    f"WARNING: Removing existing {column_pair[0]}_vs_{column_pair[1]}_BERTS column because it was already present"
+                )
+                dataset = dataset.remove_columns([f"{column_pair[0]}_vs_{column_pair[1]}_BERTS"])
+            dataset = dataset.add_column(f"{column_pair[0]}_vs_{column_pair[1]}_BERTS", bert_results)
+            
+            #WER will repeat for each row, same as MAUVE
+            
+            if f"{column_pair[0]}_vs_{column_pair[1]}_WER" in dataset.features:
+                print(
+                    f"WARNING: Removing existing {column_pair[0]}_vs_{column_pair[1]}_WER column because it was already present"
+                )
+                dataset = dataset.remove_columns([f"{column_pair[0]}_vs_{column_pair[1]}_WER"])
+            dataset = dataset.add_column(
+                f"{column_pair[0]}_vs_{column_pair[1]}_WER", [wer_score] * len(dataset)
+            )
+            
+            if f"{column_pair[0]}_vs_{column_pair[1]}_BLEU" in dataset.features:
+                print(
+                    f"WARNING: Removing existing {column_pair[0]}_vs_{column_pair[1]}_BLEU column because it was already present"
+                )
+                dataset = dataset.remove_columns([f"{column_pair[0]}_vs_{column_pair[1]}_BLEU"])
+            dataset = dataset.add_column(
+                f"{column_pair[0]}_vs_{column_pair[1]}_BLEU", [bleu] * len(dataset)
+            )
+            
+            if f"{column_pair[0]}_vs_{column_pair[1]}_BLEU1" in dataset.features:
+                print(
+                    f"WARNING: Removing existing {column_pair[0]}_vs_{column_pair[1]}_BLEU1 column because it was already present"
+                )
+                dataset = dataset.remove_columns([f"{column_pair[0]}_vs_{column_pair[1]}_BLEU1"])
+            dataset = dataset.add_column(
+                f"{column_pair[0]}_vs_{column_pair[1]}_BLEU1", [bleu_1] * len(dataset)
+            )
+
+            if f"{column_pair[0]}_vs_{column_pair[1]}_BLEU2" in dataset.features:
+                print(
+                    f"WARNING: Removing existing {column_pair[0]}_vs_{column_pair[1]}_BLEU2 column because it was already present"
+                )
+                dataset = dataset.remove_columns([f"{column_pair[0]}_vs_{column_pair[1]}_BLEU2"])
+            dataset = dataset.add_column(
+                f"{column_pair[0]}_vs_{column_pair[1]}_BLEU2", [bleu_2] * len(dataset)
+            )
+
+            if f"{column_pair[0]}_vs_{column_pair[1]}_BLEU3" in dataset.features:
+                print(
+                    f"WARNING: Removing existing {column_pair[0]}_vs_{column_pair[1]}_BLEU3 column because it was already present"
+                )
+                dataset = dataset.remove_columns([f"{column_pair[0]}_vs_{column_pair[1]}_BLEU3"])
+            dataset = dataset.add_column(
+                f"{column_pair[0]}_vs_{column_pair[1]}_BLEU3", [bleu_3] * len(dataset)
+            )
+
+            
+            if f"{column_pair[0]}_vs_{column_pair[1]}_BLEU_4" in dataset.features:
+                print(
+                    f"WARNING: Removing existing {column_pair[0]}_vs_{column_pair[1]}_BLEU_4 column because it was already present"
+                )
+                dataset = dataset.remove_columns([f"{column_pair[0]}_vs_{column_pair[1]}_BLEU_4"])
+            dataset = dataset.add_column(
+                f"{column_pair[0]}_vs_{column_pair[1]}_BLEU_4", [bleu_4] * len(dataset)
+            )
+            
+            
+            
+
     return dataset
 
 
