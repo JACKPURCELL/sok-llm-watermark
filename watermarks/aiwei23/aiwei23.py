@@ -248,6 +248,7 @@ class aiwei23_WatermarkDetector:
         self.data_dir = data_dir
         self.z_value = z_value
         self.layers = layers
+        self.detector_model = None
 
     def _get_cache(self):
         return self.cache
@@ -597,6 +598,7 @@ class aiwei23_WatermarkDetector:
 
         os.makedirs(os.path.dirname(output_model_dir + "new.pt"), exist_ok=True)
         torch.save(model.binary_classifier.state_dict(), output_model_dir + "new.pt")
+        torch.save(model.state_dict(), output_model_dir + "detector_model.pt")
         print(
             f'Test Accuracy: {acc_avg}%, Test TPR: {tpr_avg}%, Test FPR: {fpr_avg}%, Test TNR: {tnr_avg}%, Test FNR: {fnr_avg}%, Test F1: {f1_avg}%')
 
@@ -627,6 +629,40 @@ class aiwei23_WatermarkDetector:
         test_f1 = 100 * 2 * tp / (2 * tp + fn + fp)
         print(
             f'Test Accuracy: {test_accuracy}%, Test TPR: {test_tpr}%, Test FPR: {test_fpr}%, Test TNR: {test_tnr}%, Test FNR: {test_fnr}%, Test F1: {test_f1}%')
+    def get_detector_model(self):
+        device = "cuda" if torch.cuda.is_available() else "cpu"
+        model = TransformerClassifier(self.bit_number, self.layers, 64, 128)
+        model.load_state_dict(torch.load("./model/detector_model.pt"))
+        model = model.to(device)
+        model.eval()
+        self.detector_model = model
+        if self.llm_name == "gpt2":
+            self.detector_tokenizer = GPT2Tokenizer.from_pretrained("gpt2")
+        elif self.llm_name == "opt-6.7b":
+            self.detector_tokenizer = AutoTokenizer.from_pretrained("facebook/opt-6.7b", use_fast=False)
+        elif self.llm_name == "llama-7b":
+            self.detector_tokenizer = LlamaTokenizer.from_pretrained("decapoda-research/llama-7b-hf")
+
+    def detect(self, input):
+        device = "cuda" if torch.cuda.is_available() else "cpu"
+        if self.detector_model is None:
+            self.get_detector_model()
+        tokenzied_input = self.detector_tokenizer(input, return_tensors="pt", add_special_tokens=True)
+        input_list = []
+        for line in tokenzied_input["input_ids"]:
+            bin_list = []
+            for t in line:
+                bin_list.append(int_to_bin_list(t, self.bit_number))
+            for t in bin_list:
+                t = [float(i) for i in t]
+            input_list.append(bin_list)
+        input_list = torch.Tensor(input_list)
+        input_list = input_list.to(device)
+        output = self.detector_model(input_list)
+        watermarked = []
+        for t in output:
+            watermarked.append(True if t.float() > 0.5 else False)
+        return watermarked, output
 
 class CustomLogitsProcessor(LogitsProcessor):
 
@@ -684,6 +720,8 @@ if __name__ == "__main__":
     #                                     sampling_temp=sampling_temp,
     #                                     max_new_tokens=max_new_token)
     detector.train_model()
+    watermarked, output = detector.detect("This is a happy happy happy song.")
+    print()
 
 
 
