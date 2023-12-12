@@ -194,8 +194,8 @@ def main(args):
 
         case 'aiwei23':
             if args.aiwei_trained:
-                watermark_detector = pickle.load(open('./data/trained/trained_detector.pkl', 'rb'))
-                watermark_processor = pickle.load(open('./data/trained/trained_processor.pkl', 'rb'))
+                # watermark_detector = pickle.load(open('/home/jkl6486/sok-llm-watermark/watermarks/aiwei23/data/trained/trained_detector.pkl', 'rb'))
+                watermark_processor = pickle.load(open('/home/jkl6486/sok-llm-watermark/watermarks/aiwei23/data/trained/trained_processor.pkl', 'rb'))
             else:
                 watermarks.prepare_generator(bit_number=args.bit_number,
                                     layers=args.layers,
@@ -206,7 +206,7 @@ def main(args):
                                                         layers=args.layers,
                                                         gamma=args.gamma,
                                                         delta=args.delta,
-                                                        model_dir=args.model_dir,
+                                                        model=model,
                                                         beam_size=args.beam_size,
                                                         llm_name=args.llm_name,
                                                         data_dir=args.data_dir,
@@ -217,8 +217,8 @@ def main(args):
                                                                             sampling_temp=args.sampling_temp,
                                                                             max_new_tokens=args.max_new_token)
                 watermark_detector.train_model()
-                pickle.dump(watermark_detector, open('./data/trained/trained_detector.pkl', 'wb'))
-                pickle.dump(watermark_processor, open('./data/trained/trained_processor.pkl', 'wb'))
+                pickle.dump(watermark_detector, open('/home/jkl6486/sok-llm-watermark/watermarks/aiwei23/data/trained/trained_detector.pkl', 'wb'))
+                pickle.dump(watermark_processor, open('/home/jkl6486/sok-llm-watermark/watermarks/aiwei23/data/trained/trained_processor.pkl', 'wb'))
 
 
         ######################################################################
@@ -687,7 +687,7 @@ if __name__ == "__main__":
             parser.add_argument("--bit_number", type=int, default=16) ### This is log2(vocab_size), which depends on the model, for opt, it is 16
             parser.add_argument("--layers", type=int, default=5)
             parser.add_argument("--window_size", type=int, default=3)
-            parser.add_argument("--llm_name", type=str, default="opt-6.7b")
+            parser.add_argument("--llm_name", type=str, default="llama-7b")
             parser.add_argument("--gamma", type=float, default=0.6)
             parser.add_argument("--delta", type=float, default= 2.0)
             parser.add_argument("--model_dir", type=str, default="./model/")
@@ -697,7 +697,7 @@ if __name__ == "__main__":
             parser.add_argument("--sample_number", type=int, default=2000, help="Number of samples for training generator.")
             parser.add_argument("--num_samples", type=int, default=10000, help="Number of samples for training detector.")
             parser.add_argument("--train_dataset_name", type=str, default="c4", help="The dataset used for training detector.")
-            parser.add_argument("--sampling_temp", type=float, default=0.7)
+            # parser.add_argument("--sampling_temp", type=float, default=0.7)
             parser.add_argument("--max_new_token", type=int, default=200)
             parser.add_argument("--aiwei_trained", type=bool, default=False)
 

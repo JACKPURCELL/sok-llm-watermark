@@ -226,7 +226,8 @@ class aiwei23_WatermarkDetector:
             layers: int = 3,
             gamma: float = 0.5,
             delta: float = 2.0,
-            model_dir: str = None,
+            model = None,
+            tokenizer=None,
             beam_size: int = 0,
             llm_name = 'gpt2',
             data_dir = './data',
@@ -240,7 +241,8 @@ class aiwei23_WatermarkDetector:
         self.gamma = gamma
         self.min_prefix_len = window_size - 1
         self.window_size = window_size
-        self.model = get_model(bit_number, window_size, model_dir+"combine_model.pt", layers)
+        self.model = model
+        self.tokenizer= tokenizer
         self.cache = {}
         self.delta = delta
         self.beam_size = beam_size
@@ -374,17 +376,17 @@ class aiwei23_WatermarkDetector:
         device = "cuda" if torch.cuda.is_available() else "cpu"
 
         print("Generating test data for detector.")
-        if self.llm_name == "gpt2":
-            tokenizer = GPT2Tokenizer.from_pretrained("gpt2")
-            model = GPT2LMHeadModel.from_pretrained("gpt2")
-            model = model.to(device)
-        elif self.llm_name == "opt-6.7b":
-            tokenizer = AutoTokenizer.from_pretrained("facebook/opt-6.7b", use_fast=False)
-            model = AutoModelForCausalLM.from_pretrained("facebook/opt-6.7b", torch_dtype=torch.float16).cuda()
-            model = model.to(device)
-        elif self.llm_name == "llama-7b":
-            tokenizer = AutoTokenizer.from_pretrained("decapoda-research/llama-7b-hf")
-            model = AutoModelForCausalLM.from_pretrained("decapoda-research/llama-7b-hf", device_map='auto')
+        # if self.llm_name == "gpt2":
+        #     tokenizer = GPT2Tokenizer.from_pretrained("gpt2")
+        #     model = GPT2LMHeadModel.from_pretrained("gpt2")
+        #     model = model.to(device)
+        # elif self.llm_name == "opt-6.7b":
+        #     tokenizer = AutoTokenizer.from_pretrained("facebook/opt-6.7b", use_fast=False)
+        #     model = AutoModelForCausalLM.from_pretrained("facebook/opt-6.7b", torch_dtype=torch.float16).cuda()
+        #     model = model.to(device)
+        # elif self.llm_name == "llama-7b":
+        #     tokenizer = AutoTokenizer.from_pretrained("decapoda-research/llama-7b-hf")
+        #     model = AutoModelForCausalLM.from_pretrained("decapoda-research/llama-7b-hf", device_map='auto')
 
         watermark_processor = aiwei23_WatermarkLogitsProcessor(vocab=list(tokenizer.get_vocab().values()),
                                                        delta=self.delta,
@@ -412,14 +414,14 @@ class aiwei23_WatermarkDetector:
         print(gen_kwargs)
 
         generate_with_watermark = partial(
-            model.generate,
+            self.model.generate,
             logits_processor=LogitsProcessorList([watermark_processor]),
             no_repeat_ngram_size=4,
             **gen_kwargs
         )
 
         generate_without_watermark = partial(
-            model.generate,
+            self.model.generate,
             logits_processor=LogitsProcessorList([custom_processor]),
             **gen_kwargs
         )
@@ -433,10 +435,10 @@ class aiwei23_WatermarkDetector:
         # load dataset
         print("loading dataset...")
         if dataset_name == "c4":
-            with open("./original_data/c4_validation.json", encoding="utf-8") as f1:
+            with open("/home/jkl6486/sok-llm-watermark/watermarks/aiwei23/original_data/c4_validation.json", encoding="utf-8") as f1:
                 lines = f1.readlines()
         elif dataset_name == "dbpedia":
-            with open("./original_data/dbpedia_validation.json", encoding="utf-8") as f1:
+            with open("/home/jkl6486/sok-llm-watermark/watermarks/aiwei23/original_data/dbpedia_validation.json", encoding="utf-8") as f1:
                 lines = f1.readlines()
 
         idx = 1
@@ -446,7 +448,7 @@ class aiwei23_WatermarkDetector:
                     break
                 data = json.loads(line)
                 text = data['text']
-                text_tokenized = (tokenizer(text, return_tensors="pt", add_special_tokens=True)).to(device)
+                text_tokenized = (self.tokenizer(text, return_tensors="pt", add_special_tokens=True)).to(device)
                 prompt_length = 30
                 if text_tokenized["input_ids"].shape[-1] < 230:
                     continue
@@ -464,11 +466,11 @@ class aiwei23_WatermarkDetector:
 
                 _, _, z_score = self.green_token_mask_and_stats(output_with_watermark.squeeze(0))
                 decoded_output_with_watermark.append(
-                    {"Input": tokenizer.batch_decode(output_with_watermark, skip_special_tokens=True)[0], "Tag": 1,
+                    {"Input": self.tokenizer.batch_decode(output_with_watermark, skip_special_tokens=True)[0], "Tag": 1,
                      "Z-score": z_score})
                 _, _, z_score = self.green_token_mask_and_stats(output_without_watermark.squeeze(0))
                 decoded_output_without_watermark.append(
-                    {"Input": tokenizer.batch_decode(output_without_watermark, skip_special_tokens=True)[0], "Tag": 0,
+                    {"Input": self.tokenizer.batch_decode(output_without_watermark, skip_special_tokens=True)[0], "Tag": 0,
                      "Z-score": z_score})
 
                 print(idx)

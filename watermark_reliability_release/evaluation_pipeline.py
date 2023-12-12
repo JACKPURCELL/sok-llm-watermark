@@ -1346,7 +1346,7 @@ if __name__ == "__main__":
             parser.add_argument("--train_dataset_name", type=str, default="c4", help="The dataset used for training detector.")
             parser.add_argument("--sampling_temp", type=float, default=0.7)
             parser.add_argument("--max_new_token", type=int, default=200)
-            parser.add_argument("--aiwei_trained", type=bool, default=False)
+            parser.add_argument("--aiwei_trained", type=bool, default=True)
 
             ######################################################################
             # Add your code here

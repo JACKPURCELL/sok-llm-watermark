@@ -67,10 +67,13 @@ def prepare_data(filepath, train_or_test="train", llm_name="gpt2", bit=16, z_val
                     tokenizer = AutoTokenizer.from_pretrained("facebook/opt-1.3b", use_fast=False)
                     inputs = tokenizer(inputs, return_tensors="pt", add_special_tokens=True)
                 elif llm_name == "llama-7b":
-                    tokenizer = AutoTokenizer.from_pretrained("decapoda-research/llama-7b-hf")
+                    tokenizer = AutoTokenizer.from_pretrained(
+                            "meta-llama/Llama-2-7b-chat-hf", padding_side="left",return_token_type_ids=False
+                        )
+        
                     inputs = tokenizer(inputs, return_tensors="pt", add_special_tokens=True)
 
-                inputs_bin = [int_to_bin_list(n, bit) for n in inputs["input_ids"].squeeze()]
+                inputs_bin = [int_to_bin_list(n, bit) for n in inputs["input_ids"].squeeze()[1:]]
 
                 data.append((torch.tensor(inputs_bin), torch.tensor(label), torch.tensor(z_score)))  # label is a scalar
 
