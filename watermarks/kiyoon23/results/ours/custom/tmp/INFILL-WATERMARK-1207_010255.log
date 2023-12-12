@@ -1,0 +1,33 @@
+2023-12-07 01:03:32 - MainThread - INFO - Using component: [grammar]
+2023-12-07 01:03:32 - MainThread - INFO - and ordering by [dep]
+2023-12-07 01:03:32 - MainThread - INFO - Namespace(debug_mode=False, eval_only=False, do_watermark=True, train_infill=False, model_ckpt=None, model_name='bert-large-cased', exp_name='', num_epochs=10, dtype='imdb', spacy_model='en_core_web_sm', keyword_ratio=0.05, topk=2, mask_select_method='grammar', mask_order_by='dep', keyword_mask='adjacent', custom_keywords=['watermarking', 'watermark'], exclude_cc=True)
+2023-12-07 01:03:36 - MainThread - DEBUG - Masked Sentence:
+2023-12-07 01:03:36 - MainThread - DEBUG - The White House said it [MASK] monitoring the shooting reported at the University of Nevada, Las Vegas (UNLV) ¡°very closely.¡±
+2023-12-07 01:03:36 - MainThread - DEBUG - was is
+
+2023-12-07 01:03:36 - MainThread - DEBUG - Masked Sentence:
+2023-12-07 01:03:36 - MainThread - DEBUG - The second gentleman [MASK] already scheduled to deliver remarks tonight at the Newtown Action Alliance Foundation¡¯s 11th Annual National Vigil for All Victims of Gun Violence, the White House added.
+2023-12-07 01:03:36 - MainThread - DEBUG - is was
+
+2023-12-07 01:04:12 - MainThread - INFO - Using component: [grammar]
+2023-12-07 01:04:12 - MainThread - INFO - Using component: [grammar]
+2023-12-07 01:04:12 - MainThread - INFO - and ordering by [dep]
+2023-12-07 01:04:12 - MainThread - INFO - and ordering by [dep]
+2023-12-07 01:04:12 - MainThread - INFO - Namespace(debug_mode=False, eval_only=False, do_watermark=True, train_infill=False, model_ckpt=None, model_name='bert-large-cased', exp_name='', num_epochs=10, dtype='imdb', spacy_model='en_core_web_sm', keyword_ratio=0.05, topk=2, mask_select_method='grammar', mask_order_by='dep', keyword_mask='adjacent', custom_keywords=['watermarking', 'watermark'], exclude_cc=True)
+2023-12-07 01:04:12 - MainThread - INFO - Namespace(debug_mode=False, eval_only=False, do_watermark=True, train_infill=False, model_ckpt=None, model_name='bert-large-cased', exp_name='', num_epochs=10, dtype='imdb', spacy_model='en_core_web_sm', keyword_ratio=0.05, topk=2, mask_select_method='grammar', mask_order_by='dep', keyword_mask='adjacent', custom_keywords=['watermarking', 'watermark'], exclude_cc=True)
+2023-12-07 01:04:15 - MainThread - DEBUG - Masked Sentence:
+2023-12-07 01:04:15 - MainThread - DEBUG - Masked Sentence:
+2023-12-07 01:04:15 - MainThread - DEBUG - The White House said it [MASK] monitoring the shooting reported at the University of Nevada, Las Vegas (UNLV) ¡°very closely.¡±
+2023-12-07 01:04:15 - MainThread - DEBUG - The White House said it [MASK] monitoring the shooting reported at the University of Nevada, Las Vegas (UNLV) ¡°very closely.¡±
+2023-12-07 01:04:16 - MainThread - DEBUG - was is
+
+2023-12-07 01:04:16 - MainThread - DEBUG - was is
+
+2023-12-07 01:04:16 - MainThread - DEBUG - Masked Sentence:
+2023-12-07 01:04:16 - MainThread - DEBUG - Masked Sentence:
+2023-12-07 01:04:16 - MainThread - DEBUG - The second gentleman [MASK] already scheduled to deliver remarks tonight at the Newtown Action Alliance Foundation¡¯s 11th Annual National Vigil for All Victims of Gun Violence, the White House added.
+2023-12-07 01:04:16 - MainThread - DEBUG - The second gentleman [MASK] already scheduled to deliver remarks tonight at the Newtown Action Alliance Foundation¡¯s 11th Annual National Vigil for All Victims of Gun Violence, the White House added.
+2023-12-07 01:04:16 - MainThread - DEBUG - is was
+
+2023-12-07 01:04:16 - MainThread - DEBUG - is was
+
