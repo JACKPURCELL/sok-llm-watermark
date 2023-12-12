@@ -9,11 +9,11 @@ import string
 
 import torch
 
-from models.watermark import InfillModel
-from utils.logging import getLogger
-from utils.metric import Metric
+from .models.watermark import InfillModel
+from .utils.logging import getLogger
+from .utils.metric import Metric
 from torch import cuda
-from utils.dataset_utils import preprocess2sentence
+from .utils.dataset_utils import preprocess2sentence
 
 
 from nltk.corpus import stopwords
@@ -102,9 +102,9 @@ class kiyoon23():
         self.generic_args, _ = self.generic_args.parse_known_args()
         self.message = message
 
-    def embed_watermark(self, raw_text, message):
-
-        cover_texts = preprocess2sentence([raw_text], corpus_name="custom",
+    def embed_watermark(self, raw_text):
+        message = self.message
+        cover_texts = preprocess2sentence(raw_text, corpus_name="custom",
                                           start_sample_idx=0, cutoff_q=(0.0, 1.0), use_cache=False)
         # you can add your own entity / keyword that should NOT be masked.
         # This list will need to be saved when extracting
@@ -151,7 +151,7 @@ class kiyoon23():
         result_dir = os.path.join(dirname, "watermarked.txt")
         if not os.path.exists(result_dir):
             os.makedirs(os.path.dirname(result_dir), exist_ok=True)
-
+        output_list=[]
         for c_idx, sentences in enumerate(cover_texts):
             corpus_level_watermarks = []
             for s_idx, sen in enumerate(sentences):
@@ -240,8 +240,9 @@ class kiyoon23():
                 result = "".join(wt)
                 result = result.strip()
                 result_list.append(result)
+            output_list.append(" ".join(result_list))
 
-        return " ".join(result_list)
+        return output_list
 
     def extract_message(self, watermarked_text):
         cover_texts = preprocess2sentence([watermarked_text], corpus_name="custom",
@@ -374,13 +375,13 @@ class kiyoon23():
             message = message.zfill(available_bit)
             return message
 
-    def generate_with_watermark(self, tokd_input, generate_without_watermark):
-        output_without_watermark = generate_without_watermark(tokd_input)
-        output_with_watermark = self.embed_watermark(output_without_watermark, self.message)
-        return output_without_watermark, output_with_watermark
+    # def generate_with_watermark(self, tokd_input, generate_without_watermark):
+    #     output_without_watermark = generate_without_watermark(tokd_input)
+    #     output_with_watermark = self.embed_watermark(output_without_watermark, self.message)
+    #     return output_without_watermark, output_with_watermark
 
-    def detect(self, wm_text):
-        decoded_msg = self.extract_message(wm_text)
+    def detect(self, text,**kwargs):
+        decoded_msg = self.extract_message(text)
         watermark_rate = len(decoded_msg)/len(self.message)
         msg = self.message[-len(decoded_msg):]
         error_count = 0

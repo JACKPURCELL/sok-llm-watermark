@@ -56,15 +56,15 @@
             },
             "args": [
                 "--watermark",
-                "aiwei23",
+                "kiyoon23",
                 "--dataset_name",
                 "hc3",
                 "--run_name",
-                "test-gen-aiwei23",
+                "test-gen-kiyoon23",
                 "--model_name_or_path",
                 "meta-llama/Llama-2-7b-chat-hf",
                 "--min_generations",
-                "1000",
+                "8",
 
             ]
         },

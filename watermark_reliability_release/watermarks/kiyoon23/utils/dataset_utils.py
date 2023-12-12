@@ -8,7 +8,7 @@ import re
 from datasets import load_dataset
 import spacy
 from tqdm import tqdm
-from utils.logging import getLogger
+from .logging import getLogger
 
 RAW_DATA_DIR = "./data/raw_data"
 CACHE_DIR= "./data/cache"

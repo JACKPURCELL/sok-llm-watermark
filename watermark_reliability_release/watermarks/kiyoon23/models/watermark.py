@@ -18,12 +18,12 @@ import spacy
 import sys
 sys.path.append("..")
 
-from config import WatermarkArgs, riskset
-from utils.dataset_utils import preprocess2sentence, preprocess_txt, get_dataset
-from utils.logging import getLogger
-from models.reward import NLIReward
-from models.kwd import KeywordExtractor
-from models.mask import MaskSelector
+from ..config import WatermarkArgs, riskset
+from ..utils.dataset_utils import preprocess2sentence, preprocess_txt, get_dataset
+from ..utils.logging import getLogger
+from ..models.reward import NLIReward
+from ..models.kwd import KeywordExtractor
+from ..models.mask import MaskSelector
 from torch import cuda
 
 class InfillModel:

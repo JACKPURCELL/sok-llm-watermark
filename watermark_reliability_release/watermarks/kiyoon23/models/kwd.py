@@ -6,7 +6,7 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 import spacy
 import yake
 
-from config import stop
+from ..config import stop
 
 
 # Find Proper Noun on sentence level.

@@ -219,7 +219,15 @@ def main(args):
                 watermark_detector.train_model()
                 pickle.dump(watermark_detector, open('/home/jkl6486/sok-llm-watermark/watermarks/aiwei23/data/trained/trained_detector.pkl', 'wb'))
                 pickle.dump(watermark_processor, open('/home/jkl6486/sok-llm-watermark/watermarks/aiwei23/data/trained/trained_processor.pkl', 'wb'))
-
+        case 'kiyoon23':
+            message = '01'
+            watermark_processor = watermarks.kiyoon23(args.dtype, args.embed, args.exp_name_generic, args.exp_name_infill,
+                                              args.extract,
+                                              args.num_sample, args.spacy_model, args.exclude_cc, args.custom_keywords,
+                                              args.keyword_mask,
+                                              args.keyword_ratio, args.mask_order_by, args.mask_select_method,
+                                              args.num_epochs,
+                                              args.topk, message)
 
         ######################################################################
         # Add your code here
@@ -250,10 +258,15 @@ def main(args):
     else:
         gen_kwargs.update(dict(num_beams=args.num_beams))
 
-    generate_without_watermark = partial(model.generate, **gen_kwargs)
-    generate_with_watermark = partial(
-        model.generate, logits_processor=LogitsProcessorList([watermark_processor]), **gen_kwargs
-    )
+    if args.watermark == 'kiyoon23':
+        generate_with_watermark = watermark_processor.embed_watermark
+        generate_without_watermark = partial(model.generate, **gen_kwargs)
+        
+    else:
+        generate_without_watermark = partial(model.generate, **gen_kwargs)
+        generate_with_watermark = partial(
+            model.generate, logits_processor=LogitsProcessorList([watermark_processor]), **gen_kwargs
+        )
 
     # construct the collator
     data_collator = DataCollatorWithPadding(tokenizer=tokenizer, padding=True, pad_to_multiple_of=8)
@@ -700,7 +713,25 @@ if __name__ == "__main__":
             # parser.add_argument("--sampling_temp", type=float, default=0.7)
             parser.add_argument("--max_new_token", type=int, default=200)
             parser.add_argument("--aiwei_trained", type=bool, default=False)
-
+        case 'kiyoon23':
+            parser.add_argument("--exp_name_generic", type=str, default="tmp")
+            parser.add_argument("--embed", type=str2bool, default=False)
+            parser.add_argument("--extract", type=str2bool, default=False)
+            parser.add_argument("--dtype", type=str, default="imdb")
+            parser.add_argument("--num_sample", type=int, default=100)
+            parser.add_argument("--exp_name_infill", type=str, default="")
+            parser.add_argument("--num_epochs", type=int, default=10)
+            parser.add_argument("--keyword_ratio", type=float, default=0.05)
+            parser.add_argument("--topk", type=int, default=2)
+            parser.add_argument("--mask_select_method", type=str, default="grammar",
+                                choices=['keyword_disconnected', "keyword_connected", "grammar"])
+            parser.add_argument("--mask_order_by", type=str, default="dep", choices=['dep', 'pos'])
+            parser.add_argument("--keyword_mask", type=str, default="adjacent",
+                                choices=['adjacent', 'child', 'child_dep', "na"])
+            parser.add_argument("--custom_keywords", type=str, default=['watermarking', 'watermark'])
+            parser.add_argument("--message", type=str, default="")
+            parser.add_argument("--spacy_model", type=str, default="en_core_web_sm")
+            parser.add_argument("--exclude_cc", type=str2bool, default=True)
             ######################################################################
             # Add your code here
             ######################################################################

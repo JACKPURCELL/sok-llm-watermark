@@ -6,7 +6,7 @@ from sentence_transformers import SentenceTransformer, util
 import torch
 from transformers import AutoModelForSequenceClassification, AutoTokenizer
 
-from utils.dataset_utils import preprocess2sentence, preprocess_txt, get_result_txt
+from .dataset_utils import preprocess2sentence, preprocess_txt, get_result_txt
 
 
 class Metric:

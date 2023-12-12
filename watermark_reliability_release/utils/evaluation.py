@@ -257,7 +257,16 @@ def load_detector(args):
                 pickle.dump(watermark_detector, open('./data/trained/trained_detector.pkl', 'wb'))
                 pickle.dump(watermark_processor, open('./data/trained/trained_processor.pkl', 'wb'))
 
-        
+        case 'kiyoon23':
+            message = "01"
+            watermark_detector = kiyoon23(args.dtype, args.embed, args.exp_name_generic, args.exp_name_infill,
+                                              args.extract,
+                                              args.num_sample, args.spacy_model, args.exclude_cc, args.custom_keywords,
+                                              args.keyword_mask,
+                                              args.keyword_ratio, args.mask_order_by, args.mask_select_method,
+                                              args.num_epochs,
+                                              args.topk, message)
+            
     
         case _:
             raise ValueError(f"Unknown watermark type: {args.watermark}")
@@ -308,7 +317,7 @@ def compute_z_score(
         # "Error string too short to compute metrics"
         score_dict = watermark_detector.dummy_detect(
             return_prediction=False,
-            return_green_token_mask=return_green_token_mask,
+            # return_green_token_mask=return_green_token_mask,
             return_z_at_T=args.compute_scores_at_T,
         )
 
