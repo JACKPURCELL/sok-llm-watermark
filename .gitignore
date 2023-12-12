@@ -17,3 +17,5 @@ watermark_reliability_release/metrics/p_sp_utils/paraphrase-at-scale-english/mod
 watermark_reliability_release/metrics/detect_retrieval_utils/paraphrase-at-scale-english/model.para.lc.100.pt
 watermark_reliability_release/metrics/detect_retrieval_utils/paraphrase-at-scale-english/paranmt.model
 watermark_reliability_release/metrics/p_sp_utils/paraphrase-at-scale-english/paranmt.model
+results/
+data/
