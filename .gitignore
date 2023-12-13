@@ -19,3 +19,4 @@ watermark_reliability_release/metrics/detect_retrieval_utils/paraphrase-at-scale
 watermark_reliability_release/metrics/p_sp_utils/paraphrase-at-scale-english/paranmt.model
 results/
 data/
+model/

@@ -194,8 +194,8 @@ def main(args):
 
         case 'aiwei23':
             if args.aiwei_trained:
-                # watermark_detector = pickle.load(open('/home/jkl6486/sok-llm-watermark/watermarks/aiwei23/data/trained/trained_detector.pkl', 'rb'))
-                watermark_processor = pickle.load(open('/home/jkl6486/sok-llm-watermark/watermarks/aiwei23/data/trained/trained_processor.pkl', 'rb'))
+                # watermark_detector = pickle.load(open('/home/jkl6486/sok-llm-watermark/watermark_reliability_release/watermarks/aiwei23/data/trained/trained_detector.pkl', 'rb'))
+                watermark_processor = pickle.load(open('/home/jkl6486/sok-llm-watermark/watermark_reliability_release/watermarks/aiwei23/data/trained/trained_processor.pkl', 'rb'))
             else:
                 watermarks.prepare_generator(bit_number=args.bit_number,
                                     layers=args.layers,
@@ -206,9 +206,9 @@ def main(args):
                                                         layers=args.layers,
                                                         gamma=args.gamma,
                                                         delta=args.delta,
-                                                        model=model,
+                                                        lm_model =model,
+                                                        lm_tokenizer = tokenizer,
                                                         beam_size=args.beam_size,
-                                                        llm_name=args.llm_name,
                                                         data_dir=args.data_dir,
                                                         z_value=args.z_value)
 
@@ -217,8 +217,8 @@ def main(args):
                                                                             sampling_temp=args.sampling_temp,
                                                                             max_new_tokens=args.max_new_token)
                 watermark_detector.train_model()
-                pickle.dump(watermark_detector, open('/home/jkl6486/sok-llm-watermark/watermarks/aiwei23/data/trained/trained_detector.pkl', 'wb'))
-                pickle.dump(watermark_processor, open('/home/jkl6486/sok-llm-watermark/watermarks/aiwei23/data/trained/trained_processor.pkl', 'wb'))
+                pickle.dump(watermark_detector, open('/home/jkl6486/sok-llm-watermark/watermark_reliability_release/watermarks/aiwei23/data/trained/trained_detector.pkl', 'wb'))
+                pickle.dump(watermark_processor, open('/home/jkl6486/sok-llm-watermark/watermark_reliability_release/watermarks/aiwei23/data/trained/trained_processor.pkl', 'wb'))
         case 'kiyoon23':
             message = '01'
             watermark_processor = watermarks.kiyoon23(args.dtype, args.embed, args.exp_name_generic, args.exp_name_infill,

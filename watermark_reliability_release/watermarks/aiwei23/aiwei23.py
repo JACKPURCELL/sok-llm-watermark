@@ -231,7 +231,8 @@ class aiwei23_WatermarkDetector:
             lm_model = None,
             lm_tokenizer=None,
             beam_size: int = 0,
-            llm_name = 'gpt2',
+            model_dir = "./model/",
+            llm_name = 'llama-7b',
             data_dir = './data',
             z_value = 4
     ):
@@ -253,6 +254,8 @@ class aiwei23_WatermarkDetector:
         self.data_dir = data_dir
         self.z_value = z_value
         self.layers = layers
+        self.detector_model = None
+        
 
     def _get_cache(self):
         return self.cache
@@ -438,10 +441,10 @@ class aiwei23_WatermarkDetector:
         # load dataset
         print("loading dataset...")
         if dataset_name == "c4":
-            with open("/home/jkl6486/sok-llm-watermark/watermarks/aiwei23/original_data/c4_validation.json", encoding="utf-8") as f1:
+            with open("/home/jkl6486/sok-llm-watermark/watermark_reliability_release/watermarks/aiwei23/original_data/c4_validation.json", encoding="utf-8") as f1:
                 lines = f1.readlines()
         elif dataset_name == "dbpedia":
-            with open("/home/jkl6486/sok-llm-watermark/watermarks/aiwei23/original_data/dbpedia_validation.json", encoding="utf-8") as f1:
+            with open("/home/jkl6486/sok-llm-watermark/watermark_reliability_release/watermarks/aiwei23/original_data/dbpedia_validation.json", encoding="utf-8") as f1:
                 lines = f1.readlines()
 
         idx = 1
@@ -602,6 +605,8 @@ class aiwei23_WatermarkDetector:
 
         os.makedirs(os.path.dirname(output_model_dir + "new.pt"), exist_ok=True)
         torch.save(model.binary_classifier.state_dict(), output_model_dir + "new.pt")
+        torch.save(model.state_dict(), output_model_dir + "detector_model.pt")
+        
         print(
             f'Test Accuracy: {acc_avg}%, Test TPR: {tpr_avg}%, Test FPR: {fpr_avg}%, Test TNR: {tnr_avg}%, Test FNR: {fnr_avg}%, Test F1: {f1_avg}%')
 
@@ -634,10 +639,35 @@ class aiwei23_WatermarkDetector:
             f'Test Accuracy: {test_accuracy}%, Test TPR: {test_tpr}%, Test FPR: {test_fpr}%, Test TNR: {test_tnr}%, Test FNR: {test_fnr}%, Test F1: {test_f1}%')
 
 
-    def detect(self, text, **kwargs):
-        """Detect the watermark in a sequence of tokens and return the z value."""
-        #TODO
-        return output_dict
+    def get_detector_model(self):
+        device = "cuda" if torch.cuda.is_available() else "cpu"
+        model = TransformerClassifier(self.bit_number, self.layers, 64, 128)
+        model.load_state_dict(torch.load("./model/detector_model.pt"))
+        model = model.to(device)
+        model.eval()
+        self.detector_model = model
+       
+
+    def detect(self, input):
+        device = "cuda" if torch.cuda.is_available() else "cpu"
+        if self.detector_model is None:
+            self.get_detector_model()
+        tokenzied_input = self.lm_tokenizer(input, return_tensors="pt", add_special_tokens=True)
+        input_list = []
+        for line in tokenzied_input["input_ids"]:
+            bin_list = []
+            for t in line:
+                bin_list.append(int_to_bin_list(t, self.bit_number))
+            for t in bin_list:
+                t = [float(i) for i in t]
+            input_list.append(bin_list)
+        input_list = torch.Tensor(input_list)
+        input_list = input_list.to(device)
+        output = self.detector_model(input_list)
+        watermarked = []
+        for t in output:
+            watermarked.append(True if t.float() > 0.5 else False)
+        return watermarked, output
     
 class CustomLogitsProcessor(LogitsProcessor):
 

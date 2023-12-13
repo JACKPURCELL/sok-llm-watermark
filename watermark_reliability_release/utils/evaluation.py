@@ -231,7 +231,7 @@ def load_detector(args):
 
         case 'aiwei23':
             if args.aiwei_trained:
-                watermark_detector = pickle.load(open('/home/jkl6486/sok-llm-watermark/watermarks/aiwei23/data/trained/trained_detector.pkl', 'rb'))
+                watermark_detector = pickle.load(open('/home/jkl6486/sok-llm-watermark/watermark_reliability_release/watermarks/aiwei23/data/trained/trained_detector.pkl', 'rb'))
                 # watermark_processor = pickle.load(open('./data/trained/trained_processor.pkl', 'rb'))
             else:
                 watermarks.prepare_generator(bit_number=args.bit_number,

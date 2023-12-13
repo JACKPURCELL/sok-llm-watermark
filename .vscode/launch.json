@@ -52,19 +52,19 @@
             "console": "integratedTerminal",
             "justMyCode": true,
             "env": {
-                "CUDA_VISIBLE_DEVICES": "1,2,3"
+                "CUDA_VISIBLE_DEVICES": "3,2,1"
             },
             "args": [
                 "--watermark",
-                "kiyoon23",
+                "aiwei23",
                 "--dataset_name",
                 "hc3",
                 "--run_name",
-                "test-gen-kiyoon23",
+                "test-gen-aiwei23",
                 "--model_name_or_path",
                 "meta-llama/Llama-2-7b-chat-hf",
                 "--min_generations",
-                "8",
+                "1000",
 
             ]
         },
