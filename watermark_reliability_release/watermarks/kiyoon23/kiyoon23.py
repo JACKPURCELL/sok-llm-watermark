@@ -101,26 +101,13 @@ class kiyoon23():
         self.infill_args, _ = self.infill_args.parse_known_args()
         self.generic_args, _ = self.generic_args.parse_known_args()
         self.message = message
+        self.init_infillmodel()
 
     def embed_watermark(self, raw_text):
         message = self.message
         cover_texts = preprocess2sentence(raw_text, corpus_name="custom",
                                           start_sample_idx=0, cutoff_q=(0.0, 1.0), use_cache=False)
-        # you can add your own entity / keyword that should NOT be masked.
-        # This list will need to be saved when extracting
-        self.infill_args.custom_keywords = ["watermarking", "watermark"]
-
-        DEBUG_MODE = self.generic_args.debug_mode
-        dtype = "custom"
-        dirname = f"./results/ours/{dtype}/{self.generic_args.exp_name}"
-        start_sample_idx = 0
-        num_sample = self.generic_args.num_sample
-
-        spacy_tokenizer = spacy.load(self.generic_args.spacy_model)
-        if "trf" in self.generic_args.spacy_model:
-            spacy.require_gpu()
-        model = InfillModel(self.infill_args, dirname=dirname)
-
+        
         bit_count = 0
         word_count = 0
         upper_bound = 0
@@ -141,26 +128,29 @@ class kiyoon23():
 
         metric = Metric(device, **vars(self.generic_args))
 
-        if not os.path.exists(dirname):
-            os.makedirs(dirname, exist_ok=True)
+        if not os.path.exists(self.dirname):
+            os.makedirs(self.dirname, exist_ok=True)
 
         logger = getLogger("DEMO",
-                           dir_=dirname,
-                           debug_mode=DEBUG_MODE)
+                           dir_=self.dirname,
+                           debug_mode=self.generic_args.debug_mode)
 
-        result_dir = os.path.join(dirname, "watermarked.txt")
+        result_dir = os.path.join(self.dirname, "watermarked.txt")
         if not os.path.exists(result_dir):
             os.makedirs(os.path.dirname(result_dir), exist_ok=True)
         output_list=[]
         for c_idx, sentences in enumerate(cover_texts):
             corpus_level_watermarks = []
+            if len(sentences) == 0:
+                output_list.append("None")
+                continue
             for s_idx, sen in enumerate(sentences):
-                sen = spacy_tokenizer(sen.text.strip())
-                all_keywords, entity_keywords = model.keyword_module.extract_keyword([sen])
+                sen = self.spacy_tokenizer(sen.text.strip())
+                all_keywords, entity_keywords = self.infill_model.keyword_module.extract_keyword([sen])
                 keyword = all_keywords[0]
                 ent_keyword = entity_keywords[0]
 
-                agg_cwi, agg_probs, tokenized_pt, (mask_idx_pt, mask_idx, mask_word) = model.run_iter(sen, keyword,
+                agg_cwi, agg_probs, tokenized_pt, (mask_idx_pt, mask_idx, mask_word) = self.infill_model.run_iter(sen, keyword,
                                                                                                       ent_keyword,
                                                                                                       train_flag=False,
                                                                                                       embed_flag=True)
@@ -173,15 +163,15 @@ class kiyoon23():
                     for cwi in product(*agg_cwi):
                         wm_text = tokenized_text.copy()
                         for m_idx, c_id in zip(mask_idx, cwi):
-                            wm_text[m_idx] = re.sub(r"\S+", model.tokenizer.decode(c_id), wm_text[m_idx])
+                            wm_text[m_idx] = re.sub(r"\S+", self.infill_model.tokenizer.decode(c_id), wm_text[m_idx])
 
-                        wm_tokenized = spacy_tokenizer("".join(wm_text).strip())
+                        wm_tokenized = self.spacy_tokenizer("".join(wm_text).strip())
 
                         # extract keyword of watermark
-                        wm_keywords, wm_ent_keywords = model.keyword_module.extract_keyword([wm_tokenized])
+                        wm_keywords, wm_ent_keywords = self.infill_model.keyword_module.extract_keyword([wm_tokenized])
                         wm_kwd = wm_keywords[0]
                         wm_ent_kwd = wm_ent_keywords[0]
-                        wm_mask_idx, wm_mask = model.mask_selector.return_mask(wm_tokenized, wm_kwd, wm_ent_kwd)
+                        wm_mask_idx, wm_mask = self.infill_model.mask_selector.return_mask(wm_tokenized, wm_kwd, wm_ent_kwd)
 
                         kwd_match_flag = set([x.text for x in wm_kwd]) == set([x.text for x in keyword])
                         if kwd_match_flag:
@@ -243,24 +233,25 @@ class kiyoon23():
             output_list.append(" ".join(result_list))
 
         return output_list
-
-    def extract_message(self, watermarked_text):
-        cover_texts = preprocess2sentence([watermarked_text], corpus_name="custom",
-                                          start_sample_idx=0, cutoff_q=(0.0, 1.0), use_cache=False)
+    
+    def init_infillmodel(self):
         # you can add your own entity / keyword that should NOT be masked.
         # This list will need to be saved when extracting
         self.infill_args.custom_keywords = ["watermarking", "watermark"] ###check here
 
-        DEBUG_MODE = self.generic_args.debug_mode
         dtype = "custom"
-        dirname = f"./results/ours/{dtype}/{self.generic_args.exp_name}"
+        self.dirname = f"./results/ours/{dtype}/{self.generic_args.exp_name}"
         start_sample_idx = 0
         num_sample = self.generic_args.num_sample
 
-        spacy_tokenizer = spacy.load(self.generic_args.spacy_model)
+        self.spacy_tokenizer = spacy.load(self.generic_args.spacy_model)
         if "trf" in self.generic_args.spacy_model:
             spacy.require_gpu()
-        model = InfillModel(self.infill_args, dirname=dirname)
+        self.infill_model = InfillModel(self.infill_args, dirname=self.dirname)
+    
+    def extract_message(self, watermarked_text):
+        cover_texts = preprocess2sentence([watermarked_text], corpus_name="custom",
+                                          start_sample_idx=0, cutoff_q=(0.0, 1.0), use_cache=False)
 
         bit_count = 0
         word_count = 0
@@ -282,27 +273,31 @@ class kiyoon23():
 
         metric = Metric(device, **vars(self.generic_args))
 
-        if not os.path.exists(dirname):
-            os.makedirs(dirname, exist_ok=True)
+        if not os.path.exists(self.dirname):
+            os.makedirs(self.dirname, exist_ok=True)
 
         logger = getLogger("DEMO",
-                           dir_=dirname,
-                           debug_mode=DEBUG_MODE)
+                           dir_=self.dirname,
+                           debug_mode=self.generic_args.debug_mode)
 
-        result_dir = os.path.join(dirname, "watermarked.txt")
+        result_dir = os.path.join(self.dirname, "watermarked.txt")
         if not os.path.exists(result_dir):
             os.makedirs(os.path.dirname(result_dir), exist_ok=True)
 
         result = ""
+        message_return_list = []
         for c_idx, sentences in enumerate(cover_texts):
+            message_sentences_list = []
+            if len(sentences) == 0:
+                return self.message
             corpus_level_watermarks = []
             for s_idx, sen in enumerate(sentences):
-                sen = spacy_tokenizer(sen.text.strip())
-                all_keywords, entity_keywords = model.keyword_module.extract_keyword([sen])
+                sen = self.spacy_tokenizer(sen.text.strip())
+                all_keywords, entity_keywords = self.infill_model.keyword_module.extract_keyword([sen])
                 keyword = all_keywords[0]
                 ent_keyword = entity_keywords[0]
 
-                agg_cwi, agg_probs, tokenized_pt, (mask_idx_pt, mask_idx, mask_word) = model.run_iter(sen, keyword,
+                agg_cwi, agg_probs, tokenized_pt, (mask_idx_pt, mask_idx, mask_word) = self.infill_model.run_iter(sen, keyword,
                                                                                                       ent_keyword,
                                                                                                       train_flag=False,
                                                                                                       embed_flag=True)
@@ -315,15 +310,15 @@ class kiyoon23():
                     for cwi in product(*agg_cwi):
                         wm_text = tokenized_text.copy()
                         for m_idx, c_id in zip(mask_idx, cwi):
-                            wm_text[m_idx] = re.sub(r"\S+", model.tokenizer.decode(c_id), wm_text[m_idx])
+                            wm_text[m_idx] = re.sub(r"\S+", self.infill_model.tokenizer.decode(c_id), wm_text[m_idx])
 
-                        wm_tokenized = spacy_tokenizer("".join(wm_text).strip())
+                        wm_tokenized = self.spacy_tokenizer("".join(wm_text).strip())
 
                         # extract keyword of watermark
-                        wm_keywords, wm_ent_keywords = model.keyword_module.extract_keyword([wm_tokenized])
+                        wm_keywords, wm_ent_keywords = self.infill_model.keyword_module.extract_keyword([wm_tokenized])
                         wm_kwd = wm_keywords[0]
                         wm_ent_kwd = wm_ent_keywords[0]
-                        wm_mask_idx, wm_mask = model.mask_selector.return_mask(wm_tokenized, wm_kwd, wm_ent_kwd)
+                        wm_mask_idx, wm_mask = self.infill_model.mask_selector.return_mask(wm_tokenized, wm_kwd, wm_ent_kwd)
 
                         kwd_match_flag = set([x.text for x in wm_kwd]) == set([x.text for x in keyword])
                         if kwd_match_flag:
@@ -357,23 +352,25 @@ class kiyoon23():
                 if candidate_kwd_cnt > 0:
                     upper_bound += math.log2(candidate_kwd_cnt)
 
-            if word_count:
-                logger.info(f"Bpw : {bit_count / word_count:.3f}")
+                if word_count:
+                    logger.info(f"Bpw : {bit_count / word_count:.3f}")
 
-            num_options = reduce(lambda x, y: x * y, [len(vw) for vw in corpus_level_watermarks])
-            available_bit = math.floor(math.log2(num_options))
-            cnt = 0
-            available_candidates = product(*corpus_level_watermarks)
-            watermarked_text_temp = next(available_candidates)
-            result = format_result(watermarked_text_temp)
-            while result != watermarked_text:
-                cnt += 1
+                num_options = reduce(lambda x, y: x * y, [len(vw) for vw in corpus_level_watermarks])
+                available_bit = math.floor(math.log2(num_options))
+                cnt = 0
+                available_candidates = product(*corpus_level_watermarks)
                 watermarked_text_temp = next(available_candidates)
                 result = format_result(watermarked_text_temp)
+                while result != watermarked_text:
+                    cnt += 1
+                    watermarked_text_temp = next(available_candidates)
+                    result = format_result(watermarked_text_temp)
 
-            message = format(cnt, "b")
-            message = message.zfill(available_bit)
-            return message
+                message = format(cnt, "b")
+                message = message.zfill(available_bit)
+                message_sentences_list.append(message)
+            message_return_list.append(message_sentences_list)
+        return message_return_list
 
     # def generate_with_watermark(self, tokd_input, generate_without_watermark):
     #     output_without_watermark = generate_without_watermark(tokd_input)
@@ -381,15 +378,26 @@ class kiyoon23():
     #     return output_without_watermark, output_with_watermark
 
     def detect(self, text,**kwargs):
+        watermarked = []
         decoded_msg = self.extract_message(text)
-        watermark_rate = len(decoded_msg)/len(self.message)
+        for paragraph in decoded_msg:
+            sign = 0
+            for sentence_message in paragraph:
+                if sentence_message == self.message:
+                    watermarked.append(True)
+                    sign = 1
+                    break
+            if sign == 0:
+                watermarked.append(False)
+                        
+        '''watermark_rate = len(decoded_msg)/len(self.message)
         msg = self.message[-len(decoded_msg):]
         error_count = 0
         for t in range(len(decoded_msg)):
             if decoded_msg[t] != msg[t]:
                 error_count += 1
-        error_rate = error_count/len(decoded_msg)
-        return decoded_msg ,watermark_rate, error_rate
+        error_rate = error_count/len(decoded_msg)'''
+        return decoded_msg ,watermarked
 
 
 
