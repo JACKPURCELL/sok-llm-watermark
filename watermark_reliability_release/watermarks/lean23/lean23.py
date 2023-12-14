@@ -96,7 +96,7 @@ class lean23_WatermarkDetector:
 
     def detect(self, text, prompt, **kwargs):
         if len(self.tokenizer.tokenize(text))<12:
-            return {"decoded_message": "",
+            return {
                   "confidences": 1,
                   "prediction": False}
         tokenized_input = self.tokenizer(prompt, return_tensors='pt').to("cpu")

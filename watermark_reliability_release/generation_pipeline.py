@@ -498,7 +498,7 @@ if __name__ == "__main__":
     parser.add_argument(
         "--max_new_tokens",
         type=int,
-        default=100,
+        default=1000,
         help="The number of tokens to generate using the model, and the num tokens removed from real text sample",
     )
     parser.add_argument(

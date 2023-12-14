@@ -76,15 +76,15 @@
             "console": "integratedTerminal",
             "justMyCode": true,
             "env": {
-                "CUDA_VISIBLE_DEVICES": "1,2,3"
+                "CUDA_VISIBLE_DEVICES": "0,1"
             },
             "args": [
                 "--watermark",
-                "xuandong23b",
+                "rohith23",
                 "--run_name",
-                "test-eva-john23",
+                "eva-rohith23-hc3",
                 "--input_dir",
-                "/home/jkl6486/sok-llm-watermark/runs/xuandong23b/c4",
+                "/home/jkl6486/sok-llm-watermark/runs/rohith23/hc3",
                 "--evaluation_metrics",
                 "all"
             ]

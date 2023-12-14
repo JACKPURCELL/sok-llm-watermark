@@ -9,7 +9,7 @@ import pyximport
 pyximport.install(reload_support=True, language_level=sys.version_info[0],
                   setup_args={'include_dirs':np.get_include()})
 from .levenshtein import levenshtein
-
+from scipy.stats import norm
 # from math import sqrt, log
 
 # def levenshtein(x, y, gamma=0.0):
@@ -144,7 +144,7 @@ class rohith23_WatermarkDetector:
             # assuming lower test values indicate presence of watermark
             p_val += null_result <= test_result
         output_dict["p_val"] = p_val
-        
+        output_dict["z-score"] = norm.ppf(1 - output_dict["p-value"])
         output_dict["p-value"] = (p_val + 1.0) / (n_runs + 1.0)
         output_dict["prediction"] = output_dict["p-value"] < 0.02
         return output_dict
@@ -152,7 +152,9 @@ class rohith23_WatermarkDetector:
       
     def dummy_detect(self, text, prompt, **kwargs):
         result = {"p_val": float("nan"),
-                  "confidences": '1.0',
+                  "z-score": float("nan"),
+                    "p-value": float("nan"),
+                  "num_tokens_scored":float("nan"),
                   "prediction": "False"}
 
         return result
