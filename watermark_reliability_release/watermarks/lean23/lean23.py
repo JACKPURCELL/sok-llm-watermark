@@ -112,7 +112,7 @@ class lean23_WatermarkDetector:
                   "prediction": acc}
         return result
     
-    def dummy_detect(self, text, prompt, **kwargs):
+    def dummy_detect(self, **kwargs):
         result = {
                   "confidences": 1,
                   "prediction": False}

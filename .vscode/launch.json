@@ -56,11 +56,11 @@
             },
             "args": [
                 "--watermark",
-                "lean23",
+                "aiwei23",
                 "--dataset_name",
-                "c4",
+                "hc3",
                 "--run_name",
-                "test-gen-lean23",
+                "test-gen-aiwei23",
                 "--model_name_or_path",
                 "meta-llama/Llama-2-7b-chat-hf",
                 "--min_generations",
@@ -91,22 +91,25 @@
         },
         {
           "name": "attack_pipeline",
+          
             "type": "python",
             "request": "launch",
             "program": "watermark_reliability_release/attack_pipeline.py",
             "console": "integratedTerminal",
             "justMyCode": true,
             "env": {
-                "CUDA_VISIBLE_DEVICES": "1,2,3"
+                "CUDA_VISIBLE_DEVICES": "1,3"
             },
             "args": [
                 
                 "--run_name",
-                "test-attack-lean23",
+                "dipper-attack-xuandong23b",
                 "--input_dir",
-                "/home/jkl6486/sok-llm-watermark/runs/lean23/hc3",
+                "/home/jkl6486/sok-llm-watermark/runs/xuandong23b/hc3",
+                "--output_dir",
+                "/home/jkl6486/sok-llm-watermark/runs/xuandong23b/hc3/dipper",
                 "--attack_method",
-                "copy-paste"
+                "dipper"
                
             ]
         },
