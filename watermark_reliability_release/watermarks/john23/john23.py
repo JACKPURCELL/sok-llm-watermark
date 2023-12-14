@@ -281,3 +281,51 @@ class john23_WatermarkDetector(WatermarkBase):
                 output_dict["confidence"] = 1 - score_dict["p_value"]
 
         return output_dict
+    
+    def dummy_detect(
+        self,
+        return_prediction: bool = True,
+        return_scores: bool = True,
+        z_threshold: float = None,
+        return_num_tokens_scored: bool = True,
+        return_num_green_tokens: bool = True,
+        return_green_fraction: bool = True,
+        return_green_token_mask: bool = False,
+        return_all_window_scores: bool = False,
+        return_z_score: bool = True,
+        return_z_at_T: bool = True,
+        return_p_value: bool = True,**kwargs,
+    ):
+        # HF-style output dictionary
+        score_dict = dict()
+        if return_num_tokens_scored:
+            score_dict.update(dict(num_tokens_scored=float("nan")))
+        if return_num_green_tokens:
+            score_dict.update(dict(num_green_tokens=float("nan")))
+        if return_green_fraction:
+            score_dict.update(dict(green_fraction=float("nan")))
+        if return_z_score:
+            score_dict.update(dict(z_score=float("nan")))
+        if return_p_value:
+            z_score = score_dict.get("z_score")
+            if z_score is None:
+                z_score = float("nan")
+            score_dict.update(dict(p_value=float("nan")))
+        if return_green_token_mask:
+            score_dict.update(dict(green_token_mask=[]))
+        if return_all_window_scores:
+            score_dict.update(dict(window_list=[]))
+      
+
+        output_dict = {}
+        if return_scores:
+            output_dict.update(score_dict)
+        # if passed return_prediction then perform the hypothesis test and return the outcome
+        if return_prediction:
+            z_threshold = z_threshold if z_threshold else self.z_threshold
+            assert (
+                z_threshold is not None
+            ), "Need a threshold in order to decide outcome of detection test"
+            output_dict["prediction"] = False
+
+        return output_dict

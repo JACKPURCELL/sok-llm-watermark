@@ -26,7 +26,7 @@ class GPTWatermarkBase:
         watermark_key: The random seed for the green-listing.
     """
 
-    def __init__(self, fraction: float = 0.5, tokenizer=None, strength: float = 2.0, vocab_size: int = 50257, watermark_key: int = 0, **kwargs):
+    def __init__(self, fraction: float = 0.5, tokenizer=None, strength: float = 2.0, vocab_size: int = 50257, watermark_key: int = 0, threshold:float=4.0,**kwargs):
         rng = np.random.default_rng(self._hash_fn(watermark_key))
         mask = np.array([True] * int(fraction * vocab_size) + [False] * (vocab_size - int(fraction * vocab_size)))
         rng.shuffle(mask)
@@ -35,6 +35,7 @@ class GPTWatermarkBase:
         self.fraction = fraction
         self.min_prefix_len = 1
         self.tokenizer = tokenizer
+        self.threshold = threshold
     @staticmethod
     def _hash_fn(x: int) -> int:
         """solution from https://stackoverflow.com/questions/67219691/python-hash-function-that-returns-32-or-64-bits"""
@@ -98,14 +99,24 @@ class xuandong23b_WatermarkDetector(GPTWatermarkBase):
         tau = factor * norm.ppf(1 - alpha)
         return tau
 
-    def detect(self, text,threshold=6.0,**kwargs) -> float:
+    def detect(self, text,**kwargs) -> float:
         """Detect the watermark in a sequence of tokens and return the z value."""
         tokenized_text = self.tokenizer(text, add_special_tokens=False)["input_ids"]
         green_tokens = int(sum(self.green_list_mask[i] for i in tokenized_text))
         output_dict = {}
         output_dict["z_score"] = self._z_score(green_tokens, len(tokenized_text), self.fraction)        
-        output_dict["prediction"] = bool(output_dict["z_score"] > threshold)
+        output_dict["prediction"] = bool(output_dict["z_score"] > self.threshold)
         return output_dict
+    
+
+    def dummy_detect(self,  **kwargs):
+        result = {
+                  "z_score": float("nan"),
+                  "prediction": False}
+
+        return result
+
+
     
     def unidetect(self, sequence: List[int]) -> float:
         """Detect the watermark in a sequence of tokens and return the z value. Just for unique tokens."""

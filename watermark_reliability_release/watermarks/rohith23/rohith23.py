@@ -129,7 +129,7 @@ class rohith23_WatermarkDetector:
         output_dict = {}
         
         k = len(tokenized_text)
-        output_dict["Tnum_tokens_scored"] = k
+        output_dict["num_tokens_scored"] = k
         
         xi = self.rng.random((self.n, self.vocab_size), np.float32)
         
@@ -144,13 +144,19 @@ class rohith23_WatermarkDetector:
             # assuming lower test values indicate presence of watermark
             p_val += null_result <= test_result
         output_dict["p_val"] = p_val
-        output_dict["n_runs"] = n_runs
         
         output_dict["p-value"] = (p_val + 1.0) / (n_runs + 1.0)
         output_dict["prediction"] = output_dict["p-value"] < 0.02
         return output_dict
 
       
+    def dummy_detect(self, text, prompt, **kwargs):
+        result = {"p_val": float("nan"),
+                  "confidences": '1.0',
+                  "prediction": "False"}
+
+        return result
+
 
        
 

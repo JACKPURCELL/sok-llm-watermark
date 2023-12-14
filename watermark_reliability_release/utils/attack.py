@@ -16,13 +16,14 @@
 
 import openai
 import random
-
+import torch
 from utils.dipper_attack_pipeline import generate_dipper_paraphrases
 
 from utils.evaluation import OUTPUT_TEXT_COLUMN_NAMES
 from utils.copy_paste_attack import single_insertion, triple_insertion_single_len, k_insertion_t_len
 
-SUPPORTED_ATTACK_METHODS = ["gpt", "dipper", "copy-paste", "scramble"]
+# SUPPORTED_ATTACK_METHODS = ["gpt", "dipper", "copy-paste", "scramble"]
+SUPPORTED_ATTACK_METHODS = [ "dipper", "copy-paste", "scramble"]
 
 
 def scramble_attack(example, tokenizer=None, args=None):
@@ -109,7 +110,7 @@ def tokenize_for_copy_paste(example, tokenizer=None, args=None):
         if text_col in example:
             example[f"{text_col}_tokd"] = tokenizer(
                 example[text_col], return_tensors="pt", add_special_tokens=False
-            )["input_ids"][0]
+            )["input_ids"][0].to(torch.int64)
     return example
 
 
@@ -166,7 +167,7 @@ def copy_paste_attack(example, tokenizer=None, args=None):
         raise ValueError(f"Invalid attack type: {args.cp_attack_type}")
 
     example["w_wm_output_attacked"] = tokenizer.batch_decode(
-        [tokenized_attacked_output], skip_special_tokens=True
+        [tokenized_attacked_output.to(torch.int64)], skip_special_tokens=True
     )[0]
     example["w_wm_output_attacked_length"] = len(tokenized_attacked_output)
 

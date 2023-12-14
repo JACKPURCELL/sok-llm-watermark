@@ -365,7 +365,7 @@ if __name__ == "__main__":
     parser.add_argument(
         "--wandb",
         type=str2bool,
-        default=False,
+        default=True,
         help="Whether to log to wandb.",
     )
     parser.add_argument(
@@ -377,7 +377,7 @@ if __name__ == "__main__":
     parser.add_argument(
         "--wandb_entity",
         type=str,
-        default="ljcpro",
+        default="alps-lab-sok",
         help="The wandb entity/user for the project.",
     )
     parser.add_argument(

@@ -56,11 +56,11 @@
             },
             "args": [
                 "--watermark",
-                "aiwei23",
+                "lean23",
                 "--dataset_name",
-                "hc3",
+                "c4",
                 "--run_name",
-                "test-gen-aiwei23",
+                "test-gen-lean23",
                 "--model_name_or_path",
                 "meta-llama/Llama-2-7b-chat-hf",
                 "--min_generations",
@@ -80,13 +80,13 @@
             },
             "args": [
                 "--watermark",
-                "lean23",
+                "xuandong23b",
                 "--run_name",
-                "test-gen-lean23",
+                "test-eva-john23",
                 "--input_dir",
-                "/home/jkl6486/sok-llm-watermark/runs/lean23/hc3",
+                "/home/jkl6486/sok-llm-watermark/runs/xuandong23b/c4",
                 "--evaluation_metrics",
-                "sentiment"
+                "all"
             ]
         },
         {
@@ -102,9 +102,9 @@
             "args": [
                 
                 "--run_name",
-                "test-attack-john23",
+                "test-attack-lean23",
                 "--input_dir",
-                "/home/jkl6486/sok-llm-watermark/runs/john23/hc3",
+                "/home/jkl6486/sok-llm-watermark/runs/lean23/hc3",
                 "--attack_method",
                 "copy-paste"
                

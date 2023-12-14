@@ -198,7 +198,8 @@ def load_detector(args):
                                                     tokenizer=tokenizer,
                                                     strength=args.strength,
                                                     vocab_size=tokenizer.vocab_size,
-                                                    watermark_key=args.wm_key)
+                                                    watermark_key=args.wm_key,
+                                                    threshold=args.xd_threshold)
         case 'rohith23':
             watermark_detector = watermarks.rohith23_WatermarkDetector(vocab_size=tokenizer.vocab_size,tokenizer=tokenizer)
     
@@ -259,7 +260,7 @@ def load_detector(args):
 
         case 'kiyoon23':
             message = "01"
-            watermark_detector = kiyoon23(args.dtype, args.embed, args.exp_name_generic, args.exp_name_infill,
+            watermark_detector = watermarks.kiyoon23(args.dtype, args.embed, args.exp_name_generic, args.exp_name_infill,
                                               args.extract,
                                               args.num_sample, args.spacy_model, args.exclude_cc, args.custom_keywords,
                                               args.keyword_mask,
@@ -289,7 +290,10 @@ def compute_z_score(
         # return_green_token_mask = None
 
     input_text = example[text_column_name]
-    prompt = example['question']
+    try:
+        prompt = example['question']
+    except:
+        prompt = example['truncated_input']
     error = False
     if input_text == "":
         error = True
@@ -316,9 +320,9 @@ def compute_z_score(
             )
         # "Error string too short to compute metrics"
         score_dict = watermark_detector.dummy_detect(
-            return_prediction=False,
+            # return_prediction=False,
             # return_green_token_mask=return_green_token_mask,
-            return_z_at_T=args.compute_scores_at_T,
+            # return_z_at_T=args.compute_scores_at_T,
         )
 
     # current detect logic causes issues bc it only reports this sometimes

@@ -96,7 +96,7 @@ class lean23_WatermarkDetector:
 
     def detect(self, text, prompt, **kwargs):
         if len(self.tokenizer.tokenize(text))<12:
-            return {"decoded_message": "\n\n212 shares",
+            return {"decoded_message": "",
                   "confidences": 1,
                   "prediction": False}
         tokenized_input = self.tokenizer(prompt, return_tensors='pt').to("cpu")
@@ -107,9 +107,16 @@ class lean23_WatermarkDetector:
         available_message_num = self.generated_length // (
             int(self.message_code_len * self.encode_ratio))
         acc = decoded_message[:available_message_num] == self.message[:available_message_num]
-        result = {"decoded_message": decoded_message,
+        result = {
                   "confidences": confidences,
                   "prediction": acc}
+        return result
+    
+    def dummy_detect(self, text, prompt, **kwargs):
+        result = {
+                  "confidences": 1,
+                  "prediction": False}
+
         return result
 
 

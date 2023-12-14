@@ -334,15 +334,7 @@ def main(args):
     map_setup = dict(batched=False, load_from_cache_file=False)
     
     
-    ###########################################################################
-    # P-SP evaluation
-    ###########################################################################
 
-    if "sentiment" in args.evaluation_metrics:
-        print(f"Loading the sentiment model and computing sentiment")
-        gen_table_w_ppl_ds = compute_sentiment(gen_table_w_ppl_ds,tokenizer)
-    else:
-        gen_table_w_ppl_ds = gen_table_w_ppl_ds
         
     ###########################################################################
     # z-score evaluation
@@ -364,6 +356,15 @@ def main(args):
     else:
         gen_table_w_zscore_ds = gen_table_w_ppl_ds
 
+    ###########################################################################
+    # sentiment evaluation
+    ###########################################################################
+
+    if "sentiment" in args.evaluation_metrics:
+        print(f"Loading the sentiment model and computing sentiment")
+        gen_table_w_sentiment_ds = compute_sentiment(gen_table_w_zscore_ds,tokenizer)
+    else:
+        gen_table_w_sentiment_ds = gen_table_w_zscore_ds
     ###########################################################################
     # Windowed z-score evaluation
     ###########################################################################
@@ -417,11 +418,11 @@ def main(args):
             include_diversity=("diversity" in args.evaluation_metrics),
         )
 
-        gen_table_w_repetition_ds = gen_table_w_zscore_ds.map(
+        gen_table_w_repetition_ds = gen_table_w_sentiment_ds.map(
             compute_repetition_partial, **map_setup, desc="Computing text repetition and diversity"
         )
     else:
-        gen_table_w_repetition_ds = gen_table_w_zscore_ds
+        gen_table_w_repetition_ds = gen_table_w_sentiment_ds
 
         
     ###########################################################################
@@ -1184,7 +1185,7 @@ if __name__ == "__main__":
     parser.add_argument(
         "--wandb_entity",
         type=str,
-        default="ljcpro",
+        default="alps-lab-sok",
         help="The wandb entity/user for the project.",
     )
     parser.add_argument(
@@ -1264,6 +1265,12 @@ if __name__ == "__main__":
                 help="Single or comma separated list of the preprocessors/normalizer names to use when performing watermark detection.",
     )
     
+    parser.add_argument(
+        "--ignore_repeated_ngrams",
+        type=str2bool,
+        default=False,
+        help="Whether to use the detection method that only counts each unqiue bigram once as either a green or red hit.",
+    )
     args = parser.parse_args()
     
     match args.watermark:
@@ -1281,12 +1288,6 @@ if __name__ == "__main__":
                 help="The fraction of the vocabulary to partition into the greenlist at each generation and verification step.",
             )
 
-            parser.add_argument(
-                "--ignore_repeated_ngrams",
-                type=str2bool,
-                default=False,
-                help="Whether to use the detection method that only counts each unqiue bigram once as either a green or red hit.",
-            )
             parser.add_argument(
                 "--detection_z_threshold",
                 type=float,
@@ -1306,7 +1307,7 @@ if __name__ == "__main__":
                 help="Comma separated list of window sizes to use for watermark detection. Only used if 'windowed-z-score' is in the evaluation metrics list.",
             )
         case 'xuandong23b':    
-
+            parser.add_argument("--xd_threshold", type=float, default=4.0)
             parser.add_argument("--fraction", type=float, default=0.5)
             parser.add_argument("--strength", type=float, default=2.0)
             parser.add_argument("--wm_key", type=int, default=0)
