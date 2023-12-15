@@ -144,8 +144,8 @@ class rohith23_WatermarkDetector:
             # assuming lower test values indicate presence of watermark
             p_val += null_result <= test_result
         output_dict["p_val"] = p_val
-        output_dict["z-score"] = norm.ppf(1 - output_dict["p-value"])
         output_dict["p-value"] = (p_val + 1.0) / (n_runs + 1.0)
+        output_dict["z-score"] = norm.ppf(1 - output_dict["p-value"])
         output_dict["prediction"] = output_dict["p-value"] < 0.02
         return output_dict
 

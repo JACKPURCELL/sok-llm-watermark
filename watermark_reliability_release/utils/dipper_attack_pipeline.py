@@ -50,7 +50,7 @@ def generate_dipper_paraphrases(
 
     time1 = time.time()
     tokenizer = T5Tokenizer.from_pretrained("google/t5-v1_1-xxl")
-    model = T5ForConditionalGeneration.from_pretrained(model_name, device_map="auto")
+    model = T5ForConditionalGeneration.from_pretrained(model_name)
     print("Model loaded in ", time.time() - time1)
     # model.half()
     model.cuda()

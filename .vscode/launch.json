@@ -52,19 +52,23 @@
             "console": "integratedTerminal",
             "justMyCode": true,
             "env": {
-                "CUDA_VISIBLE_DEVICES": "3,2,1"
+                "CUDA_VISIBLE_DEVICES": "1"
             },
             "args": [
                 "--watermark",
-                "aiwei23",
+                "lean23",
                 "--dataset_name",
                 "hc3",
                 "--run_name",
-                "test-gen-aiwei23",
+                "test-gen-lean23",
                 "--model_name_or_path",
                 "meta-llama/Llama-2-7b-chat-hf",
                 "--min_generations",
-                "1000",
+                "8",
+                "--max_new_tokens",
+                "200",
+
+
 
             ]
         },
@@ -76,17 +80,18 @@
             "console": "integratedTerminal",
             "justMyCode": true,
             "env": {
-                "CUDA_VISIBLE_DEVICES": "0,1"
+                "CUDA_VISIBLE_DEVICES": "1"
             },
             "args": [
                 "--watermark",
-                "rohith23",
+                "lean23",
                 "--run_name",
-                "eva-rohith23-hc3",
+                "eva-lean23-hc3",
                 "--input_dir",
-                "/home/jkl6486/sok-llm-watermark/runs/rohith23/hc3",
+                "/home/jkl6486/sok-llm-watermark/runs/lean23/hc3",
                 "--evaluation_metrics",
-                "all"
+                "z-score",               
+
             ]
         },
         {

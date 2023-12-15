@@ -97,24 +97,25 @@ class lean23_WatermarkDetector:
     def detect(self, text, prompt, **kwargs):
         if len(self.tokenizer.tokenize(text))<12:
             return {
-                  "confidences": 1,
+                  "confidences": 0.0,
                   "prediction": False}
         tokenized_input = self.tokenizer(prompt, return_tensors='pt').to("cpu")
         tokenized_input = truncate(tokenized_input, max_length=self.prompt_length)
-        self.watermark_processor.start_length = tokenized_input['input_ids'].shape[-1]
+        self.watermark_processor.start_length = 0
+        
         decoded_message, other_information = self.watermark_processor.watermark_processor.decode(text, disable_tqdm=True)
         confidences = other_information[1]
         available_message_num = self.generated_length // (
             int(self.message_code_len * self.encode_ratio))
         acc = decoded_message[:available_message_num] == self.message[:available_message_num]
         result = {
-                  "confidences": confidences,
+                  "z-score": confidences[0][2],
                   "prediction": acc}
         return result
     
     def dummy_detect(self, **kwargs):
         result = {
-                  "confidences": 1,
+                  "z-score": 0.0,
                   "prediction": False}
 
         return result
