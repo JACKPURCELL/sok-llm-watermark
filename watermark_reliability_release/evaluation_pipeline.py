@@ -1173,7 +1173,7 @@ if __name__ == "__main__":
     parser.add_argument(
         "--wandb",
         type=str2bool,
-        default=False,
+        default=True,
         help="Whether to log to wandb.",
     )
     parser.add_argument(
