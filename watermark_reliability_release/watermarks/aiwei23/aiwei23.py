@@ -319,7 +319,10 @@ class aiwei23_WatermarkDetector:
         sigma = 0.01
         expected_count = self.gamma
         numer = observed_count - expected_count * T
-        denom = sqrt(T * expected_count * (1 - expected_count) + sigma * sigma * T)
+        try:
+            denom = sqrt(T * expected_count * (1 - expected_count) + sigma * sigma * T)
+        except:
+            return 0.0
         z = numer / denom
         return z
 
@@ -372,6 +375,17 @@ class aiwei23_WatermarkDetector:
                 json.dump(
                     {"Input": [int(i) for i in item[0]], "Tag": [int(i) for i in item[1]], "Output": float(item[2])}, f)
                 f.write('\n')
+
+    def build_logits_processor(self):
+        watermark_processor = aiwei23_WatermarkLogitsProcessor(vocab=list(self.lm_tokenizer.get_vocab().values()),
+                                                       delta=self.delta,
+                                                       model=self.model,
+                                                       window_size=self.window_size,
+                                                       cache=self.cache,
+                                                       bit_number=self.bit_number,
+                                                       beam_size=self.beam_size,
+                                                       llm_name=self.llm_name)
+        return watermark_processor
 
     def generate_and_save_test_data(self, dataset_name, sampling_temp, max_new_tokens):
         """Instatiate the WatermarkLogitsProcessor according to the watermark parameters

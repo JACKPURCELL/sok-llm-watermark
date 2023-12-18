@@ -194,8 +194,19 @@ def main(args):
 
         case 'aiwei23':
             if args.aiwei_trained:
-                # watermark_detector = pickle.load(open('/home/jkl6486/sok-llm-watermark/watermark_reliability_release/watermarks/aiwei23/data/trained/trained_detector.pkl', 'rb'))
-                watermark_processor = pickle.load(open('/home/jkl6486/sok-llm-watermark/watermark_reliability_release/watermarks/aiwei23/data/trained/trained_processor.pkl', 'rb'))
+                watermark_detector = watermarks.aiwei23_WatermarkDetector(bit_number=args.bit_number,
+                                                        window_size=args.window_size,
+                                                        layers=args.layers,
+                                                        gamma=args.gamma,
+                                                        delta=args.delta,
+                                                        lm_model =model,
+                                                        lm_tokenizer = tokenizer,
+                                                        beam_size=args.beam_size,
+                                                        data_dir=args.data_dir,
+                                                        z_value=args.z_value)
+                watermark_detector.get_detector_model()
+                watermark_processor = watermark_detector.build_logits_processor()
+                print("Load processor and detector done.")
             else:
                 watermarks.prepare_generator(bit_number=args.bit_number,
                                     layers=args.layers,
@@ -217,8 +228,8 @@ def main(args):
                                                                             sampling_temp=args.sampling_temp,
                                                                             max_new_tokens=args.max_new_token)
                 watermark_detector.train_model()
-                pickle.dump(watermark_detector, open('/home/jkl6486/sok-llm-watermark/watermark_reliability_release/watermarks/aiwei23/data/trained/trained_detector.pkl', 'wb'))
-                pickle.dump(watermark_processor, open('/home/jkl6486/sok-llm-watermark/watermark_reliability_release/watermarks/aiwei23/data/trained/trained_processor.pkl', 'wb'))
+
+
         case 'kiyoon23':
             message = '01'
             watermark_processor = watermarks.kiyoon23(args.dtype, args.embed, args.exp_name_generic, args.exp_name_infill,
@@ -712,7 +723,7 @@ if __name__ == "__main__":
             parser.add_argument("--train_dataset_name", type=str, default="c4", help="The dataset used for training detector.")
             # parser.add_argument("--sampling_temp", type=float, default=0.7)
             parser.add_argument("--max_new_token", type=int, default=200)
-            parser.add_argument("--aiwei_trained", type=bool, default=False)
+            parser.add_argument("--aiwei_trained", type=str2bool, default="False")
         case 'kiyoon23':
             parser.add_argument("--exp_name_generic", type=str, default="tmp")
             parser.add_argument("--embed", type=str2bool, default=False)
