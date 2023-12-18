@@ -11,7 +11,7 @@
 
 CUDA_VISIBLE_DEVICES=1,2,3 nohup python watermark_reliability_release/generation_pipeline.py --watermark john23 --dataset_name hc3 --run_name gen-hc3-john23 --model_name_or_path meta-llama/Llama-2-7b-chat-hf --min_generations 1000 &
 CUDA_VISIBLE_DEVICES=1,2,3 nohup python watermark_reliability_release/generation_pipeline.py --watermark xuandong23b --dataset_name hc3 --run_name gen-hc3-xuandong23b --model_name_or_path meta-llama/Llama-2-7b-chat-hf --min_generations 1000 &
-CUDA_VISIBLE_DEVICES=1,2,3 nohup python watermark_reliability_release/generation_pipeline.py --watermark rohith23 --dataset_name hc3 --run_name gen-hc3-rohith23 --model_name_or_path meta-llama/Llama-2-7b-chat-hf --min_generations 1000 &
+CUDA_VISIBLE_DEVICES=0,1,2 nohup python watermark_reliability_release/generation_pipeline.py --watermark rohith23 --dataset_name hc3 --run_name gen-hc3-rohith23 --model_name_or_path meta-llama/Llama-2-7b-chat-hf --min_generations 1000 &
 CUDA_VISIBLE_DEVICES=0,1,2,3 nohup python watermark_reliability_release/generation_pipeline.py --watermark lean23 --dataset_name hc3 --run_name gen-hc3-lean23 --model_name_or_path meta-llama/Llama-2-7b-chat-hf --min_generations 1000 &
 CUDA_VISIBLE_DEVICES=0,1,2,3 nohup python watermark_reliability_release/generation_pipeline.py --watermark kiyoon23 --dataset_name hc3 --run_name gen-hc3-kiyoon23 --model_name_or_path meta-llama/Llama-2-7b-chat-hf --min_generations 1000 &
 CUDA_VISIBLE_DEVICES=3,2,1 nohup python watermark_reliability_release/generation_pipeline.py --watermark aiwei23 --dataset_name hc3 --run_name gen-hc3-aiwei23 --model_name_or_path meta-llama/Llama-2-7b-chat-hf --min_generations 1000 &

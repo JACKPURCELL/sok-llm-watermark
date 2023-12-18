@@ -9,6 +9,7 @@ import pyximport
 pyximport.install(reload_support=True, language_level=sys.version_info[0],
                   setup_args={'include_dirs':np.get_include()})
 from .levenshtein import levenshtein
+
 from scipy.stats import norm
 # from math import sqrt, log
 
@@ -76,7 +77,7 @@ from scipy.stats import norm
 #         self.vocab_size = vocab_size
         
 class rohith23_WatermarkLogitsProcessor(LogitsProcessor):
-    def __init__(self, vocab_size, n=256, key=42):
+    def __init__(self, vocab_size, n=100, key=42):
         self.n = n
 
         self.rng = np.random.default_rng(key)
@@ -99,7 +100,7 @@ class rohith23_WatermarkLogitsProcessor(LogitsProcessor):
 
 ### If it is okay that we can have no classes but only funcitons, just put these two funcitons out
 class rohith23_WatermarkDetector:
-    def __init__(self,  vocab_size, tokenizer, n=256, key=42):
+    def __init__(self,  vocab_size, tokenizer, n=100, key=42):
         self.n = n
         self.rng = np.random.default_rng(key)
         self.vocab_size = vocab_size
@@ -150,7 +151,7 @@ class rohith23_WatermarkDetector:
         return output_dict
 
       
-    def dummy_detect(self, text, prompt, **kwargs):
+    def dummy_detect(self, **kwargs):
         result = {"p_val": float("nan"),
                   "z-score": float("nan"),
                     "p-value": float("nan"),
