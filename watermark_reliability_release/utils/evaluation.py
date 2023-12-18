@@ -18,6 +18,7 @@ import pickle
 import torch
 import numpy as np
 from tqdm import tqdm
+from .generation import load_model
 
 from transformers import AutoTokenizer, AutoModelForCausalLM, LlamaTokenizer
 from utils.generation import tokenize_and_truncate, collate_batch
@@ -204,7 +205,6 @@ def load_detector(args):
             watermark_detector = watermarks.rohith23_WatermarkDetector(vocab_size=tokenizer.vocab_size,tokenizer=tokenizer)
     
         case 'lean23':
-            from .generation import load_model
             model, tokenizer, device = load_model(args)
             watermark_processor = watermarks.lean23_BalanceMarkingWatermarkLogitsProcessor(tokenizer=tokenizer,
                                                                         lm_tokenizer=tokenizer,
@@ -231,6 +231,7 @@ def load_detector(args):
                                                                     )
 
         case 'aiwei23':
+            model, tokenizer, device = load_model(args)
             if args.aiwei_trained:
                 watermark_detector = watermarks.aiwei23_WatermarkDetector(bit_number=args.bit_number,
                                                         window_size=args.window_size,

@@ -84,11 +84,11 @@
             },
             "args": [
                 "--watermark",
-                "rohith23",
+                "aiwei23",
                 "--run_name",
-                "eva-rohith23-hc3",
+                "eva-aiwei23-hc3",
                 "--input_dir",
-                "/home/jkl6486/sok-llm-watermark/runs/rohith23/hc3",
+                "/home/jkl6486/sok-llm-watermark/runs/aiwei23/hc3",
                 "--evaluation_metrics",
                 "z-score",               
 

@@ -662,11 +662,15 @@ class aiwei23_WatermarkDetector:
         self.detector_model = model
        
 
-    def detect(self, input):
+    def detect(self, text,**kwargs):
         device = "cuda" if torch.cuda.is_available() else "cpu"
         if self.detector_model is None:
             self.get_detector_model()
-        tokenzied_input = self.lm_tokenizer(input, return_tensors="pt", add_special_tokens=True)
+        tokenzied_input = self.lm_tokenizer(text, return_tensors="pt", add_special_tokens=True)
+        _, _, stat_z_score = self.green_token_mask_and_stats(tokenzied_input["input_ids"].squeeze(0))
+        
+        mu = 0.5  
+        sigma = 0.02  
         input_list = []
         for line in tokenzied_input["input_ids"]:
             bin_list = []
@@ -679,10 +683,22 @@ class aiwei23_WatermarkDetector:
         input_list = input_list.to(device)
         output = self.detector_model(input_list)
         watermarked = []
+        z_score = []
         for t in output:
             watermarked.append(True if t.float() > 0.5 else False)
-        return watermarked, output
+            z_score.append((t.float() - mu) / sigma)
+
+
+        output_dict = {}
+        output_dict["stat_z_score"] = stat_z_score
+        output_dict["z_score"] = float(z_score[0])
+        output_dict["watermarked"] = watermarked[0]
+        return output_dict
     
+    def dummy_detect(self, **kwargs):
+        output_dict = {}
+        output_dict["z_score"] = float("nan")
+        return output_dict
 class CustomLogitsProcessor(LogitsProcessor):
 
     def __init__(self, llm_name):

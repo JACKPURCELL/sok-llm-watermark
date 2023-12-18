@@ -7,6 +7,7 @@ CUDA_VISIBLE_DEVICES=3,2 nohup python watermark_reliability_release/evaluation_p
 
 
 CUDA_VISIBLE_DEVICES=0,1 nohup python watermark_reliability_release/evaluation_pipeline.py --wandb True --watermark aiwei23 --run_name eva-aiwei23-hc3 --input_dir /home/jkl6486/sok-llm-watermark/runs/aiwei23/hc3 --evaluation_metrics all &
+CUDA_VISIBLE_DEVICES=1,0 nohup python watermark_reliability_release/evaluation_pipeline.py --wandb True --watermark aiwei23 --run_name eva-aiwei23-hc3-dipper --input_dir /home/jkl6486/sok-llm-watermark/runs/aiwei23/hc3/dipper --evaluation_metrics all &
 
 CUDA_VISIBLE_DEVICES=1,3 nohup python watermark_reliability_release/evaluation_pipeline.py --wandb True --watermark rohith23 --run_name eva-rohith23-c4 --input_dir /home/jkl6486/sok-llm-watermark/runs/rohith23/c4 --evaluation_metrics all &
 CUDA_VISIBLE_DEVICES=0,1 nohup python watermark_reliability_release/evaluation_pipeline.py --wandb True --watermark rohith23 --run_name eva-rohith23-hc3 --input_dir /home/jkl6486/sok-llm-watermark/runs/rohith23/hc3 --evaluation_metrics all &
