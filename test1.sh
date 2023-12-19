@@ -27,5 +27,6 @@ CUDA_VISIBLE_DEVICES=0,1,2,3 nohup python watermark_reliability_release/generati
 
 
 CUDA_VISIBLE_DEVICES=3,2,1 nohup python watermark_reliability_release/generation_pipeline.py --watermark aiwei23 --dataset_name hc3 --run_name test-gen-aiwei23 --model_name_or_path meta-llama/Llama-2-7b-chat-hf --min_generations 1000 &
+CUDA_VISIBLE_DEVICES=0,1,2,3 nohup python watermark_reliability_release/generation_pipeline.py --watermark aiwei23 --dataset_name c4 --run_name gen-c4-aiwei23 --model_name_or_path meta-llama/Llama-2-7b-chat-hf --min_generations 100 &
 # CUDA_VISIBLE_DEVICES=2,0,1,3 nohup python watermark_reliability_release/generation_pipeline.py --watermark john23 --dataset_name c4 --run_name gen-c4-john23 --model_name_or_path meta-llama/Llama-2-7b-chat-hf --min_generations 500 &
 # CUDA_VISIBLE_DEVICES=1,0,2,3 nohup python watermark_reliability_release/generation_pipeline.py --watermark xuandong23b --dataset_name c4 --run_name gen-c4-xuandong23b --model_name_or_path meta-llama/Llama-2-7b-chat-hf --min_generations 500 &

@@ -693,11 +693,15 @@ class aiwei23_WatermarkDetector:
         output_dict["stat_z_score"] = stat_z_score
         output_dict["z_score"] = float(z_score[0])
         output_dict["watermarked"] = watermarked[0]
+        output_dict["model_output"] = float(output[0])
         return output_dict
     
     def dummy_detect(self, **kwargs):
         output_dict = {}
         output_dict["z_score"] = float("nan")
+        output_dict["watermarked"] = False
+        output_dict["model_output"] = float("nan")
+        output_dict["stat_z_score"] = float("nan")
         return output_dict
 class CustomLogitsProcessor(LogitsProcessor):
 
