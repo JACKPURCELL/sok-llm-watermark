@@ -156,7 +156,7 @@ class rohith23_WatermarkDetector:
                   "z-score": float("nan"),
                     "p-value": float("nan"),
                   "num_tokens_scored":float("nan"),
-                  "prediction": "False"}
+                  "prediction": False}
 
         return result
 
