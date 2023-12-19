@@ -32,7 +32,7 @@ CUDA_VISIBLE_DEVICES=0,1,2,3 nohup python watermark_reliability_release/generati
 # CUDA_VISIBLE_DEVICES=1,0,2,3 nohup python watermark_reliability_release/generation_pipeline.py --watermark xuandong23b --dataset_name c4 --run_name gen-c4-xuandong23b --model_name_or_path meta-llama/Llama-2-7b-chat-hf --min_generations 500 &
 
 #token300
-CUDA_VISIBLE_DEVICES=0,1,2,3 nohup python watermark_reliability_release/generation_pipeline.py --watermark john23 --dataset_name c4 --run_name gen-c4-john23-t300 --max_new_tokens 300 --model_name_or_path meta-llama/Llama-2-7b-chat-hf --output_dir john23/c4/t300 --min_generations 1000 &
+CUDA_VISIBLE_DEVICES=0,1,2 nohup python watermark_reliability_release/generation_pipeline.py --watermark john23 --dataset_name c4 --run_name gen-c4-john23-t300 --max_new_tokens 300 --model_name_or_path meta-llama/Llama-2-7b-chat-hf --output_dir john23/c4/t300 --min_generations 1000 &
 CUDA_VISIBLE_DEVICES=0,1,2,3 nohup python watermark_reliability_release/generation_pipeline.py --watermark xuandong23b --dataset_name c4 --run_name gen-c4-xuandong23b-t300 --max_new_tokens 300 --model_name_or_path meta-llama/Llama-2-7b-chat-hf --output_dir xuandong23b/c4/t300 --min_generations 1000 &
 
 CUDA_VISIBLE_DEVICES=0,1,2,3 nohup python watermark_reliability_release/generation_pipeline.py --watermark john23 --dataset_name lfqa --run_name gen-lfqa-john23-t300 --max_new_tokens 300 --model_name_or_path meta-llama/Llama-2-7b-chat-hf --output_dir john23/lfqa/t300 --min_generations 1000 &
