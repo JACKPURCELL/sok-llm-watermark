@@ -19,3 +19,21 @@ CUDA_VISIBLE_DEVICES=1,2 ohup python watermark_reliability_release/evaluation_pi
 CUDA_VISIBLE_DEVICES=1,3  python watermark_reliability_release/evaluation_pipeline.py --wandb True --watermark rohith23 --run_name eva-rohith23-hc3 --input_dir /home/jkl6486/sok-llm-watermark/runs/rohith23/hc3 --evaluation_metrics all 
 CUDA_VISIBLE_DEVICES=3,2 nohup python watermark_reliability_release/evaluation_pipeline.py --wandb True --watermark john23 --run_name eva-john23-hc3 --input_dir /home/jkl6486/sok-llm-watermark/runs/john23/hc3/dipper --evaluation_metrics all &
 CUDA_VISIBLE_DEVICES=3,2 nohup python watermark_reliability_release/evaluation_pipeline.py --wandb True --watermark xuandong23b --run_name eva-xuandong23b-hc3 --input_dir /home/jkl6486/sok-llm-watermark/runs/xuandong23b/hc3/dipper --evaluation_metrics all &
+
+CUDA_VISIBLE_DEVICES=0 nohup python watermark_reliability_release/evaluation_pipeline.py --wandb True --watermark xuandong23b --run_name eva-xuandong23b-c4-t300-dipper --input_dir /home/jkl6486/sok-llm-watermark/runs/xuandong23b/c4/t300/dipper --evaluation_metrics all &
+CUDA_VISIBLE_DEVICES=1 nohup python watermark_reliability_release/evaluation_pipeline.py --wandb True --watermark xuandong23b --run_name eva-xuandong23b-c4-t300 --input_dir /home/jkl6486/sok-llm-watermark/runs/xuandong23b/c4/t300 --evaluation_metrics all &
+
+
+CUDA_VISIBLE_DEVICES=0 nohup python watermark_reliability_release/evaluation_pipeline.py --wandb True --watermark xuandong23b --run_name eva-xuandong23b-lfqa-t300-dipper --input_dir /home/jkl6486/sok-llm-watermark/runs/xuandong23b/lfqa/t300/dipper --evaluation_metrics all &
+CUDA_VISIBLE_DEVICES=0 nohup python watermark_reliability_release/evaluation_pipeline.py --wandb True --watermark xuandong23b --run_name eva-xuandong23b-lfqa-t300 --input_dir /home/jkl6486/sok-llm-watermark/runs/xuandong23b/lfqa/t300 --evaluation_metrics all &
+
+CUDA_VISIBLE_DEVICES=2 nohup python watermark_reliability_release/evaluation_pipeline.py --wandb True --watermark john23 --run_name eva-john23-c4-t300-dipper --input_dir /home/jkl6486/sok-llm-watermark/runs/john23/c4/t300/dipper --evaluation_metrics all &
+CUDA_VISIBLE_DEVICES=2 nohup python watermark_reliability_release/evaluation_pipeline.py --wandb True --watermark john23 --run_name eva-john23-c4-t300 --input_dir /home/jkl6486/sok-llm-watermark/runs/john23/c4/t300 --evaluation_metrics all &
+
+CUDA_VISIBLE_DEVICES=2 nohup python watermark_reliability_release/evaluation_pipeline.py --wandb True --watermark rohith23 --run_name eva-rohith23-c4-t300-dipper --input_dir /home/jkl6486/sok-llm-watermark/runs/rohith23/c4/t300/dipper --evaluation_metrics all &
+CUDA_VISIBLE_DEVICES=2 nohup python watermark_reliability_release/evaluation_pipeline.py --wandb True --watermark rohith23 --run_name eva-rohith23-c4-t300 --input_dir /home/jkl6486/sok-llm-watermark/runs/rohith23/c4/t300 --evaluation_metrics all &
+
+
+CUDA_VISIBLE_DEVICES=1 nohup python watermark_reliability_release/evaluation_pipeline.py --wandb True --watermark john23 --run_name eva-john23-lfqa-t300-dipper --input_dir /home/jkl6486/sok-llm-watermark/runs/john23/lfqa/t300/dipper --evaluation_metrics all &
+CUDA_VISIBLE_DEVICES=1 nohup python watermark_reliability_release/evaluation_pipeline.py --wandb True --watermark john23 --run_name eva-john23-lfqa-t300 --input_dir /home/jkl6486/sok-llm-watermark/runs/john23/lfqa/t300 --evaluation_metrics all &
+
