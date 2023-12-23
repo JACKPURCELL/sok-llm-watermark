@@ -1,4 +1,4 @@
-```
+
 # SoK-LLM-Watermark
 
 ## Argument Parsers
