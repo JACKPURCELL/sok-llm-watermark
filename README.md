@@ -1,10 +1,25 @@
 
 # SoK-LLM-Watermark
+## Apply the permission of LLaMa in huggingface
+```shell
+https://huggingface.co/meta-llama/Llama-2-7b-chat-hf
+```
+You can replace to this if you have no permission
+```shell
+https://huggingface.co/daryl149/llama-2-7b-chat-hf
+```
+## Sign up Wandb
+```shell
+#https://wandb.ai/alps-lab-sok
 
+wandb login
+#Input your wandb key
+```
 ## Environment
 ```shell
 #Python 3.11
-
+conda create -n sokwm python=3.11
+conda activate sokwm
 pip install -r watermark_reliability_release/requirements.txt
 ```
 
