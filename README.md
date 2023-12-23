@@ -1,6 +1,13 @@
 
 # SoK-LLM-Watermark
 
+## Environment
+```shell
+#Python 3.11
+
+pip install -r watermark_reliability_release/requirements.txt
+```
+
 ## Argument Parsers
 Set up the argument parsers for the minimum and maximum number of generations and tokens.
 ```python
