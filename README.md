@@ -25,7 +25,7 @@ Use two GPUs for watermark injection. Commands for running the watermark injecti
 ```shell
   CUDA_VISIBLE_DEVICES=2,0,1,3 python watermark_reliability_release/generation_pipeline.py --watermark john23 --dataset_name c4 --run_name gen-c4-john23 --model_name_or_path meta-llama/Llama-2-7b-chat-hf --min_generations 1000
 ```
-Put it to backend:
+Put it to background:
 ```shell
   CUDA_VISIBLE_DEVICES=2,0,1,3 nohup python watermark_reliability_release/generation_pipeline.py xxxxxx &
 ```
