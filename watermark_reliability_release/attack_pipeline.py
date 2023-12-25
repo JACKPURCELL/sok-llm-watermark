@@ -29,11 +29,13 @@ from utils.evaluation import NO_CHECK_ARGS, load_tokenizer
 
 from utils.attack import (
     SUPPORTED_ATTACK_METHODS,
+    get_helm_attack_att,
     gpt_attack,
     dipper_attack,
     tokenize_for_copy_paste,
     copy_paste_attack,
     scramble_attack,
+    helm_attack
 )
 
 # print(f"Current huggingface cache dir: {os.environ['HF_HOME']}")
@@ -182,6 +184,21 @@ def main(args):
         gen_table_attacked_ds = dipper_attack(
             gen_table_ds, lex=args.lex, order=args.order, args=args
         )
+    
+    ###########################################################################
+    # DIPPER attack
+    ###########################################################################
+
+    elif "helm" in args.attack_method :
+        print("Running HELM attack")
+        att = get_helm_attack_att(args.helm_attack_method)
+        # print(f"Using lexical diversity: {args.lex}, order diversity: {args.order}")
+        tokenizer = load_tokenizer(args)
+        tokenize_for_copy_paste_partial = partial(helm_attack, att=att, 
+                                                  tokenizer=tokenizer,
+                                                  args=args)
+        gen_table_attacked_ds = gen_table_ds.map(tokenize_for_copy_paste_partial, batched=False)
+
 
     ###########################################################################
     # Scramble attack
@@ -323,6 +340,13 @@ if __name__ == "__main__":
         choices=SUPPORTED_ATTACK_METHODS,
         default="gpt",
         help="The attack method to use.",
+    )
+    parser.add_argument(
+        "--helm_attack_method",
+        type=str,
+        choices=["MisspellingAttack","TypoAttack","ContractionAttack","LowercaseAttack","ExpansionAttack"],
+        default="MisspellingAttack",
+        help="The attack method to helm.",
     )
     parser.add_argument(
         "--attack_model_name",

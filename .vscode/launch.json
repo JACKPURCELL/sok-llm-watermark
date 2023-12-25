@@ -52,21 +52,21 @@
             "console": "integratedTerminal",
             "justMyCode": true,
             "env": {
-                "CUDA_VISIBLE_DEVICES": "1"
+                "CUDA_VISIBLE_DEVICES": "0,1,2"
             },
             "args": [
                 "--watermark",
-                "lean23",
+                "rohith23",
                 "--dataset_name",
-                "hc3",
+                "c4",
                 "--run_name",
-                "test-gen-lean23",
+                "test-gen-rohith23",
                 "--model_name_or_path",
                 "meta-llama/Llama-2-7b-chat-hf",
                 "--min_generations",
                 "8",
                 "--max_new_tokens",
-                "200",
+                "100",
 
 
 
@@ -80,15 +80,15 @@
             "console": "integratedTerminal",
             "justMyCode": true,
             "env": {
-                "CUDA_VISIBLE_DEVICES": "1"
+                "CUDA_VISIBLE_DEVICES": "0,1,2"
             },
             "args": [
                 "--watermark",
-                "aiwei23",
+                "rohith23",
                 "--run_name",
-                "eva-aiwei23-hc3",
+                "eva-rohith23-hc3",
                 "--input_dir",
-                "/home/jkl6486/sok-llm-watermark/runs/aiwei23/hc3",
+                "/home/jkl6486/sok-llm-watermark/runs/rohith23/hc3",
                 "--evaluation_metrics",
                 "z-score",               
 
@@ -108,13 +108,13 @@
             "args": [
                 
                 "--run_name",
-                "dipper-attack-xuandong23b",
+                "test-helm-attack-xuandong23b",
                 "--input_dir",
                 "/home/jkl6486/sok-llm-watermark/runs/xuandong23b/hc3",
                 "--output_dir",
-                "/home/jkl6486/sok-llm-watermark/runs/xuandong23b/hc3/dipper",
+                "/home/jkl6486/sok-llm-watermark/runs/xuandong23b/hc3/helm",
                 "--attack_method",
-                "dipper"
+                "helm"
                
             ]
         },

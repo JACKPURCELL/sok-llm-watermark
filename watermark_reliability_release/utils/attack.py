@@ -21,9 +21,10 @@ from utils.dipper_attack_pipeline import generate_dipper_paraphrases
 
 from utils.evaluation import OUTPUT_TEXT_COLUMN_NAMES
 from utils.copy_paste_attack import single_insertion, triple_insertion_single_len, k_insertion_t_len
+import utils.helm_attack as helm
 
 # SUPPORTED_ATTACK_METHODS = ["gpt", "dipper", "copy-paste", "scramble"]
-SUPPORTED_ATTACK_METHODS = [ "dipper", "copy-paste", "scramble"]
+SUPPORTED_ATTACK_METHODS = [ "dipper", "copy-paste", "scramble","helm"]
 
 
 def scramble_attack(example, tokenizer=None, args=None):
@@ -172,3 +173,22 @@ def copy_paste_attack(example, tokenizer=None, args=None):
     example["w_wm_output_attacked_length"] = len(tokenized_attacked_output)
 
     return example
+
+
+def get_helm_attack_att(attack_method):
+    # attack = "helm_MisspellingAttack"
+    att = getattr(helm, attack_method)()
+    return att
+
+def helm_attack(example, att=None, tokenizer=None, args=None):
+    # check if the example is long enough to attack
+    if not check_output_column_lengths(example, min_len=args.cp_attack_min_len):
+        # # if not, copy the orig w_wm_output to w_wm_output_attacked
+        # NOTE changing this to return "" so that those fail/we can filter out these examples
+        example["w_wm_output_attacked"] = ""
+        example["w_wm_output_attacked_length"] = 0
+        return example
+    
+    w_wm_output_attacked = att.warp(example["w_wm_output"])
+    example["w_wm_output_attacked"] = w_wm_output_attacked
+    example["w_wm_output_attacked_length"] = len(tokenizer(w_wm_output_attacked)["input_ids"])
