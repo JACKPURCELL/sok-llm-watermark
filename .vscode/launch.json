@@ -119,7 +119,7 @@
             ]
         },
         {
-            "name": "attack_oracle_pipeline",
+            "name": "attack_swap_pipeline",
             
               "type": "python",
               "request": "launch",
@@ -132,13 +132,13 @@
               "args": [
                   
                   "--run_name",
-                  "test-oracle-attack-xuandong23b",
+                  "test-swap-attack-xuandong23b",
                   "--input_dir",
                   "/home/jkl6486/sok-llm-watermark/runs/xuandong23b/c4/10test",
                   "--output_dir",
-                  "/home/jkl6486/sok-llm-watermark/runs/xuandong23b/c4/10test/oracle",
+                  "/home/jkl6486/sok-llm-watermark/runs/xuandong23b/c4/10test/swap",
                   "--attack_method",
-                  "oracle"
+                  "swap"
                  
               ]
           },

@@ -24,10 +24,13 @@ from utils.dipper_attack_pipeline import generate_dipper_paraphrases
 from utils.evaluation import OUTPUT_TEXT_COLUMN_NAMES
 from utils.copy_paste_attack import single_insertion, triple_insertion_single_len, k_insertion_t_len
 import utils.helm_attack as helm
+from utils.swap_attack import SwapAttack
+
 # from utils.oracle_attack.attack import Attacker, Oracle, Trainer
 import utils.oracle_attack.attack as oracle_att
+from utils.synonym import SynonymAttack
 # SUPPORTED_ATTACK_METHODS = ["gpt", "dipper", "copy-paste", "scramble"]
-SUPPORTED_ATTACK_METHODS = [ "dipper", "copy-paste", "scramble","helm","oracle"]
+SUPPORTED_ATTACK_METHODS = [ "dipper", "copy-paste", "scramble","helm","oracle","swap","synonym"]
 
 
 def scramble_attack(example, tokenizer=None, args=None):
@@ -195,8 +198,51 @@ def helm_attack(example, att=None, tokenizer=None, args=None):
     w_wm_output_attacked = att.warp(example["w_wm_output"])
     example["w_wm_output_attacked"] = w_wm_output_attacked
     example["w_wm_output_attacked_length"] = len(tokenizer(w_wm_output_attacked)["input_ids"])
+    return example
     
+    
+def get_swap_attack_att():
+    # attack = "helm_MisspellingAttack"
+    att = SwapAttack()
+    return att
 
+def swap_attack(example, att=None, tokenizer=None, args=None):
+    # check if the example is long enough to attack
+    if not check_output_column_lengths(example, min_len=args.cp_attack_min_len):
+        # # if not, copy the orig w_wm_output to w_wm_output_attacked
+        # NOTE changing this to return "" so that those fail/we can filter out these examples
+        example["w_wm_output_attacked"] = ""
+        example["w_wm_output_attacked_length"] = 0
+        return example
+    
+    w_wm_output_attacked = att.warp(example["w_wm_output"])
+    example["w_wm_output_attacked"] = w_wm_output_attacked
+    example["w_wm_output_attacked_length"] = len(tokenizer(w_wm_output_attacked)["input_ids"])
+    return example
+    
+    
+def get_synonym_attack_att():
+    # attack = "helm_MisspellingAttack"
+    att = SynonymAttack(p=0.5)
+    return att
+
+def synonym_attack(example, att=None, tokenizer=None, args=None):
+    # check if the example is long enough to attack
+    if not check_output_column_lengths(example, min_len=args.cp_attack_min_len):
+        # # if not, copy the orig w_wm_output to w_wm_output_attacked
+        # NOTE changing this to return "" so that those fail/we can filter out these examples
+        example["w_wm_output_attacked"] = ""
+        example["w_wm_output_attacked_length"] = 0
+        return example
+    
+    # tokenize_input = tokenizer(example["truncated_input"], return_tensors="pt")["input_ids"]
+    w_wm_output_attacked = att.warp(example["w_wm_output"])
+    example["w_wm_output_attacked"] = w_wm_output_attacked
+    example["w_wm_output_attacked_length"] = len(tokenizer(w_wm_output_attacked)["input_ids"])
+    return example
+    
+    
+       
 def oracle_attack(dataset,args):
     oracle_args = oracle_att.get_cmd_args()
     # oracle_args.dataset = 'c4_realnews'

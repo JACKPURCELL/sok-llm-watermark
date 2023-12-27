@@ -36,7 +36,11 @@ from utils.attack import (
     copy_paste_attack,
     scramble_attack,
     helm_attack,
-    oracle_attack
+    oracle_attack,
+    swap_attack,
+    synonym_attack,
+    get_swap_attack_att,
+    get_synonym_attack_att
 )
 
 # print(f"Current huggingface cache dir: {os.environ['HF_HOME']}")
@@ -199,6 +203,35 @@ def main(args):
                                                   tokenizer=tokenizer,
                                                   args=args)
         gen_table_attacked_ds = gen_table_ds.map(tokenize_for_copy_paste_partial, batched=False)
+
+    ###########################################################################
+    # Swap attack
+    ###########################################################################
+
+    elif "swap" in args.attack_method :
+        print("Running swap attack")
+        att = get_swap_attack_att()
+        # print(f"Using lexical diversity: {args.lex}, order diversity: {args.order}")
+        tokenizer = load_tokenizer(args)
+        tokenize_for_copy_paste_partial = partial(swap_attack, att=att, 
+                                                  tokenizer=tokenizer,
+                                                  args=args)
+        gen_table_attacked_ds = gen_table_ds.map(tokenize_for_copy_paste_partial, batched=False)
+
+    ###########################################################################
+    # Synonym attack
+    ###########################################################################
+
+    elif "synonym" in args.attack_method :
+        print("Running synonym attack")
+        att = get_synonym_attack_att()
+        # print(f"Using lexical diversity: {args.lex}, order diversity: {args.order}")
+        tokenizer = load_tokenizer(args)
+        tokenize_for_copy_paste_partial = partial(synonym_attack, att=att, 
+                                                  tokenizer=tokenizer,
+                                                  args=args)
+        gen_table_attacked_ds = gen_table_ds.map(tokenize_for_copy_paste_partial, batched=False)
+
 
     ###########################################################################
     # Oracle attack
