@@ -118,6 +118,30 @@
                
             ]
         },
+        {
+            "name": "attack_oracle_pipeline",
+            
+              "type": "python",
+              "request": "launch",
+              "program": "watermark_reliability_release/attack_pipeline.py",
+              "console": "integratedTerminal",
+              "justMyCode": true,
+              "env": {
+                  "CUDA_VISIBLE_DEVICES": "1,3"
+              },
+              "args": [
+                  
+                  "--run_name",
+                  "test-oracle-attack-xuandong23b",
+                  "--input_dir",
+                  "/home/jkl6486/sok-llm-watermark/runs/xuandong23b/c4/10test",
+                  "--output_dir",
+                  "/home/jkl6486/sok-llm-watermark/runs/xuandong23b/c4/10test/oracle",
+                  "--attack_method",
+                  "oracle"
+                 
+              ]
+          },
 
     ]
 }

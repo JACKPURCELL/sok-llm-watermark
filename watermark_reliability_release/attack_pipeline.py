@@ -35,7 +35,8 @@ from utils.attack import (
     tokenize_for_copy_paste,
     copy_paste_attack,
     scramble_attack,
-    helm_attack
+    helm_attack,
+    oracle_attack
 )
 
 # print(f"Current huggingface cache dir: {os.environ['HF_HOME']}")
@@ -186,7 +187,7 @@ def main(args):
         )
     
     ###########################################################################
-    # DIPPER attack
+    # HELM attack
     ###########################################################################
 
     elif "helm" in args.attack_method :
@@ -199,6 +200,16 @@ def main(args):
                                                   args=args)
         gen_table_attacked_ds = gen_table_ds.map(tokenize_for_copy_paste_partial, batched=False)
 
+    ###########################################################################
+    # Oracle attack
+    ###########################################################################
+
+    elif args.attack_method == "oracle":
+        print("Running Oracle attack")
+        gen_table_attacked_ds = oracle_attack(
+            gen_table_ds,  args=args
+        )
+        
 
     ###########################################################################
     # Scramble attack

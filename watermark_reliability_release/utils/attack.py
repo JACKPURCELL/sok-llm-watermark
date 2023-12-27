@@ -17,14 +17,17 @@
 import openai
 import random
 import torch
+from tqdm import tqdm
+
 from utils.dipper_attack_pipeline import generate_dipper_paraphrases
 
 from utils.evaluation import OUTPUT_TEXT_COLUMN_NAMES
 from utils.copy_paste_attack import single_insertion, triple_insertion_single_len, k_insertion_t_len
 import utils.helm_attack as helm
-
+# from utils.oracle_attack.attack import Attacker, Oracle, Trainer
+import utils.oracle_attack.attack as oracle_att
 # SUPPORTED_ATTACK_METHODS = ["gpt", "dipper", "copy-paste", "scramble"]
-SUPPORTED_ATTACK_METHODS = [ "dipper", "copy-paste", "scramble","helm"]
+SUPPORTED_ATTACK_METHODS = [ "dipper", "copy-paste", "scramble","helm","oracle"]
 
 
 def scramble_attack(example, tokenizer=None, args=None):
@@ -192,3 +195,57 @@ def helm_attack(example, att=None, tokenizer=None, args=None):
     w_wm_output_attacked = att.warp(example["w_wm_output"])
     example["w_wm_output_attacked"] = w_wm_output_attacked
     example["w_wm_output_attacked_length"] = len(tokenizer(w_wm_output_attacked)["input_ids"])
+    
+
+def oracle_attack(dataset,args):
+    oracle_args = oracle_att.get_cmd_args()
+    # oracle_args.dataset = 'c4_realnews'
+    attacker = oracle_att.Attacker()    
+
+    
+    # load more from the jsonl file...
+    # prefix = f'{watermark_scheme}-watermark/{out_folder}' 
+    # data = load_data(f"{prefix}/{dataset}_{watermark_scheme}.jsonl") 
+    w_wm_output_attacked = []
+    print(oracle_args)
+    oracle = oracle_att.Oracle(check_quality=oracle_args.check_quality, choice_granuality=oracle_args.choice_granularity)
+    
+    for i, data in tqdm(enumerate(dataset), desc="Processing oracle phrases"):
+        if "truncated_input" in list(data.keys()):
+            query = data["truncated_input"]
+        elif "question" in list(data.keys()):
+            query = data["question"]
+        else:
+            raise ValueError("No query found in the data.")
+        response = data["w_wm_output"]
+        if data["w_wm_output_length"] < 30:
+            w_wm_output_attacked.append(response)
+            continue
+        
+        # datum = {"query": query,
+        #         "output_with_watermark": response,
+        #         }
+        
+            
+
+        attacker.prefix = query
+        oracle.set_query_and_response(query, response)
+        # oracle = Oracle(query, response, check_quality=oracle_args.check_quality, choice_granuality=oracle_args.choice_granularity)
+        print(f"Iteration {i}-th data:")
+        print(f"Query: {query}")
+        trainer = oracle_att.Trainer( oracle, oracle_args)
+        result_dict = trainer.random_walk_attack(oracle, attacker)
+        #Final output
+        paraphrased_response = result_dict["paraphrased_response"]
+        # print(f"Response: {response}")
+        # print(f"Paraphrased Response: {paraphrased_response}")
+        # result_dict["watermarked_response"] = datum["output_with_watermark"]
+        # result_dict["query"] = query
+    
+        w_wm_output_attacked.append(paraphrased_response)
+        
+                
+    dataset = dataset.add_column("w_wm_output_attacked", w_wm_output_attacked)
+    return dataset
+    
+    
