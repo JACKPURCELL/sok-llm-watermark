@@ -5,3 +5,5 @@ if __name__ == "__main__":
     print(c)
     print(str(c))
     print(str(c)[2:])
+    a = int("",2)
+    print(a)

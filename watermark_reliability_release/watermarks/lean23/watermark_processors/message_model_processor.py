@@ -9,8 +9,8 @@ from transformers import PreTrainedTokenizerFast, PreTrainedModel, PreTrainedTok
 import torch.nn.functional as F
 
 from .base_processor import WmProcessorBase
-from ..utils.random_utils import np_temp_random
-from ..utils.hash_fn import Hash1
+from .utils.random_utils import np_temp_random
+from .utils.hash_fn import Hash1
 from .message_models.lm_message_model import LMMessageModel, TextTooShortError
 
 HfTokenizer = Union[PreTrainedTokenizerFast, PreTrainedTokenizer]
@@ -124,7 +124,8 @@ class WmProcessorMessageModel(WmProcessorBase):
             if input_ids.shape[1] < self.lm_prefix_len:
                 raise TextTooShortError
             message_len = input_ids.shape[1] - self.lm_prefix_len
-            cur_message = self.message[message_len // self.encode_len]
+            index = message_len // self.encode_len % self.message.shape[0]
+            cur_message = self.message[index]
             cur_message = cur_message.reshape(-1)
             if message_len % self.encode_len == 0:
                 if self.strategy in ['max_confidence', 'max_confidence_updated']:

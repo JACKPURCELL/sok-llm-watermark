@@ -30,3 +30,8 @@ watermark_reliability_release/watermarks/aiwei23/model copy/sub_net.pt
 *.pkl
 model/combine_model.pt
 model/sub_net.pt
+watermark_reliability_release/watermarks/aiwei23/model/
+
+result_kiyoon23.txt
+aiwei_result_main.txt
+watermark_reliability_release/watermarks/aiwei23/

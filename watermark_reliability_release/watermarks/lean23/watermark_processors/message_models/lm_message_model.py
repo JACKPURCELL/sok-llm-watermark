@@ -6,8 +6,8 @@ from transformers import PreTrainedTokenizerFast, PreTrainedTokenizer
 import torch
 
 from .base_message_model_fast import BaseMessageModelFast, TextTooShortError
-from ...utils.hash_fn import Hash1, random_shuffle
-from ...utils.random_utils import np_temp_random
+from ..utils.hash_fn import Hash1, random_shuffle
+from ..utils.random_utils import np_temp_random
 
 HfTokenizer = Union[PreTrainedTokenizerFast, PreTrainedTokenizer]
 

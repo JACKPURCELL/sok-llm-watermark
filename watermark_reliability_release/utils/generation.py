@@ -483,8 +483,12 @@ def generate(
         if args.generation_seed is not None:
             torch.manual_seed(args.generation_seed)
         output_without_watermark = generate_without_watermark(input_ids=input_ids)
-
-        if args.watermark != 'kiyoon23':
+        if args.watermark == 'lean23':
+            if args.generation_seed is not None:
+                torch.manual_seed(args.generation_seed)
+            generate_with_watermark.keywords['logits_processor'][0].logit_processor[2].start_length = input_ids.shape[1]
+            output_with_watermark = generate_with_watermark(input_ids=input_ids)
+        elif args.watermark != 'kiyoon23':
             if args.generation_seed is not None:
                 torch.manual_seed(args.generation_seed)
             output_with_watermark = generate_with_watermark(input_ids=input_ids)

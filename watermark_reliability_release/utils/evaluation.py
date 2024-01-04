@@ -42,6 +42,7 @@ from utils.hypothesis_testing import (
 
 from watermark_processor import WatermarkDetector
 import watermarks
+import dill
 
 # These areguments are ignored when doing checks between meta file and cmdline args
 NO_CHECK_ARGS = [
@@ -205,31 +206,13 @@ def load_detector(args):
             watermark_detector = watermarks.rohith23_WatermarkDetector(vocab_size=tokenizer.vocab_size,tokenizer=tokenizer)
     
         case 'lean23':
-            model, tokenizer, device = load_model(args)
-            watermark_processor = watermarks.lean23_BalanceMarkingWatermarkLogitsProcessor(tokenizer=tokenizer,
-                                                                        lm_tokenizer=tokenizer,
-                                                                        lm_model=model,
-                                                                        delta=args.lean_delta,
-                                                                        lm_prefix_len=args.lm_prefix_len,
-                                                                        lm_top_k=args.lm_top_k,
-                                                                        message_code_len=args.message_code_len,
-                                                                        random_permutation_num=args.random_permutation_num,
-                                                                        encode_ratio=args.encode_ratio,
-                                                                        max_confidence_lbd=args.max_confidence_lbd,
-                                                                        message_model_strategy=args.message_model_strategy,
-                                                                        message=args.message,
-                                                                        top_k=args.top_k,
-                                                                        repeat_penalty=args.repeat_penalty
-                                                                        )
+            watermark_processor = dill.load(open("/home/jkl6486/sok-llm-watermark/watermark_reliability_release/watermarks/lean23/processor/lean23.pkl", "rb"))
             watermark_detector = watermarks.lean23_WatermarkDetector(watermark_processor=watermark_processor,
-                                                                    generated_length=args.generated_length,
-                                                                    message_code_len=args.message_code_len,
-                                                                    encode_ratio=args.encode_ratio,
-                                                                    tokenizer=tokenizer,
-                                                                    prompt_length=args.prompt_length,
-                                                                    message=args.message
-                                                                    )
-
+                                                                     generated_length=args.generated_length,
+                                                                     message_code_len=args.message_code_len,
+                                                                     encode_ratio=args.encode_ratio,
+                                                                     message=args.message,
+                                                                     tokenizer=tokenizer)
         case 'aiwei23':
             model, tokenizer, device = load_model(args)
             if args.aiwei_trained:

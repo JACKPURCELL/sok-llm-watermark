@@ -38,7 +38,7 @@ from math import sqrt
 #       primaryClass={cs.CL}
 # }
 
-def prepare_generator(bit_number, sample_number, window_size, layers):
+def prepare_generator(bit_number, sample_number, window_size, layers, data_dir, model_dir):
     """
             Function for preparing data and training generator.
 
@@ -48,8 +48,6 @@ def prepare_generator(bit_number, sample_number, window_size, layers):
                 window_size: The window size of the method.
                 layers: The number of layers of the watermark generator model.
         """
-    data_dir = "./data/train_generator_data/train_generator_data.jsonl"
-    model_dir = "./model/"
     print("Generating training data for watermark generator.")
     generate_model_key_data(bit_number, sample_number, data_dir, window_size)
     print("Training watermark generator.")
@@ -231,9 +229,9 @@ class aiwei23_WatermarkDetector:
             lm_model = None,
             lm_tokenizer=None,
             beam_size: int = 0,
-            model_dir = "./model/",
-            llm_name = 'llama-7b',
-            data_dir = './data',
+            model_dir = None,
+            llm_name = None,
+            data_dir = None,
             z_value = 4
     ):
         # watermarking parameters
@@ -250,7 +248,12 @@ class aiwei23_WatermarkDetector:
         self.cache = {}
         self.delta = delta
         self.beam_size = beam_size
-        self.llm_name = llm_name
+        if llm_name == "meta-llama/Llama-2-7b-chat-hf":
+            self.llm_name = "llama-7b"
+        elif llm_name == "facebook/opt-6.7b":
+            self.llm_name = "opt-6.7b"
+        elif llm_name == "gpt2":
+            self.llm_name = "gpt2"
         self.data_dir = data_dir
         self.z_value = z_value
         self.layers = layers
@@ -396,17 +399,15 @@ class aiwei23_WatermarkDetector:
         device = "cuda" if torch.cuda.is_available() else "cpu"
 
         print("Generating test data for detector.")
-        # if self.llm_name == "gpt2":
-        #     tokenizer = GPT2Tokenizer.from_pretrained("gpt2")
-        #     model = GPT2LMHeadModel.from_pretrained("gpt2")
-        #     model = model.to(device)
-        # elif self.llm_name == "opt-6.7b":
-        #     tokenizer = AutoTokenizer.from_pretrained("facebook/opt-6.7b", use_fast=False)
-        #     model = AutoModelForCausalLM.from_pretrained("facebook/opt-6.7b", torch_dtype=torch.float16).cuda()
-        #     model = model.to(device)
-        # elif self.llm_name == "llama-7b":
-        #     tokenizer = AutoTokenizer.from_pretrained("decapoda-research/llama-7b-hf")
-        #     model = AutoModelForCausalLM.from_pretrained("decapoda-research/llama-7b-hf", device_map='auto')
+        if self.llm_name == "gpt2":
+            self.lm_tokenizer = GPT2Tokenizer.from_pretrained("gpt2")
+            self.lm_model = GPT2LMHeadModel.from_pretrained("gpt2", device_map='auto')
+        elif self.llm_name == "opt-6.7b":
+            self.lm_tokenizer = AutoTokenizer.from_pretrained("facebook/opt-6.7b", use_fast=False)
+            self.lm_model = AutoModelForCausalLM.from_pretrained("facebook/opt-6.7b", device_map='auto')
+        elif self.llm_name == "llama-7b":
+            self.lm_tokenizer = AutoTokenizer.from_pretrained("meta-llama/Llama-2-7b-chat-hf")
+            self.lm_model = AutoModelForCausalLM.from_pretrained("meta-llama/Llama-2-7b-chat-hf", device_map='auto')
 
         watermark_processor = aiwei23_WatermarkLogitsProcessor(vocab=list(self.lm_tokenizer.get_vocab().values()),
                                                        delta=self.delta,
@@ -464,7 +465,7 @@ class aiwei23_WatermarkDetector:
         idx = 1
         for line in lines:
             try:
-                if idx > 500:  # you can change it
+                if idx > 100:  # you can change it
                     break
                 data = json.loads(line)
                 text = data['text']
@@ -512,10 +513,9 @@ class aiwei23_WatermarkDetector:
 
         return watermark_processor
 
-    def train_model(self):
+    def train_model(self, output_model_dir):
         # Prepare data
         model_file = self.model_dir + "sub_net.pt"
-        output_model_dir = "./model/"
         train_data = prepare_data(os.path.join(self.data_dir, 'train_data.jsonl'), train_or_test="train", bit=self.bit_number,
                                   z_value=self.z_value, llm_name=self.llm_name)
         test_data = prepare_data(os.path.join(self.data_dir, 'test_data.jsonl'), train_or_test="test", bit=self.bit_number,
@@ -585,6 +585,7 @@ class aiwei23_WatermarkDetector:
 
                     # calculate acc, tp, fp, fn, tn, f1
                     predicted = (outputs.data > 0.5).int()
+                    print(outputs.data)
                     total += targets.size(0)
                     correct += (predicted == targets).sum().item()
                     tp += (predicted & targets).sum().item()
@@ -599,7 +600,7 @@ class aiwei23_WatermarkDetector:
             test_fnr = 100 * fn / (tp + fn)
             test_f1 = 100 * 2 * tp / (2 * tp + fn + fp)
 
-            ###print(f'Epoch: {epoch}, Train Loss: {sum(train_losses) / len(train_losses)}, Train Accuracy: {train_accuracy}%, Test Loss: {sum(test_losses) / len(test_losses)}, Test Accuracy: {test_accuracy}%, Test TPR: {test_tpr}%, Test FPR: {test_fpr}%, Test TNR: {test_tnr}%, Test FNR: {test_fnr}%, Test F1: {test_f1}%')
+            print(f'Epoch: {epoch}, Train Loss: {sum(train_losses) / len(train_losses)}, Train Accuracy: {train_accuracy}%, Test Loss: {sum(test_losses) / len(test_losses)}, Test Accuracy: {test_accuracy}%, Test TPR: {test_tpr}%, Test FPR: {test_fpr}%, Test TNR: {test_tnr}%, Test FNR: {test_fnr}%, Test F1: {test_f1}%')
 
             # calculate the average acc, tpr, fpr, tnr, fnr, f1 of the last 5 epochs
             if epochs - 5 <= epoch < epochs:
@@ -623,6 +624,7 @@ class aiwei23_WatermarkDetector:
         
         print(
             f'Test Accuracy: {acc_avg}%, Test TPR: {tpr_avg}%, Test FPR: {fpr_avg}%, Test TNR: {tnr_avg}%, Test FNR: {fnr_avg}%, Test F1: {f1_avg}%')
+
 
         print("public detector:")
         corr_num, tot_num, tp, fp, fn, tn = 0, 0, 0, 0, 0, 0
@@ -656,7 +658,7 @@ class aiwei23_WatermarkDetector:
     def get_detector_model(self):
         device = "cuda" if torch.cuda.is_available() else "cpu"
         model = TransformerClassifier(self.bit_number, self.layers, 64, 128)
-        model.load_state_dict(torch.load("./model/detector_model.pt"))
+        model.load_state_dict(torch.load(self.model_dir + "detector_model.pt"))
         model = model.to(device)
         model.eval()
         self.detector_model = model
@@ -738,10 +740,14 @@ if __name__ == "__main__":
     sampling_temp = 0.7
     max_new_token = 200
 
-    #prepare_generator(bit_number=bit_number,
-    #                  layers=layers,
-    #                  sample_number=sample_number,
-    #                  window_size=window_size)
+    data_dir="/home/jkl6486/sok-llm-watermark/watermark_reliability_release/watermarks/aiwei23/data/"
+    model_dir="/home/jkl6486/sok-llm-watermark/watermark_reliability_release/watermarks/aiwei23/"
+    '''prepare_generator(bit_number=bit_number,
+                      layers=layers,
+                      sample_number=sample_number,
+                      window_size=window_size,
+                      data_dir=data_dir,
+                      model_dir=model_dir)'''
 
     detector = aiwei23_WatermarkDetector(bit_number=bit_number,
                                          window_size=window_size,
@@ -755,10 +761,10 @@ if __name__ == "__main__":
                                          z_value=z_value)
 
     #detector.generate_and_save_train_data(num_samples=num_samples)
-    #watermark_processor = detector.generate_and_save_test_data(dataset_name=dataset_name,
-    #                                     sampling_temp=sampling_temp,
-    #                                     max_new_tokens=max_new_token)
-    detector.train_model()
+    '''watermark_processor = detector.generate_and_save_test_data(dataset_name=dataset_name,
+                                         sampling_temp=sampling_temp,
+                                         max_new_tokens=max_new_token)'''
+    detector.train_model("./aiweimainmodel")
 
 
 

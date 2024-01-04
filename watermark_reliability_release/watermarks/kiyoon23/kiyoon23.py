@@ -210,6 +210,15 @@ class kiyoon23():
 
             num_options = reduce(lambda x, y: x * y, [len(vw) for vw in corpus_level_watermarks])
             available_bit = math.floor(math.log2(num_options))
+            
+            ### If no available bit, return original sentence
+            if available_bit == 0:
+                original_sentences_string = ""
+                for i in sentences:
+                    original_sentences_string = original_sentences_string + i.text + " "
+                output_list.append(original_sentences_string.strip())
+                continue
+
             message = message.replace(" ", "")
             # left pad to available bit if given message is short
             message = "0" * (available_bit - len(message)) + message

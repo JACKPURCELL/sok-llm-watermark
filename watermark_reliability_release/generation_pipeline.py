@@ -14,12 +14,14 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import json
 import os
 import argparse
 from functools import partial
 from tqdm import tqdm
 import wandb
 import pickle
+import dill
 
 # print(f"Current huggingface cache dir: {os.environ['HF_HOME']}")
 
@@ -190,6 +192,52 @@ def main(args):
                                                                         top_k=args.lean23_top_k,
                                                                         repeat_penalty=args.repeat_penalty
                                                                         )
+            dill.dump(watermark_processor.watermark_processor, open("/home/jkl6486/sok-llm-watermark/watermark_reliability_release/watermarks/lean23/processor/lean23.pkl", "wb"))
+            '''filename = "/home/jkl6486/codable-watermarking-for-llm/gen_table.jsonl"
+            with open(filename, "r", encoding="utf-8") as f:
+                c4_sliced_and_filted = [json.loads(line) for line in f.read().strip().split("\n")]
+                decoded_message_list = []
+                other_information_list = []
+                for text in c4_sliced_and_filted:
+                    tokenized_input = tokenizer(text['truncated_input'], return_tensors='pt').to(model.device)
+                    #tokenized_input = truncate(tokenized_input, max_length=args.prompt_length)
+
+                    ### Could be problem here?
+                    temperature = 1.0
+                    generated_length=200
+                    watermark_processor.logit_processor[2].start_length = tokenized_input['input_ids'].shape[-1]
+                    output_tokens = model.generate(**tokenized_input,
+                                                temperature=temperature,
+                                                max_new_tokens=generated_length,
+                                                num_beams=args.num_beams,
+                                                logits_processor=[watermark_processor])
+
+                    output_text = \
+                        tokenizer.batch_decode(
+                            output_tokens[:, tokenized_input["input_ids"].shape[-1]:],
+                            skip_special_tokens=True)[0]
+
+
+                    decoded_message, other_information = watermark_processor.logit_processor[2].decode(output_text, disable_tqdm=True)
+                    decoded_message_list.append(decoded_message)
+                    other_information_list.append(other_information)
+                    print()
+    
+            print()'''
+            ### Delete this line
+            '''args_list = [args.lean_delta, 
+                         args.lm_prefix_len, 
+                         args.lm_top_k, 
+                         args.message_code_len, 
+                         args.random_permutation_num, 
+                         args.encode_ratio, 
+                         args.max_confidence_lbd, 
+                         args.message_model_strategy, 
+                         args.message, 
+                         args.lean23_top_k, 
+                         args.repeat_penalty]
+            dill.dump(args_list, open("/home/jkl6486/sok-llm-watermark/watermark_reliability_release/watermarks/lean23/processor/lean23_args.pkl", "wb"))
+            dill.dump(watermark_processor, open("/home/jkl6486/sok-llm-watermark/watermark_reliability_release/watermarks/lean23/processor/lean23.pkl", "wb"))'''
 
 
         case 'aiwei23':
@@ -199,7 +247,7 @@ def main(args):
                                                         layers=args.layers,
                                                         gamma=args.gamma,
                                                         delta=args.delta,
-                                                        lm_model =model,
+                                                        lm_model = model,
                                                         lm_tokenizer = tokenizer,
                                                         beam_size=args.beam_size,
                                                         data_dir=args.data_dir,
@@ -208,26 +256,31 @@ def main(args):
                 watermark_processor = watermark_detector.build_logits_processor()
                 print("Load processor and detector done.")
             else:
-                watermarks.prepare_generator(bit_number=args.bit_number,
+                '''watermarks.prepare_generator(bit_number=args.bit_number,
                                     layers=args.layers,
                                     sample_number=args.sample_number,
-                                    window_size=args.window_size)
+                                    window_size=args.window_size,
+                                    data_dir="/home/jkl6486/sok-llm-watermark/watermark_reliability_release/watermarks/aiwei23/data/train_generator_data/train_generator_data.jsonl",
+                                    model_dir="/home/jkl6486/sok-llm-watermark/watermark_reliability_release/watermarks/aiwei23/model")'''
+                
                 watermark_detector = watermarks.aiwei23_WatermarkDetector(bit_number=args.bit_number,
-                                                        window_size=args.window_size,
+                                                        window_size=5,
+                                                        #args.window_size,
                                                         layers=args.layers,
                                                         gamma=args.gamma,
                                                         delta=args.delta,
-                                                        lm_model =model,
-                                                        lm_tokenizer = tokenizer,
+                                                        llm_name = "gpt2",
                                                         beam_size=args.beam_size,
                                                         data_dir=args.data_dir,
-                                                        z_value=args.z_value)
+                                                        z_value=1,
+                                                        model_dir="/home/jkl6486/sok-llm-watermark/watermark_reliability_release/watermarks/aiwei23/model/")
 
-                watermark_detector.generate_and_save_train_data(num_samples=args.num_samples)
-                watermark_processor = watermark_detector.generate_and_save_test_data(dataset_name=args.train_dataset_name,
+                #watermark_detector.generate_and_save_train_data(num_samples=args.num_samples)
+                '''watermark_processor = watermark_detector.generate_and_save_test_data(dataset_name=args.train_dataset_name,
                                                                             sampling_temp=args.sampling_temp,
-                                                                            max_new_tokens=args.max_new_token)
-                watermark_detector.train_model()
+                                                                            max_new_tokens=args.max_new_token)'''
+                
+                watermark_detector.train_model(output_model_dir="/home/jkl6486/sok-llm-watermark/watermark_reliability_release/watermarks/aiwei23/model/")
 
 
         case 'kiyoon23':
@@ -272,7 +325,6 @@ def main(args):
     if args.watermark == 'kiyoon23':
         generate_with_watermark = watermark_processor.embed_watermark
         generate_without_watermark = partial(model.generate, **gen_kwargs)
-        
     else:
         generate_without_watermark = partial(model.generate, **gen_kwargs)
         generate_with_watermark = partial(
@@ -697,12 +749,12 @@ if __name__ == "__main__":
             parser.add_argument("--lean_delta", type=float, default=1.5)
             parser.add_argument("--lm_prefix_len", type=int, default=10)
             parser.add_argument("--lm_top_k", type=int, default=-1),
-            parser.add_argument("--message_code_len", type=int, default=10)
+            parser.add_argument("--message_code_len", type=int, default=20)
             parser.add_argument("--random_permutation_num", type=int, default=100)
             parser.add_argument("--encode_ratio", type=float, default=10.0)
             parser.add_argument("--max_confidence_lbd", type=float, default=0.5)
             parser.add_argument("--message_model_strategy", type=str, default="vanilla")
-            parser.add_argument("--message", type=list, default=[9,10,100,43,65])
+            parser.add_argument("--message", type=list, default=[100,200,300,400,500])
             parser.add_argument("--lean23_top_k", type=int, default=1000)
             parser.add_argument("--repeat_penalty", type=float, default=1.5)
             parser.add_argument("--generated_length", type=int, default=200)
@@ -712,18 +764,18 @@ if __name__ == "__main__":
             parser.add_argument("--layers", type=int, default=5)
             parser.add_argument("--window_size", type=int, default=3)
             parser.add_argument("--llm_name", type=str, default="llama-7b")
-            parser.add_argument("--gamma", type=float, default=0.6)
+            parser.add_argument("--gamma", type=float, default=0.5)
             parser.add_argument("--delta", type=float, default= 2.0)
             parser.add_argument("--model_dir", type=str, default="./model/")
             parser.add_argument("--beam_size", type=int, default=0)
-            parser.add_argument("--data_dir", type=str, default="./data")
-            parser.add_argument("--z_value", type=int, default=4)
+            parser.add_argument("--data_dir", type=str, default="/home/jkl6486/sok-llm-watermark/watermark_reliability_release/watermarks/aiwei23/data/")
+            parser.add_argument("--z_value", type=int, default=1)
             parser.add_argument("--sample_number", type=int, default=2000, help="Number of samples for training generator.")
             parser.add_argument("--num_samples", type=int, default=10000, help="Number of samples for training detector.")
             parser.add_argument("--train_dataset_name", type=str, default="c4", help="The dataset used for training detector.")
             # parser.add_argument("--sampling_temp", type=float, default=0.7)
             parser.add_argument("--max_new_token", type=int, default=200)
-            parser.add_argument("--aiwei_trained", type=str2bool, default="True")
+            parser.add_argument("--aiwei_trained", type=str2bool, default="False")
         case 'kiyoon23':
             parser.add_argument("--exp_name_generic", type=str, default="tmp")
             parser.add_argument("--embed", type=str2bool, default=False)
