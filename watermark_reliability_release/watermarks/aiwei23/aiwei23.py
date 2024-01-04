@@ -102,7 +102,7 @@ def train_model_generator(data_dir, bit_number, model_dir, window_size, layers):
     optimizer = torch.optim.Adam(model.parameters(), lr=0.001)
 
     model.train()
-    epochs = 300
+    epochs = 500
     for epoch in tqdm(range(epochs)):
         for i, (inputs, targets) in enumerate(train_loader):
             inputs = inputs.float().cuda()

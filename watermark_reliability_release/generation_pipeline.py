@@ -256,12 +256,12 @@ def main(args):
                 watermark_processor = watermark_detector.build_logits_processor()
                 print("Load processor and detector done.")
             else:
-                '''watermarks.prepare_generator(bit_number=args.bit_number,
+                watermarks.prepare_generator(bit_number=args.bit_number,
                                     layers=args.layers,
                                     sample_number=args.sample_number,
                                     window_size=args.window_size,
                                     data_dir="/home/jkl6486/sok-llm-watermark/watermark_reliability_release/watermarks/aiwei23/data/train_generator_data/train_generator_data.jsonl",
-                                    model_dir="/home/jkl6486/sok-llm-watermark/watermark_reliability_release/watermarks/aiwei23/model")'''
+                                    model_dir="/home/jkl6486/sok-llm-watermark/watermark_reliability_release/watermarks/aiwei23/model/")
                 
                 watermark_detector = watermarks.aiwei23_WatermarkDetector(bit_number=args.bit_number,
                                                         window_size=5,
@@ -269,16 +269,16 @@ def main(args):
                                                         layers=args.layers,
                                                         gamma=args.gamma,
                                                         delta=args.delta,
-                                                        llm_name = "gpt2",
+                                                        llm_name = "meta-llama/Llama-2-7b-chat-hf",
                                                         beam_size=args.beam_size,
                                                         data_dir=args.data_dir,
-                                                        z_value=1,
+                                                        z_value=args.z_value,
                                                         model_dir="/home/jkl6486/sok-llm-watermark/watermark_reliability_release/watermarks/aiwei23/model/")
 
-                #watermark_detector.generate_and_save_train_data(num_samples=args.num_samples)
-                '''watermark_processor = watermark_detector.generate_and_save_test_data(dataset_name=args.train_dataset_name,
+                watermark_detector.generate_and_save_train_data(num_samples=args.num_samples)
+                watermark_processor = watermark_detector.generate_and_save_test_data(dataset_name=args.train_dataset_name,
                                                                             sampling_temp=args.sampling_temp,
-                                                                            max_new_tokens=args.max_new_token)'''
+                                                                            max_new_tokens=args.max_new_token)
                 
                 watermark_detector.train_model(output_model_dir="/home/jkl6486/sok-llm-watermark/watermark_reliability_release/watermarks/aiwei23/model/")
 
@@ -761,9 +761,9 @@ if __name__ == "__main__":
             parser.add_argument("--prompt_length", type=int, default=300)
         case 'aiwei23':    
             parser.add_argument("--bit_number", type=int, default=16) ### This is log2(vocab_size), which depends on the model, for opt, it is 16
-            parser.add_argument("--layers", type=int, default=5)
+            parser.add_argument("--layers", type=int, default=7)
             parser.add_argument("--window_size", type=int, default=3)
-            parser.add_argument("--llm_name", type=str, default="llama-7b")
+            parser.add_argument("--llm_name", type=str, default="meta-llama/Llama-2-7b-chat-hf")
             parser.add_argument("--gamma", type=float, default=0.5)
             parser.add_argument("--delta", type=float, default= 2.0)
             parser.add_argument("--model_dir", type=str, default="./model/")
