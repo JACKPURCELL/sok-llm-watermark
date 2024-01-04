@@ -52,21 +52,25 @@
             "console": "integratedTerminal",
             "justMyCode": true,
             "env": {
-                "CUDA_VISIBLE_DEVICES": "1"
+                "CUDA_VISIBLE_DEVICES": "0,1,2"
             },
             "args": [
                 "--watermark",
+<<<<<<< HEAD
                 "",
+=======
+                "rohith23",
+>>>>>>> 459b458b83402688751f4754113cf81c7ff413bf
                 "--dataset_name",
-                "hc3",
+                "c4",
                 "--run_name",
-                "test-gen-lean23",
+                "test-gen-rohith23",
                 "--model_name_or_path",
                 "meta-llama/Llama-2-7b-chat-hf",
                 "--min_generations",
                 "8",
                 "--max_new_tokens",
-                "200",
+                "100",
 
 
 
@@ -140,6 +144,7 @@
             "console": "integratedTerminal",
             "justMyCode": true,
             "env": {
+<<<<<<< HEAD
                 "CUDA_VISIBLE_DEVICES": "0,1,2,3"
             },
             "args": [
@@ -149,6 +154,17 @@
                 "eva-lean23-hc3",
                 "--input_dir",
                 "/home/jkl6486/sok-llm-watermark/runs/lean23/c4",
+=======
+                "CUDA_VISIBLE_DEVICES": "0,1,2"
+            },
+            "args": [
+                "--watermark",
+                "rohith23",
+                "--run_name",
+                "eva-rohith23-hc3",
+                "--input_dir",
+                "/home/jkl6486/sok-llm-watermark/runs/rohith23/hc3",
+>>>>>>> 459b458b83402688751f4754113cf81c7ff413bf
                 "--evaluation_metrics",
                 "z-score",   
                          
@@ -169,16 +185,40 @@
             "args": [
                 
                 "--run_name",
-                "dipper-attack-xuandong23b",
+                "test-helm-attack-xuandong23b",
                 "--input_dir",
                 "/home/jkl6486/sok-llm-watermark/runs/xuandong23b/hc3",
                 "--output_dir",
-                "/home/jkl6486/sok-llm-watermark/runs/xuandong23b/hc3/dipper",
+                "/home/jkl6486/sok-llm-watermark/runs/xuandong23b/hc3/helm",
                 "--attack_method",
-                "dipper"
+                "helm"
                
             ]
         },
+        {
+            "name": "attack_swap_pipeline",
+            
+              "type": "python",
+              "request": "launch",
+              "program": "watermark_reliability_release/attack_pipeline.py",
+              "console": "integratedTerminal",
+              "justMyCode": true,
+              "env": {
+                  "CUDA_VISIBLE_DEVICES": "1,3"
+              },
+              "args": [
+                  
+                  "--run_name",
+                  "test-swap-attack-xuandong23b",
+                  "--input_dir",
+                  "/home/jkl6486/sok-llm-watermark/runs/xuandong23b/c4/10test",
+                  "--output_dir",
+                  "/home/jkl6486/sok-llm-watermark/runs/xuandong23b/c4/10test/swap",
+                  "--attack_method",
+                  "swap"
+                 
+              ]
+          },
 
     ]
 }

@@ -28,15 +28,17 @@ import sys
 sys.path.insert(0, "..")
 
 from datasets import Dataset
-from utils.io import read_jsonlines, load_jsonlines
+import sys
+sys.path.insert(0, "/home/jkl6486/sok-llm-watermark")
+from watermark_reliability_release.utils.io import read_jsonlines, load_jsonlines
 
 import transformers
 
 # some file i/o helpers
-from utils.io import write_jsonlines, write_json
+from watermark_reliability_release.utils.io import write_jsonlines, write_json
 
-INPUT_DIR = "/cmlscratch/manlis/test/watermarking-root/input"
-OUTPUT_DIR = "/cmlscratch/manlis/test/watermarking-root/output"
+INPUT_DIR = "/home/jkl6486/sok-llm-watermark"
+OUTPUT_DIR = "/home/jkl6486/sok-llm-watermark"
 
 
 # 15 colorblind-friendly colors
@@ -606,18 +608,18 @@ if __name__ == "__main__":
     parser.add_argument(
         "--base_model_name",
         type=str,
-        default="facebook/opt-1.3b",
+        default="meta-llama/Llama-2-7b-chat-hf",
         help="Main model, path to pretrained model or model identifier from huggingface.co/models.",
     )
     parser.add_argument(
         "--token_len",
         type=int,
-        default=200,
+        default=100,
     )
     parser.add_argument(
         "--n_samples",
         type=int,
-        default=500,
+        default=1000,
     )
     parser.add_argument(
         "--chunk_size",

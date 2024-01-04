@@ -40,3 +40,7 @@ CUDA_VISIBLE_DEVICES=0,1,2,3 nohup python watermark_reliability_release/generati
 
 CUDA_VISIBLE_DEVICES=1,2,3 nohup python watermark_reliability_release/generation_pipeline.py --watermark rohith23 --dataset_name c4 --run_name gen-c4-rohith23-t300 --max_new_tokens 300 --model_name_or_path meta-llama/Llama-2-7b-chat-hf --output_dir rohith23/c4/t300 --min_generations 1000 &
 CUDA_VISIBLE_DEVICES=3,2,1 nohup python watermark_reliability_release/generation_pipeline.py --watermark lean23 --dataset_name c4 --run_name gen-c4-lean23-t300 --max_new_tokens 300 --model_name_or_path meta-llama/Llama-2-7b-chat-hf --output_dir lean23/c4/t300 --min_generations 1000 &
+
+
+# CUDA_VISIBLE_DEVICES=0,1 nohup python watermark_reliability_release/detectgpt/detectgpt_main.py --data_path runs/john23/c4/dipper/gen_table_attacked.jsonl &
+# CUDA_VISIBLE_DEVICES=3,1 nohup python watermark_reliability_release/detectgpt/detectgpt_main.py --data_path runs/xuandong23b/c4/dipper/gen_table_attacked.jsonl &
