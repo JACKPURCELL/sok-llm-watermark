@@ -293,6 +293,9 @@ def main(args):
                                               args.num_epochs,
                                               args.topk, message)
 
+
+        case 'xiaoniu':
+            pass
         ######################################################################
         # Add your code here
         ######################################################################
@@ -325,6 +328,8 @@ def main(args):
     if args.watermark == 'kiyoon23':
         generate_with_watermark = watermark_processor.embed_watermark
         generate_without_watermark = partial(model.generate, **gen_kwargs)
+    elif args.watermark == 'xiaoniu':
+        pass
     else:
         generate_without_watermark = partial(model.generate, **gen_kwargs)
         generate_with_watermark = partial(
