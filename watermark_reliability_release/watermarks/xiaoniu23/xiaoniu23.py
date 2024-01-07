@@ -1,24 +1,112 @@
+import random
 import torch
-from transformers import GenerationMixin, GenerationConfig, pipeline
-import types
-from unbiased_watermark import patch_model, RobustLLR_Score_Batch_v2
+from transformers import GenerationConfig, is_torch_available
+from .unbiased_watermark import patch_model, RobustLLR_Score_Batch_v2, WatermarkLogitsProcessor, Delta_Reweight, Gamma_Reweight, PrevN_ContextCodeExtractor
+from math import log
+import numpy as np
+from transformers import AutoModelForCausalLM, AutoTokenizer
+from transformers import LogitsProcessorList, pipeline
+
+
+#@inproceedings{
+#anonymous2023unbiased,
+#title={Unbiased Watermark for Large Language Models},
+#author={Anonymous},
+#booktitle={Submitted to The Twelfth International Conference on Learning Representations},
+#year={2023},
+#url={https://openreview.net/forum?id=uWVC5FVidc},
+#note={under review}
+#}
+
+cache = {
+    "model_str": None,
+    "generator": None,
+    "tokenizer": None,
+}
+
+def get_prompt_length(tokenizer, prompt):
+    inputs = tokenizer(prompt, return_tensors="pt", padding=True)
+    return inputs["input_ids"].shape[1]
+
+def get_threshold(n, alpha):
+    return -1*log(alpha)+log(n)
+
+def load_model(model_str, num_beams):
+    if model_str == cache["model_str"]:
+        return cache
+    else:
+        from transformers import pipeline
+
+        generator = pipeline(
+            "text-generation",
+            model=model_str,
+            do_sample=True,
+            num_beams=num_beams,
+            ### Check
+            device_map='auto',
+        )
+
+        cache["model_str"] = model_str
+        cache["generator"] = generator
+        cache["tokenizer"] = generator.tokenizer
+        return cache
+    
+def get_wp(watermark_type, key):
+    from unbiased_watermark import (
+        WatermarkLogitsProcessor,
+        Delta_Reweight,
+        Gamma_Reweight,
+        PrevN_ContextCodeExtractor,
+    )
+
+    if watermark_type == "delta":
+        rw = Delta_Reweight()
+    elif watermark_type == "gamma":
+        rw = Gamma_Reweight()
+    else:
+        raise ValueError(f"Unknown watermark type: {watermark_type}")
+    wp = WatermarkLogitsProcessor(key, rw, PrevN_ContextCodeExtractor(5))
+    return wp
+
+def set_seed(seed: int):
+    """
+    Helper function for reproducible behavior to set the seed in `random`, `numpy`, `torch` and/or `tf` (if installed).
+
+    Args:
+        seed (`int`): The seed to set.
+    """
+    random.seed(seed)
+    np.random.seed(seed)
+    if is_torch_available():
+        torch.manual_seed(seed)
+        torch.cuda.manual_seed_all(seed)
+        # ^^ safe to call this function even if cuda is not available
+
+
+
 
 class xiaoniu23_detector():
+    def __init__(self, model_name, n, alpha, private_key, watermark_type, num_beams):
+        self.model_name = model_name
+        self.n = n
+        self.alpha = alpha
+        self.threshold = get_threshold(n, alpha)
+        self.private_key = private_key.encode("utf-8")
+        self.watermark_type = watermark_type
+        self.tokenizer = AutoTokenizer.from_pretrained(model_name)
+        self.num_beams = num_beams
+    
 
-    def __init__(self, model, tokenizer):
-        self.model = model
-        self.tokenizer = tokenizer
-
-    def r_llr_score(self, texts, dist_qs, watermark_type, key, **kwargs):
-
+    def r_llr_score(self, model_str, texts, dist_qs, watermark_type, key):
         score = RobustLLR_Score_Batch_v2.from_grid([0.0], dist_qs)
-
         wp = get_wp(watermark_type, key)
         wp.ignore_history = True
+        cache = load_model(model_str, num_beams=self.num_beams)
+        inputs = cache["tokenizer"](texts, return_tensors="pt", padding=True)
 
-        inputs = self.tokenizer(texts, return_tensors="pt", padding=True)
+        from transformers import GenerationConfig
 
-        model = self.model
+        model = cache["generator"].model
         input_ids = inputs["input_ids"][..., :-1].to(model.device)
         attention_mask = inputs["attention_mask"][..., :-1].to(model.device)
         labels = inputs["input_ids"][..., 1:].to(model.device)
@@ -51,12 +139,17 @@ class xiaoniu23_detector():
         scores = torch.clamp(unclipped_scores.unsqueeze(-1), min_llr, max_llr)
         return labels, labels_mask, scores * labels_mask.unsqueeze(-1)
 
+
     def detect(self, text, prompt, **kwargs):
-        n = 10
+        model_str = self.model_name
+        prompt_len = get_prompt_length(self.tokenizer, prompt)
+        compute_range = (prompt_len, None)
+        n = self.n
         dist_qs = [float(i) / n for i in range(n + 1)]
 
-        labels, _, scores = self.r_llr_score([text], dist_qs=dist_qs, **kwargs)
+        labels, _, scores = self.r_llr_score(model_str, [text], dist_qs=dist_qs, watermark_type=self.watermark_type, key=self.private_key)
         import numpy as np
+
 
         labels = np.array(labels[0].cpu())
         scores = np.array(scores[0].cpu())
@@ -71,94 +164,65 @@ class xiaoniu23_detector():
         best_dist_q = dist_qs[best_index]
         #print("best_dist_q:", best_dist_q)
         #print("best_sum_score:", sum_scores[best_index])
+        best_sum_score = sum_scores[best_index]
+        if best_sum_score > self.threshold:
+            watermarked = True
+        else:
+            watermarked = False
+        return [best_sum_score, best_dist_q, watermarked]
 
-
-        return [best_index, best_dist_q]
+def generate_with_watermark(model_str, input_ids, wp, **kwargs):
+    cache = load_model(model_str, kwargs["num_beams"])
+    generator = cache["generator"]
+    prompt = cache["tokenizer"].decode(input_ids)
+    patch_model(generator.model)
+    kwargs = {"max_length": kwargs["max_new_tokens"]}
+    outputs = generator(prompt, logits_warper=wp, **kwargs)
+    generator.model._clear_patch_context()
+    return [cache["tokenizer"].encode(r[0]["generated_text"]) for r in outputs]
     
-        '''tokenizer = self.tokenizer
-        result = []
-        i = 0
-        while i < len(labels):
-            for j in range(i + 1, len(labels) + 1):
-                token_id = labels[i:j]
-                token = tokenizer.decode(token_id, skip_special_tokens=False)
-                if merge_till_displayable and not is_displayable(token):
-                    continue
-                break
-            if j < compute_range[0] or i >= compute_range[1]:
-                result.append((token_id, token, None))
-            else:
-                result.append((token_id, token, scores[i:j, best_index].sum()))
-            i = j
+if __name__ == "__main__":
+    prompt = "What is a watermark? What's the purpose of it?"
+    model_name = "facebook/opt-6.7b"
+    key = b'private key'
+    raw_key = 'private key'
+    '''model = AutoModelForCausalLM.from_pretrained('facebook/opt-6.7b')
+    #patch_model(model)
+    tokenizer = AutoTokenizer.from_pretrained('facebook/opt-6.7b')
+    inputs = tokenizer([prompt], return_tensors="pt")
+    reweight_delta = Delta_Reweight()
+    reweight_gamma = Gamma_Reweight()
 
-        if not show_latex:
-            print(result)
-        else:
-            print_latex(result)'''
+    watermark_processor = WatermarkLogitsProcessor(
+        key,
+        reweight_delta,
+        PrevN_ContextCodeExtractor(5))
+    
+    output2 = generate_with_watermark(
+        model_name, [prompt], wp=[watermark_processor], max_length=100
+    )[0]
 
-def patch_model(model: GenerationMixin):
-    original_generate = model.generate
-    original__get_logits_warper = model._get_logits_warper
+    patch_model(model)
+    output_ids = model.generate(
+        inputs["input_ids"],
+        max_length=128,
+        do_sample=True,
+        num_beams=1,
+        top_k=0,
+        temperature=1.0,
+        logits_warper=[watermark_processor],
+    )'''
+    
+    ################################################################
+    output2 = "</s>What is a watermark? What's the purpose of it?\nIt is supposed to be seen by you only and not everyone else, but if they use a tool such as photoshop (which I can’t), they can put it on. It basically makes it easier to find their work\nOh okay. I thought it was something important I missed and we were supposed to know about it. Now I see it."
+    detector = xiaoniu23_detector('facebook/opt-6.7b', 5, 0.05, raw_key, "delta")
+    result2 = detector.detect(output2, prompt)    
+    
+    
+    print()
 
-    context = {}
 
-    def generate(self, *args, logits_warper=None, **kargs):
-        logits_warper = (
-            logits_warper if logits_warper is not None else LogitsProcessorList()
-        )
-        context["logits_warper"] = logits_warper
-        return original_generate(*args, **kargs)
 
-    def _get_logits_warper(self, *args, **kargs):
-        warpers = original__get_logits_warper(*args, **kargs)
-        if "logits_warper" in context:
-            warpers = self._merge_criteria_processor_list(
-                warpers, context["logits_warper"]
-            )
-        return warpers
-
-    def _clear_patch_context(self):
-        context.clear()
-
-    model.generate = types.MethodType(generate, model)
-    model._get_logits_warper = types.MethodType(_get_logits_warper, model)
-    model._clear_patch_context = types.MethodType(_clear_patch_context, model)
-
-def get_wp(watermark_type, key):
-    from unbiased_watermark import (
-        WatermarkLogitsProcessor,
-        Delta_Reweight,
-        Gamma_Reweight,
-        PrevN_ContextCodeExtractor,
-    )
-
-    if watermark_type == "delta":
-        rw = Delta_Reweight()
-    elif watermark_type == "gamma":
-        rw = Gamma_Reweight()
-    else:
-        raise ValueError(f"Unknown watermark type: {watermark_type}")
-    wp = WatermarkLogitsProcessor(key, rw, PrevN_ContextCodeExtractor(5))
-    return wp
-
-class xiaoniu23_generate_with_watermark():
-    def __init__(self, model_str, tokenizer):
-        generator = load_model(model_str)
-        patch_model(generator.model)
-        self.generator_pipeline = generator
-        self.tokenizer = tokenizer
-
-    def xiaoniu23_generate_with_watermark(self, prompt, watermark_type, key, **kwargs):
-        ### Return a list of tensors, each tensor is the ids of generated text.
-        generator = self.generator_pipeline
-        if watermark_type is None:
-            lws = []
-        else:
-           lws = [get_wp(watermark_type, key)]
-        outputs = generator(prompt, logits_warper=lws, **kwargs)
-        generator.model._clear_patch_context()
-        ids = [self.tokenizer.encode(r[0]["generated_text"], return_tensor='pt') for r in outputs]
-        return ids
 
 
 
