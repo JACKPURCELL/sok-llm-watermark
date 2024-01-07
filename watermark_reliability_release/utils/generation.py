@@ -492,6 +492,7 @@ def generate(
             if args.generation_seed is not None:
                 torch.manual_seed(args.generation_seed)
             output_with_watermark = generate_with_watermark(input_ids=input_ids)
+            print()
 
     if args.is_decoder_only_model:
         # need to isolate the newly generated tokens

@@ -294,8 +294,19 @@ def main(args):
                                               args.topk, message)
 
 
-        case 'xiaoniu':
-            pass
+        case 'xiaoniu23':
+            if args.watermark_type == 'delta':
+                reweight = watermarks.Delta_Reweight()
+            elif args.watermark_type == 'gamma':
+                reweight = watermarks.Gamma_Reweight()
+            
+            watermark_processor = watermarks.xiaoniu23_WatermarkLogitsProcessor(
+                args.private_key.encode("utf-8"),
+                reweight,
+                watermarks.PrevN_ContextCodeExtractor(args.n))
+            
+            watermarks.patch_model(model)
+
         ######################################################################
         # Add your code here
         ######################################################################
@@ -328,8 +339,13 @@ def main(args):
     if args.watermark == 'kiyoon23':
         generate_with_watermark = watermark_processor.embed_watermark
         generate_without_watermark = partial(model.generate, **gen_kwargs)
-    elif args.watermark == 'xiaoniu':
-        pass
+    elif args.watermark == 'xiaoniu23':
+        generate_with_watermark = partial(
+            watermarks.generate_with_watermark_xiaoniu23, model_str=args.model_name_or_path,
+            wp=[watermark_processor], 
+            **gen_kwargs
+        )
+        generate_without_watermark = partial(model.generate, **gen_kwargs)
     else:
         generate_without_watermark = partial(model.generate, **gen_kwargs)
         generate_with_watermark = partial(
@@ -800,6 +816,11 @@ if __name__ == "__main__":
             parser.add_argument("--message", type=str, default="")
             parser.add_argument("--spacy_model", type=str, default="en_core_web_sm")
             parser.add_argument("--exclude_cc", type=str2bool, default=True)
+        case 'xiaoniu23':
+            parser.add_argument("--watermark_type", type=str, default="delta")
+            parser.add_argument("--private_key", type=str, default="private key")
+            parser.add_argument("--n", type=int, default=5)
+
             ######################################################################
             # Add your code here
             ######################################################################

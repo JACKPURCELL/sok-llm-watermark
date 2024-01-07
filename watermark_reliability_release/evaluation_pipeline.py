@@ -1348,6 +1348,12 @@ if __name__ == "__main__":
             # parser.add_argument("--sampling_temp", type=float, default=0.7)
             parser.add_argument("--max_new_token", type=int, default=200)
             parser.add_argument("--aiwei_trained", type=str2bool, default="True")
+        case 'xiaoniu23':
+            parser.add_argument("--n", type=int, default=10)
+            parser.add_argument("--alpha", type=float, default=0.01)
+            parser.add_argument("--private_key", type=str, default="private_key")
+            parser.add_argument("--watermark_type", type=str, default="delta")
+            parser.add_argument("--num_beams", type=int, default=1)
 
             ######################################################################
             # Add your code here
