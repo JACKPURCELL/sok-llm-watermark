@@ -259,6 +259,9 @@ def load_detector(args):
                                               args.keyword_ratio, args.mask_order_by, args.mask_select_method,
                                               args.num_epochs,
                                               args.topk, message)
+        case 'xiaoniu23':
+            watermark_detector = watermarks.xiaoniu23_detector(args.model_name_or_path, args.n, 
+                                                               args.alpha, args.private_key, args.watermark_type, args.num_beams)
             
     
         case _:
