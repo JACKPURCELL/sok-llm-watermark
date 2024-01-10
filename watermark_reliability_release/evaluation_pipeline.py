@@ -1044,6 +1044,12 @@ if __name__ == "__main__":
         help="Select the watermark type",
     )
     parser.add_argument(
+        "--only_attack_zscore",
+        type=str2bool,
+        default=False,
+        help="Whether to only attack the zscore metric.",
+    )
+    parser.add_argument(
         "--evaluation_metrics",
         type=str,
         default="all",

@@ -1,5 +1,8 @@
 #!/bin/bash
-# 定义一个包含不同watermark类型的数组
+#===============================================================================
+# usecommand nohup bash attack_pipe.sh > attack_pipe.log 2>&1 &
+#===============================================================================
+
 # SUPPORTED_ATTACK_METHODS = [ "dipper"  "copy-paste"  "scramble" "helm" "oracle" "swap" "synonym"]
 watermark_type="john23"
 models=("opt" "llama")
@@ -39,8 +42,8 @@ for model in "${models[@]}"; do
 
     #dipper need 48gb memory
     # for dipper_lex in "${dipper_lexs[@]}"; do
-    #     python watermark_reliability_release/attack_pipeline.py --run_name dipper-attack-"$watermark_type"-c4 --input_dir /home/jkl6486/sok-llm-watermark/runs/"$watermark_type"/c4/"$model"  --output_dir /home/jkl6486/sok-llm-watermark/runs/"$watermark_type"/c4/"$model"/dipper_l"$dipper_lex"_o0 --attack_method dipper --lex "$dipper_lex"
+    #     CUDA_VISIBLE_DEVICES=3 python watermark_reliability_release/attack_pipeline.py --run_name dipper-attack-"$watermark_type"-c4 --input_dir /home/jkl6486/sok-llm-watermark/runs/"$watermark_type"/c4/"$model"  --output_dir /home/jkl6486/sok-llm-watermark/runs/"$watermark_type"/c4/"$model"/dipper_l"$dipper_lex"_o0 --attack_method dipper --lex "$dipper_lex"
     # done
-    # python watermark_reliability_release/attack_pipeline.py --run_name dipper-attack-"$watermark_type"-c4 --input_dir /home/jkl6486/sok-llm-watermark/runs/"$watermark_type"/c4/"$model"  --output_dir /home/jkl6486/sok-llm-watermark/runs/"$watermark_type"/c4/"$model"/dipper_l60_o20 --attack_method dipper --lex 60 --order 20
+    # CUDA_VISIBLE_DEVICES=3 python watermark_reliability_release/attack_pipeline.py --run_name dipper-attack-"$watermark_type"-c4 --input_dir /home/jkl6486/sok-llm-watermark/runs/"$watermark_type"/c4/"$model"  --output_dir /home/jkl6486/sok-llm-watermark/runs/"$watermark_type"/c4/"$model"/dipper_l60_o20 --attack_method dipper --lex 60 --order 20
 
 done
