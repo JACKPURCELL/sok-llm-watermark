@@ -1,5 +1,8 @@
 #!/bin/bash
-# 定义一个包含不同watermark类型的数组
+#===============================================================================
+# usecommand nohup bash attack_pipe.sh > attack_pipe.log 2>&1 &
+#===============================================================================
+
 # SUPPORTED_ATTACK_METHODS = [ "dipper"  "copy-paste"  "scramble" "helm" "oracle" "swap" "synonym"]
 watermark_type="john23"
 models=("opt" "llama")
