@@ -224,7 +224,7 @@ def main(args):
 
     elif "synonym" in args.attack_method :
         print("Running synonym attack")
-        att = get_synonym_attack_att()
+        att = get_synonym_attack_att(args)
         # print(f"Using lexical diversity: {args.lex}, order diversity: {args.order}")
         tokenizer = load_tokenizer(args)
         tokenize_for_copy_paste_partial = partial(synonym_attack, att=att, 
@@ -506,6 +506,13 @@ if __name__ == "__main__":
         default=0,
         help="Order diversity knob for the paraphrase attack.",
     )
+    parser.add_argument(
+        "--synonym_p",
+        type=float,
+        default=0.5,
+        help="Probability of synonym replacement.",
+    )
+        
     parser.add_argument(
         "--cp_attack_type",
         type=str,

@@ -1,5 +1,6 @@
 import random
 import torch
+from torch import tensor
 from transformers import GenerationConfig, is_torch_available
 from .unbiased_watermark import patch_model, RobustLLR_Score_Batch_v2, WatermarkLogitsProcessor, Delta_Reweight, Gamma_Reweight, PrevN_ContextCodeExtractor
 from math import log
@@ -35,29 +36,23 @@ def load_model(model_str, num_beams):
     if model_str == cache["model_str"]:
         return cache
     else:
-        from transformers import pipeline
 
         generator = pipeline(
             "text-generation",
             model=model_str,
             do_sample=True,
             num_beams=num_beams,
-            ### Check
             device_map='auto',
         )
 
         cache["model_str"] = model_str
         cache["generator"] = generator
         cache["tokenizer"] = generator.tokenizer
+        patch_model(cache["generator"].model)
+        cache["tokenizer"].add_special_tokens({'pad_token': '[PAD]'})
         return cache
     
 def get_wp(watermark_type, key):
-    from unbiased_watermark import (
-        WatermarkLogitsProcessor,
-        Delta_Reweight,
-        Gamma_Reweight,
-        PrevN_ContextCodeExtractor,
-    )
 
     if watermark_type == "delta":
         rw = Delta_Reweight()
@@ -96,6 +91,12 @@ class xiaoniu23_detector():
         self.tokenizer = AutoTokenizer.from_pretrained(model_name)
         self.num_beams = num_beams
     
+    def dummy_detect(self, **kwargs):
+        result = {
+                  "z-score": 0.0,
+                  "prediction": False}
+        return result
+
 
     def r_llr_score(self, model_str, texts, dist_qs, watermark_type, key):
         score = RobustLLR_Score_Batch_v2.from_grid([0.0], dist_qs)
@@ -104,7 +105,6 @@ class xiaoniu23_detector():
         cache = load_model(model_str, num_beams=self.num_beams)
         inputs = cache["tokenizer"](texts, return_tensors="pt", padding=True)
 
-        from transformers import GenerationConfig
 
         model = cache["generator"].model
         input_ids = inputs["input_ids"][..., :-1].to(model.device)
@@ -147,8 +147,7 @@ class xiaoniu23_detector():
         n = self.n
         dist_qs = [float(i) / n for i in range(n + 1)]
 
-        labels, _, scores = self.r_llr_score(model_str, [text], dist_qs=dist_qs, watermark_type=self.watermark_type, key=self.private_key)
-        import numpy as np
+        labels, _, scores = self.r_llr_score(model_str, [prompt+text], dist_qs=dist_qs, watermark_type=self.watermark_type, key=self.private_key)
 
 
         labels = np.array(labels[0].cpu())
@@ -169,17 +168,19 @@ class xiaoniu23_detector():
             watermarked = True
         else:
             watermarked = False
-        return [best_sum_score, best_dist_q, watermarked]
+        return {"best_sum_score": best_sum_score, 
+                "best_dist_q": best_dist_q, 
+                "prediction": watermarked}
 
 def generate_with_watermark(model_str, input_ids, wp, **kwargs):
     cache = load_model(model_str, kwargs["num_beams"])
     generator = cache["generator"]
-    prompt = cache["tokenizer"].decode(input_ids)
-    patch_model(generator.model)
-    kwargs = {"max_length": kwargs["max_new_tokens"]}
+    prompt = [cache["tokenizer"].decode(i) for i in input_ids]
+    kwargs = {"max_new_tokens": kwargs["max_new_tokens"]}
     outputs = generator(prompt, logits_warper=wp, **kwargs)
-    generator.model._clear_patch_context()
-    return [cache["tokenizer"].encode(r[0]["generated_text"]) for r in outputs]
+    #generator.model._clear_patch_context()
+    outputs = [r[0]["generated_text"] for r in outputs]
+    return tensor(cache["tokenizer"](outputs, padding=True)["input_ids"]).cuda()
     
 if __name__ == "__main__":
     prompt = "What is a watermark? What's the purpose of it?"

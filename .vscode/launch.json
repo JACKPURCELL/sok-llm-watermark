@@ -56,11 +56,7 @@
             },
             "args": [
                 "--watermark",
-<<<<<<< HEAD
-                "",
-=======
                 "rohith23",
->>>>>>> 459b458b83402688751f4754113cf81c7ff413bf
                 "--dataset_name",
                 "c4",
                 "--run_name",
@@ -77,33 +73,28 @@
             ]
         },
         {
-            "name": "new_inject_lean",
+            "name": "new_inject_aiwei",
             "type": "python",
             "request": "launch",
             "program": "watermark_reliability_release/generation_pipeline.py",
             "console": "integratedTerminal",
             "justMyCode": true,
             "env": {
-                "CUDA_VISIBLE_DEVICES": "0,1,2"
+                "CUDA_VISIBLE_DEVICES": "0,1,2,3"
             },
             "args": [
                 "--watermark",
-                "lean23",
+                "aiwei23",
                 "--run_name",
-                "test-gen-lean23",
+                "gen-c4-aiwei23-opt1.3b",
                 "--model_name_or_path",
-                "meta-llama/Llama-2-7b-chat-hf",
+                "facebook/opt-1.3b",
                 "--min_generations",
-                "300",
-                "--max_new_tokens",
-                "200",
+                "1000",
                 "--dataset_name",
                 "c4",
-                "--sampling_temp",
-                "1.0",
-                "--generation_batch_size",
-                "1"
-                //">", "resultlean23.txt"
+                "--max_new_tokens",
+                "100",
             ]
         },
         {
@@ -120,20 +111,92 @@
                 "--watermark",
                 "kiyoon23",
                 "--run_name",
-                "test-gen-kiyoon23",
+                "gen-c4-kiyoon23-llama",
                 "--model_name_or_path",
                 "meta-llama/Llama-2-7b-chat-hf",
                 "--min_generations",
-                "100",
-                "--max_new_tokens",
-                "200",
+                "1000",
                 "--dataset_name",
                 "c4",
-                "--sampling_temp",
-                "1.0",
+                "--max_new_tokens",
+                "100",
+            ]
+        },
+        {
+            "name": "new_inject_lean",
+            "type": "python",
+            "request": "launch",
+            "program": "watermark_reliability_release/generation_pipeline.py",
+            "console": "integratedTerminal",
+            "justMyCode": true,
+            "env": {
+                "CUDA_VISIBLE_DEVICES": "0,1,2,3"
+            },
+            "args": [
+                "--watermark",
+                "lean23",
+                "--run_name",
+                "gen-c4-lean23-llama",
+                "--model_name_or_path",
+                "meta-llama/Llama-2-7b-chat-hf",
+                "--min_generations",
+                "1000",
+                "--dataset_name",
+                "c4",
+                "--max_new_tokens",
+                "100",
+            ]
+        },
+        {
+            "name": "new_inject_xiaoniu",
+            "type": "python",
+            "request": "launch",
+            "program": "watermark_reliability_release/generation_pipeline.py",
+            "console": "integratedTerminal",
+            "justMyCode": true,
+            "env": {
+                "CUDA_VISIBLE_DEVICES": "0,1,2,3"
+            },
+            "args": [
+                "--watermark",
+                "xiaoniu23",
+                "--run_name",
+                "gen-c4-xiaoniu23-llama",
+                "--model_name_or_path",
+                "meta-llama/Llama-2-7b-chat-hf",
+                "--min_generations",
+                "1000",
+                "--dataset_name",
+                "c4",
+                "--max_new_tokens",
+                "100",
                 "--generation_batch_size",
-                "3",
-                ">", "result_kiyoon23.txt"
+                "1",
+            ]
+        },
+        {
+            "name": "new_inject_rohith",
+            "type": "python",
+            "request": "launch",
+            "program": "watermark_reliability_release/generation_pipeline.py",
+            "console": "integratedTerminal",
+            "justMyCode": true,
+            "env": {
+                "CUDA_VISIBLE_DEVICES": "0,1,2,3"
+            },
+            "args": [
+                "--watermark",
+                "rohith23",
+                "--run_name",
+                "gen-c4-rohith23-llama",
+                "--model_name_or_path",
+                "meta-llama/Llama-2-7b-chat-hf",
+                "--min_generations",
+                "1000",
+                "--dataset_name",
+                "c4",
+                "--max_new_tokens",
+                "100",
             ]
         },
         {
@@ -144,27 +207,15 @@
             "console": "integratedTerminal",
             "justMyCode": true,
             "env": {
-<<<<<<< HEAD
                 "CUDA_VISIBLE_DEVICES": "0,1,2,3"
             },
             "args": [
                 "--watermark",
-                "lean23",
+                "xiaoniu23",
                 "--run_name",
-                "eva-lean23-hc3",
+                "eva-xiaoniu23-c4",
                 "--input_dir",
-                "/home/jkl6486/sok-llm-watermark/runs/lean23/c4",
-=======
-                "CUDA_VISIBLE_DEVICES": "0,1,2"
-            },
-            "args": [
-                "--watermark",
-                "rohith23",
-                "--run_name",
-                "eva-rohith23-hc3",
-                "--input_dir",
-                "/home/jkl6486/sok-llm-watermark/runs/rohith23/hc3",
->>>>>>> 459b458b83402688751f4754113cf81c7ff413bf
+                "/home/jkl6486/sok-llm-watermark/runs/xiaoniu23/c4",
                 "--evaluation_metrics",
                 "z-score",   
                          

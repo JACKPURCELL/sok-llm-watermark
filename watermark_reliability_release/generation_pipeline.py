@@ -251,7 +251,9 @@ def main(args):
                                                         lm_tokenizer = tokenizer,
                                                         beam_size=args.beam_size,
                                                         data_dir=args.data_dir,
-                                                        z_value=args.z_value)
+                                                        z_value=args.z_value,
+                                                        model_dir="/home/jkl6486/sok-llm-watermark/watermark_reliability_release/watermarks/aiwei23/model/",
+                                                        llm_name = args.model_name_or_path)
                 watermark_detector.get_detector_model()
                 watermark_processor = watermark_detector.build_logits_processor()
                 print("Load processor and detector done.")
@@ -264,12 +266,11 @@ def main(args):
                                     model_dir="/home/jkl6486/sok-llm-watermark/watermark_reliability_release/watermarks/aiwei23/model/")
                 
                 watermark_detector = watermarks.aiwei23_WatermarkDetector(bit_number=args.bit_number,
-                                                        window_size=5,
-                                                        #args.window_size,
+                                                        window_size=args.window_size,
                                                         layers=args.layers,
                                                         gamma=args.gamma,
                                                         delta=args.delta,
-                                                        llm_name = "meta-llama/Llama-2-7b-chat-hf",
+                                                        llm_name = args.model_name_or_path,
                                                         beam_size=args.beam_size,
                                                         data_dir=args.data_dir,
                                                         z_value=args.z_value,
@@ -284,14 +285,13 @@ def main(args):
 
 
         case 'kiyoon23':
-            message = '01'
             watermark_processor = watermarks.kiyoon23(args.dtype, args.embed, args.exp_name_generic, args.exp_name_infill,
                                               args.extract,
                                               args.num_sample, args.spacy_model, args.exclude_cc, args.custom_keywords,
                                               args.keyword_mask,
                                               args.keyword_ratio, args.mask_order_by, args.mask_select_method,
                                               args.num_epochs,
-                                              args.topk, message)
+                                              args.topk, args.message)
 
 
         case 'xiaoniu23':
@@ -778,13 +778,13 @@ if __name__ == "__main__":
             parser.add_argument("--message", type=list, default=[100,200,300,400,500])
             parser.add_argument("--lean23_top_k", type=int, default=1000)
             parser.add_argument("--repeat_penalty", type=float, default=1.5)
-            parser.add_argument("--generated_length", type=int, default=200)
+            parser.add_argument("--generated_length", type=int, default=100)
             parser.add_argument("--prompt_length", type=int, default=300)
         case 'aiwei23':    
             parser.add_argument("--bit_number", type=int, default=16) ### This is log2(vocab_size), which depends on the model, for opt, it is 16
             parser.add_argument("--layers", type=int, default=7)
             parser.add_argument("--window_size", type=int, default=3)
-            parser.add_argument("--llm_name", type=str, default="meta-llama/Llama-2-7b-chat-hf")
+            #parser.add_argument("--llm_name", type=str, default="facebook/opt-1.3b")
             parser.add_argument("--gamma", type=float, default=0.5)
             parser.add_argument("--delta", type=float, default= 2.0)
             parser.add_argument("--model_dir", type=str, default="./model/")
@@ -795,13 +795,13 @@ if __name__ == "__main__":
             parser.add_argument("--num_samples", type=int, default=10000, help="Number of samples for training detector.")
             parser.add_argument("--train_dataset_name", type=str, default="c4", help="The dataset used for training detector.")
             # parser.add_argument("--sampling_temp", type=float, default=0.7)
-            parser.add_argument("--max_new_token", type=int, default=200)
+            parser.add_argument("--max_new_token", type=int, default=100)
             parser.add_argument("--aiwei_trained", type=str2bool, default="False")
         case 'kiyoon23':
             parser.add_argument("--exp_name_generic", type=str, default="tmp")
             parser.add_argument("--embed", type=str2bool, default=False)
             parser.add_argument("--extract", type=str2bool, default=False)
-            parser.add_argument("--dtype", type=str, default="imdb")
+            parser.add_argument("--dtype", type=str, default="agnews")
             parser.add_argument("--num_sample", type=int, default=100)
             parser.add_argument("--exp_name_infill", type=str, default="")
             parser.add_argument("--num_epochs", type=int, default=10)
@@ -813,7 +813,7 @@ if __name__ == "__main__":
             parser.add_argument("--keyword_mask", type=str, default="adjacent",
                                 choices=['adjacent', 'child', 'child_dep', "na"])
             parser.add_argument("--custom_keywords", type=str, default=['watermarking', 'watermark'])
-            parser.add_argument("--message", type=str, default="")
+            parser.add_argument("--message", type=str, default="01")
             parser.add_argument("--spacy_model", type=str, default="en_core_web_sm")
             parser.add_argument("--exclude_cc", type=str2bool, default=True)
         case 'xiaoniu23':

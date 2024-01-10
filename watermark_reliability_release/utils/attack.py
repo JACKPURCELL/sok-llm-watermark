@@ -221,9 +221,9 @@ def swap_attack(example, att=None, tokenizer=None, args=None):
     return example
     
     
-def get_synonym_attack_att():
+def get_synonym_attack_att(args):
     # attack = "helm_MisspellingAttack"
-    att = SynonymAttack(p=0.5)
+    att = SynonymAttack(p=args.synonym_p)
     return att
 
 def synonym_attack(example, att=None, tokenizer=None, args=None):
