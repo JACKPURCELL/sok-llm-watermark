@@ -39,3 +39,6 @@ watermark_reliability_release/watermarks/aiwei23/model/combine_model.pt
 watermark_reliability_release/watermarks/aiwei23/model/sub_net.pt
 result.txt
 watermark_reliability_release/watermarks/aiwei23/data/train_generator_data/train_generator_data.jsonl
+watermark_reliability_release/watermarks/aiwei23/data/train_generator_data/train_generator_data.jsonl
+watermark_reliability_release/watermarks/aiwei23/model/combine_model.pt
+watermark_reliability_release/watermarks/aiwei23/model/sub_net.pt
