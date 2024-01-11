@@ -63,8 +63,8 @@ def prepare_data(filepath, train_or_test="train", llm_name="gpt2", bit=16, z_val
                 if llm_name == "gpt2":
                     tokenizer = GPT2Tokenizer.from_pretrained("gpt2")
                     inputs = tokenizer(inputs, return_tensors="pt", add_special_tokens=True)
-                elif llm_name == "opt-6.7b":
-                    tokenizer = AutoTokenizer.from_pretrained("facebook/opt-6.7b", use_fast=False)
+                elif llm_name == "opt-1.3b":
+                    tokenizer = AutoTokenizer.from_pretrained("facebook/opt-1.3b", use_fast=False)
                     inputs = tokenizer(inputs, return_tensors="pt", add_special_tokens=True)
                 elif llm_name == "llama-7b":
                     tokenizer = AutoTokenizer.from_pretrained(

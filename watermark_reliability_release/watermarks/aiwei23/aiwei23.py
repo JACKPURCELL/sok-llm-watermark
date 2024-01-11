@@ -189,7 +189,7 @@ class aiwei23_WatermarkLogitsProcessor(LogitsProcessor):
             if self.llm_name == "gpt2":
                 for b_idx in range(input_ids.shape[0]):
                     scores[b_idx][50256] = -10000
-            elif self.llm_name == "opt-6.7b":
+            elif self.llm_name == "opt-1.3b":
                 for b_idx in range(input_ids.shape[0]):
                     scores[b_idx][2] = -10000
             elif self.llm_name == "llama-7b":
@@ -208,7 +208,7 @@ class aiwei23_WatermarkLogitsProcessor(LogitsProcessor):
         if self.llm_name == "gpt2":
             for b_idx in range(input_ids.shape[0]):
                 scores[b_idx][50256] = -10000
-        elif self.llm_name == "opt-6.7b":
+        elif self.llm_name == "opt-1.3b":
             for b_idx in range(input_ids.shape[0]):
                 scores[b_idx][2] = -10000
         elif self.llm_name == "llama-7b":
@@ -250,8 +250,8 @@ class aiwei23_WatermarkDetector:
         self.beam_size = beam_size
         if llm_name == "meta-llama/Llama-2-7b-chat-hf":
             self.llm_name = "llama-7b"
-        elif llm_name == "facebook/opt-6.7b":
-            self.llm_name = "opt-6.7b"
+        elif llm_name == "facebook/opt-1.3b":
+            self.llm_name = "opt-1.3b"
         elif llm_name == "gpt2":
             self.llm_name = "gpt2"
         self.data_dir = data_dir
@@ -402,9 +402,9 @@ class aiwei23_WatermarkDetector:
         if self.llm_name == "gpt2":
             self.lm_tokenizer = GPT2Tokenizer.from_pretrained("gpt2")
             self.lm_model = GPT2LMHeadModel.from_pretrained("gpt2", device_map='auto')
-        elif self.llm_name == "opt-6.7b":
-            self.lm_tokenizer = AutoTokenizer.from_pretrained("facebook/opt-6.7b", use_fast=False)
-            self.lm_model = AutoModelForCausalLM.from_pretrained("facebook/opt-6.7b", device_map='auto')
+        elif self.llm_name == "opt-1.3b":
+            self.lm_tokenizer = AutoTokenizer.from_pretrained("facebook/opt-1.3b", use_fast=False)
+            self.lm_model = AutoModelForCausalLM.from_pretrained("facebook/opt-1.3b", device_map='auto')
         elif self.llm_name == "llama-7b":
             self.lm_tokenizer = AutoTokenizer.from_pretrained("meta-llama/Llama-2-7b-chat-hf")
             self.lm_model = AutoModelForCausalLM.from_pretrained("meta-llama/Llama-2-7b-chat-hf", device_map='auto')
@@ -715,7 +715,7 @@ class CustomLogitsProcessor(LogitsProcessor):
         if self.llm_name == "gpt2":
             for b_idx in range(input_ids.shape[0]):
                 scores[b_idx][50256] = -10000
-        elif self.llm_name == "opt-6.7b":
+        elif self.llm_name == "opt-1.3b":
             for b_idx in range(input_ids.shape[0]):
                 scores[b_idx][2] = -10000
         elif self.llm_name == "llama-7b":
