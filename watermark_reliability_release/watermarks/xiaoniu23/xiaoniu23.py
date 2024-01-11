@@ -171,7 +171,12 @@ class xiaoniu23_detector():
         return {"best_sum_score": best_sum_score, 
                 "best_dist_q": best_dist_q, 
                 "prediction": watermarked}
-
+    def dummy_detect(self, **kwargs):
+        result = {
+                  "best_sum_score": 0.0,
+                  "best_dist_q": 0.0,
+                  "prediction": False}
+        return result
 def generate_with_watermark(model_str, input_ids, wp, **kwargs):
     cache = load_model(model_str, kwargs["num_beams"])
     generator = cache["generator"]

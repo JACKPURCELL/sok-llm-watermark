@@ -398,7 +398,12 @@ class kiyoon23():
                     break
             if sign == 0:
                 watermarked.append(False)
-                        
+        true_ratio = watermarked.count(True) / len(watermarked)
+        
+        result = {"msg":decoded_msg,
+                  "ratio": true_ratio,
+                  "result": watermarked,
+                  "prediction": true_ratio>0.8}                
         '''watermark_rate = len(decoded_msg)/len(self.message)
         msg = self.message[-len(decoded_msg):]
         error_count = 0
@@ -406,7 +411,14 @@ class kiyoon23():
             if decoded_msg[t] != msg[t]:
                 error_count += 1
         error_rate = error_count/len(decoded_msg)'''
-        return decoded_msg ,watermarked
+        return result
+    
+    def dummy_detect(self, **kwargs):
+        result = {"msg":"01",
+                  "ratio": 0.0,
+                  "result": [False],
+                  "prediction": False}
+        return result
 
 
 

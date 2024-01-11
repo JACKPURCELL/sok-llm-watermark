@@ -91,7 +91,6 @@ class lean23_WatermarkDetector:
         if len(self.tokenizer.tokenize(text))<12:
             return {
                   "z-score": 0.0,
-                  "confidences": 0.0,
                   "prediction": False}
         decoded_message, other_information = self.watermark_processor.decode(text, disable_tqdm=True)
         confidences = other_information[1]
