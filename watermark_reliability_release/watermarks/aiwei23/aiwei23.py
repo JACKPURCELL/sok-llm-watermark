@@ -664,7 +664,7 @@ class aiwei23_WatermarkDetector:
         self.detector_model = model
        
 
-    def detect(self, text,**kwargs):
+    def detect(self, text, **kwargs):
         device = "cuda" if torch.cuda.is_available() else "cpu"
         if self.detector_model is None:
             self.get_detector_model()
