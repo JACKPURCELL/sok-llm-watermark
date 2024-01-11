@@ -1161,13 +1161,13 @@ if __name__ == "__main__":
     parser.add_argument(
         "--lower_tolerance_T",
         type=int,
-        default=25,
+        default=50,
         help="The lower tolerance to use when dropping rows before ROC-AUC evaluation.",
     )
     parser.add_argument(
         "--upper_tolerance_T",
         type=int,
-        default=25,
+        default=50,
         help="The upper tolerance to use when dropping rows before ROC-AUC evaluation.",
     )
     parser.add_argument(

@@ -1,4 +1,8 @@
 #!/bin/bash
+#===============================================================================
+# usecommand nohup bash eva_pipe.sh > eva_pipe.log 2>&1 &
+#===============================================================================
+
 # 定义一个包含不同watermark类型的数组
 # SUPPORTED_ATTACK_METHODS = [ "dipper"  "copy-paste"  "scramble" "helm" "oracle" "swap" "synonym"]
 watermark_type="john23"
@@ -19,30 +23,30 @@ for model in "${models[@]}"; do
     for attack_type in "${attack_types[@]}"; do
         # 对每个元素执行python命令
         # python main.py --only_attack_zscore True --watermark "$attack_type"
-        python watermark_reliability_release/evaluation_pipeline.py --watermark "$watermark_type" --run_name "$attack_type"-eva-"$watermark_type"-c4  --input_dir /home/jkl6486/sok-llm-watermark/runs/"$watermark_type"/c4/"$model"/"$attack_type"
+        python watermark_reliability_release/evaluation_pipeline.py --watermark "$watermark_type" --run_name "$attack_type"-eva-"$watermark_type"-c4-"$model"  --input_dir /home/jkl6486/sok-llm-watermark/runs/"$watermark_type"/c4/"$model"/"$attack_type"
     done
 
 
     #synonym
     for synonym_prob in "${synonym_probs[@]}"; do
-        python watermark_reliability_release/evaluation_pipeline.py --only_attack_zscore True --watermark "$watermark_type" --run_name synonym-"$synonym_prob"-eva-"$watermark_type"-c4  --input_dir /home/jkl6486/sok-llm-watermark/runs/"$watermark_type"/c4/"$model"/synonym-"$synonym_prob"
+        python watermark_reliability_release/evaluation_pipeline.py --only_attack_zscore True --watermark "$watermark_type" --run_name synonym-"$synonym_prob"-eva-"$watermark_type"-c4-"$model"  --input_dir /home/jkl6486/sok-llm-watermark/runs/"$watermark_type"/c4/"$model"/synonym-"$synonym_prob"
     done
 
     #copypaste
     for cp_attack_insertion_len in "${cp_attack_insertion_lens[@]}"; do
-        python watermark_reliability_release/evaluation_pipeline.py --cp_attack_types single-single --only_attack_zscore True --watermark "$watermark_type" --run_name copypaste-1-"$cp_attack_insertion_len"-eva-"$watermark_type"-c4  --input_dir /home/jkl6486/sok-llm-watermark/runs/"$watermark_type"/c4/"$model"/copypaste-1-"$cp_attack_insertion_len" 
-        python watermark_reliability_release/evaluation_pipeline.py --cp_attack_types triple-single --only_attack_zscore True --watermark "$watermark_type" --run_name copypaste-3-"$cp_attack_insertion_len"-eva-"$watermark_type"-c4  --input_dir /home/jkl6486/sok-llm-watermark/runs/"$watermark_type"/c4/"$model"/copypaste-3-"$cp_attack_insertion_len"
+        python watermark_reliability_release/evaluation_pipeline.py --cp_attack_types single-single --only_attack_zscore True --watermark "$watermark_type" --run_name copypaste-1-"$cp_attack_insertion_len"-eva-"$watermark_type"-c4-"$model"  --input_dir /home/jkl6486/sok-llm-watermark/runs/"$watermark_type"/c4/"$model"/copypaste-1-"$cp_attack_insertion_len" 
+        python watermark_reliability_release/evaluation_pipeline.py --cp_attack_types triple-single --only_attack_zscore True --watermark "$watermark_type" --run_name copypaste-3-"$cp_attack_insertion_len"-eva-"$watermark_type"-c4-"$model"  --input_dir /home/jkl6486/sok-llm-watermark/runs/"$watermark_type"/c4/"$model"/copypaste-3-"$cp_attack_insertion_len"
     done
 
     #helm
     for helm_attack_method in "${helm_attack_methods[@]}"; do
-        python watermark_reliability_release/evaluation_pipeline.py --only_attack_zscore True --watermark "$watermark_type" --run_name helm-"$helm_attack_method"-eva-"$watermark_type"-c4  --input_dir /home/jkl6486/sok-llm-watermark/runs/"$watermark_type"/c4/"$model"/"$attack_type" 
+        python watermark_reliability_release/evaluation_pipeline.py --only_attack_zscore True --watermark "$watermark_type" --run_name helm-"$helm_attack_method"-eva-"$watermark_type"-c4-"$model"  --input_dir /home/jkl6486/sok-llm-watermark/runs/"$watermark_type"/c4/"$model"/"$attack_type" 
     done
 
     #dipper need 48gb memory
     # for dipper_lex in "${dipper_lexs[@]}"; do
-    #     python watermark_reliability_release/evaluation_pipeline.py --only_attack_zscore True --watermark "$watermark_type" --run_name dipper-eva-"$watermark_type"-c4  --input_dir /home/jkl6486/sok-llm-watermark/runs/"$watermark_type"/c4/"$model"/dipper_l"$dipper_lex"_o0 
+    #     python watermark_reliability_release/evaluation_pipeline.py --only_attack_zscore True --watermark "$watermark_type" --run_name dipper-eva-"$watermark_type"-c4-"$model"  --input_dir /home/jkl6486/sok-llm-watermark/runs/"$watermark_type"/c4/"$model"/dipper_l"$dipper_lex"_o0 
     # done
-    # python watermark_reliability_release/evaluation_pipeline.py --only_attack_zscore True --watermark "$watermark_type" --run_name dipper-eva-"$watermark_type"-c4  --input_dir /home/jkl6486/sok-llm-watermark/runs/"$watermark_type"/c4/"$model"/dipper_l60_o20 
+    # python watermark_reliability_release/evaluation_pipeline.py --only_attack_zscore True --watermark "$watermark_type" --run_name dipper-eva-"$watermark_type"-c4-"$model"  --input_dir /home/jkl6486/sok-llm-watermark/runs/"$watermark_type"/c4/"$model"/dipper_l60_o20 
 
 done
