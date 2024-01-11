@@ -221,11 +221,13 @@ def load_detector(args):
                                                         layers=args.layers,
                                                         gamma=args.gamma,
                                                         delta=args.delta,
-                                                        lm_model =model,
+                                                        lm_model = model,
                                                         lm_tokenizer = tokenizer,
                                                         beam_size=args.beam_size,
                                                         data_dir=args.data_dir,
-                                                        z_value=args.z_value)
+                                                        z_value=args.z_value,
+                                                        model_dir="/home/jkl6486/sok-llm-watermark/watermark_reliability_release/watermarks/aiwei23/model/",
+                                                        llm_name = args.model_name_or_path)
                 watermark_detector.get_detector_model()
                 watermark_processor = watermark_detector.build_logits_processor()
                 print("Load processor and detector done.")
