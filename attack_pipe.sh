@@ -4,7 +4,7 @@
 #===============================================================================
 
 # SUPPORTED_ATTACK_METHODS = [ "dipper"  "copy-paste"  "scramble" "helm" "oracle" "swap" "synonym"]
-watermark_types=("rohith23" "lean23" "kiyoon23" "xiaoniu23")
+watermark_types=("aiwei23")
 models=("opt" "llama")
 # attack_types=( "dipper"  "copy-paste"  "scramble" "helm" "oracle" "swap" "synonym")
 attack_types=( "swap")
@@ -30,10 +30,10 @@ for watermark_type in "${watermark_types[@]}"; do
         done
 
         #copypaste
-        #for cp_attack_insertion_len in "${cp_attack_insertion_lens[@]}"; do
-        #    python watermark_reliability_release/attack_pipeline.py --cp_attack_type single-single --run_name copypaste-1-"$cp_attack_insertion_len"-attack-"$watermark_type"-c4 --input_dir /home/jkl6486/sok-llm-watermark/runs/"$watermark_type"/c4/"$model"  --output_dir /home/jkl6486/sok-llm-watermark/runs/"$watermark_type"/c4/"$model"/copypaste-1-"$cp_attack_insertion_len" --attack_method copy-paste --cp_attack_insertion_len "$cp_attack_insertion_len"
-        #    python watermark_reliability_release/attack_pipeline.py --cp_attack_type triple-single --run_name copypaste-3-"$cp_attack_insertion_len"-attack-"$watermark_type"-c4 --input_dir /home/jkl6486/sok-llm-watermark/runs/"$watermark_type"/c4/"$model"  --output_dir /home/jkl6486/sok-llm-watermark/runs/"$watermark_type"/c4/"$model"/copypaste-3-"$cp_attack_insertion_len" --attack_method copy-paste --cp_attack_insertion_len "$cp_attack_insertion_len"
-        #done
+        for cp_attack_insertion_len in "${cp_attack_insertion_lens[@]}"; do
+            python watermark_reliability_release/attack_pipeline.py --cp_attack_type single-single --run_name copypaste-1-"$cp_attack_insertion_len"-attack-"$watermark_type"-c4 --input_dir /home/jkl6486/sok-llm-watermark/runs/"$watermark_type"/c4/"$model"  --output_dir /home/jkl6486/sok-llm-watermark/runs/"$watermark_type"/c4/"$model"/copypaste-1-"$cp_attack_insertion_len" --attack_method copy-paste --cp_attack_insertion_len "$cp_attack_insertion_len"
+            python watermark_reliability_release/attack_pipeline.py --cp_attack_type triple-single --run_name copypaste-3-"$cp_attack_insertion_len"-attack-"$watermark_type"-c4 --input_dir /home/jkl6486/sok-llm-watermark/runs/"$watermark_type"/c4/"$model"  --output_dir /home/jkl6486/sok-llm-watermark/runs/"$watermark_type"/c4/"$model"/copypaste-3-"$cp_attack_insertion_len" --attack_method copy-paste --cp_attack_insertion_len "$cp_attack_insertion_len"
+        done
 
         #helm
         for helm_attack_method in "${helm_attack_methods[@]}"; do

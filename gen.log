@@ -1,0 +1,18 @@
+nohup: ignoring input
+wandb: Currently logged in as: ljcpro (alps-lab-sok). Use `wandb login --relogin` to force relogin
+wandb: wandb version 0.16.2 is available!  To upgrade, please run:
+wandb:  $ pip install wandb --upgrade
+wandb: Tracking run with wandb version 0.16.1
+wandb: Run data is saved locally in /home/jkl6486/sok-llm-watermark/wandb/run-20240112_090112-54vfvcls
+wandb: Run `wandb offline` to turn off syncing.
+wandb: Syncing run gen-c4-kiyoon23-llama
+wandb: ⭐️ View project at https://wandb.ai/alps-lab-sok/lm-watermarking
+wandb: 🚀 View run at https://wandb.ai/alps-lab-sok/lm-watermarking/runs/54vfvcls
+No limit_indices specified, pulling all examples from the dataset.
+Output dir for this run: runs/kiyoon23/llama
+Loading checkpoint shards:   0%|          | 0/2 [00:00<?, ?it/s]Loading checkpoint shards:  50%|█████     | 1/2 [00:02<00:02,  2.63s/it]Loading checkpoint shards: 100%|██████████| 2/2 [00:03<00:00,  1.73s/it]Loading checkpoint shards: 100%|██████████| 2/2 [00:03<00:00,  1.86s/it]
+Found cached dataset ag_news (/data/jc/hf/datasets/ag_news/default/0.0.0/bc2bcb40336ace1a0374767fc29bb0296cdaf8a6da7298436239c54d79180548)
+  0%|          | 0/2 [00:00<?, ?it/s]100%|██████████| 2/2 [00:00<00:00, 402.91it/s]
+Found cached dataset ag_news (/data/jc/hf/datasets/ag_news/default/0.0.0/bc2bcb40336ace1a0374767fc29bb0296cdaf8a6da7298436239c54d79180548)
+  0%|          | 0/2 [00:00<?, ?it/s]100%|██████████| 2/2 [00:00<00:00, 520.26it/s]
+2024-01-12 09:01:31 - MainThread - INFO - Using cache ./data/cache/agnews-test-en_core_web_sm.pkl

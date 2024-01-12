@@ -725,46 +725,7 @@ class CustomLogitsProcessor(LogitsProcessor):
 
 if __name__ == "__main__":
     bit_number = 16
-    layers = 5
-    sample_number = 2000
-    window_size = 3
-    llm_name = "gpt2"
-    gamma = 0.5
-    delta = 2.0
-    model_dir = "./model/"
-    beam_size = 0
-    data_dir = "./data"
-    z_value = 4
-    num_samples = 10000
-    dataset_name = "c4"
-    sampling_temp = 0.7
-    max_new_token = 200
-
-    data_dir="/home/jkl6486/sok-llm-watermark/watermark_reliability_release/watermarks/aiwei23/data/"
-    model_dir="/home/jkl6486/sok-llm-watermark/watermark_reliability_release/watermarks/aiwei23/"
-    '''prepare_generator(bit_number=bit_number,
-                      layers=layers,
-                      sample_number=sample_number,
-                      window_size=window_size,
-                      data_dir=data_dir,
-                      model_dir=model_dir)'''
-
-    detector = aiwei23_WatermarkDetector(bit_number=bit_number,
-                                         window_size=window_size,
-                                         layers=layers,
-                                         gamma=gamma,
-                                         delta=delta,
-                                         model_dir=model_dir,
-                                         beam_size=beam_size,
-                                         llm_name=llm_name,
-                                         data_dir=data_dir,
-                                         z_value=z_value)
-
-    #detector.generate_and_save_train_data(num_samples=num_samples)
-    '''watermark_processor = detector.generate_and_save_test_data(dataset_name=dataset_name,
-                                         sampling_temp=sampling_temp,
-                                         max_new_tokens=max_new_token)'''
-    detector.train_model("./aiweimainmodel")
+    ''''''
 
 
 
