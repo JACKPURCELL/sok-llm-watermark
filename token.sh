@@ -5,9 +5,8 @@
 models=("opt" "llama")
 watermark_types=("john23")
 
-CUDA_VISIBLE_DEVICES=2,0,1 python watermark_reliability_release/generation_pipeline.py --sampling_token 0.4 --watermark xuandong23b --dataset_name c4 --run_name gen-c4-xuandong23b-llama-token0.4 --model_name_or_path meta-llama/Llama-2-7b-chat-hf --min_generations 1000 --max_new_tokens 100 --output_dir xuandong23b/c4/llama/gen-0.4
 
-tokens=("25","50","100","200")
+tokens=("25" "50" "100" "200")
 for watermark_type in "${watermark_types[@]}"; do
     for token in "${tokens[@]}"; do
 

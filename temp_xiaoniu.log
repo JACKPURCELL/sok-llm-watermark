@@ -1,0 +1,130 @@
+nohup: ignoring input
+wandb: Currently logged in as: ljcpro (alps-lab-sok). Use `wandb login --relogin` to force relogin
+wandb: wandb version 0.16.2 is available!  To upgrade, please run:
+wandb:  $ pip install wandb --upgrade
+wandb: Tracking run with wandb version 0.16.1
+wandb: Run data is saved locally in /home/jkl6486/sok-llm-watermark/wandb/run-20240112_090850-4h1xg972
+wandb: Run `wandb offline` to turn off syncing.
+wandb: Syncing run gen-c4-xiaoniu23-llama-temp0.4
+wandb: ⭐️ View project at https://wandb.ai/alps-lab-sok/lm-watermarking
+wandb: 🚀 View run at https://wandb.ai/alps-lab-sok/lm-watermarking/runs/4h1xg972
+No limit_indices specified, pulling all examples from the dataset.
+Output dir for this run: runs/xiaoniu23/c4/llama/gen-0.4
+Loading checkpoint shards:   0%|          | 0/2 [00:00<?, ?it/s]Loading checkpoint shards:  50%|█████     | 1/2 [00:03<00:03,  3.02s/it]Loading checkpoint shards: 100%|██████████| 2/2 [00:04<00:00,  1.92s/it]Loading checkpoint shards: 100%|██████████| 2/2 [00:04<00:00,  2.08s/it]
+  0%|          | 0/1000 [00:00<?, ?it/s]You're using a LlamaTokenizerFast tokenizer. Please note that with a fast tokenizer, using the `__call__` method is faster than using a method to encode the text followed by a call to the `pad` method to get a padded encoding.
+
+Loading checkpoint shards:   0%|          | 0/2 [00:00<?, ?it/s][A
+Loading checkpoint shards:  50%|█████     | 1/2 [00:08<00:08,  8.72s/it][A
+Loading checkpoint shards: 100%|██████████| 2/2 [00:11<00:00,  5.47s/it][ALoading checkpoint shards: 100%|██████████| 2/2 [00:11<00:00,  5.95s/it]
+Xformers is not installed correctly. If you want to use memory_efficient_attention to accelerate training use the following command to install Xformers
+pip install xformers.
+  0%|          | 1/1000 [00:52<14:32:33, 52.41s/it]  0%|          | 5/1000 [01:20<3:47:24, 13.71s/it]   1%|          | 9/1000 [02:00<3:13:17, 11.70s/it]  1%|▏         | 13/1000 [02:42<3:03:23, 11.15s/it]  2%|▏         | 17/1000 [03:20<2:52:34, 10.53s/it]  2%|▏         | 21/1000 [03:50<2:33:50,  9.43s/it]  2%|▎         | 25/1000 [04:26<2:30:58,  9.29s/it]  3%|▎         | 29/1000 [05:02<2:29:21,  9.23s/it]  3%|▎         | 33/1000 [05:38<2:27:49,  9.17s/it]  4%|▎         | 37/1000 [06:09<2:20:17,  8.74s/it]/home/jkl6486/miniconda3/envs/hermes/lib/python3.11/site-packages/transformers/pipelines/base.py:1083: UserWarning: You seem to be using the pipelines sequentially on GPU. In order to maximize efficiency please use a dataset
+  warnings.warn(
+  4%|▍         | 41/1000 [06:35<2:08:23,  8.03s/it]
+
+
+
+
+
+
+
+
+
+
+Traceback (most recent call last):
+  File "/home/jkl6486/sok-llm-watermark/watermark_reliability_release/generation_pipeline.py", line 871, in <module>
+    main(args)
+  File "/home/jkl6486/sok-llm-watermark/watermark_reliability_release/generation_pipeline.py", line 404, in main
+    ex = next(ds_iterator)
+         ^^^^^^^^^^^^^^^^^
+  File "/home/jkl6486/miniconda3/envs/hermes/lib/python3.11/site-packages/datasets/iterable_dataset.py", line 981, in __iter__
+    for key, example in ex_iterable:
+  File "/home/jkl6486/miniconda3/envs/hermes/lib/python3.11/site-packages/datasets/iterable_dataset.py", line 477, in __iter__
+    transformed_batch.update(self.function(*function_args, **self.fn_kwargs))
+                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/jkl6486/sok-llm-watermark/watermark_reliability_release/utils/generation.py", line 485, in generate
+    output_without_watermark = generate_without_watermark(input_ids=input_ids)
+                               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/jkl6486/sok-llm-watermark/watermark_reliability_release/watermarks/xiaoniu23/unbiased_watermark/monkeypatch.py", line 20, in generate
+    return original_generate(*args, **kargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/jkl6486/miniconda3/envs/hermes/lib/python3.11/site-packages/torch/utils/_contextlib.py", line 115, in decorate_context
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/jkl6486/miniconda3/envs/hermes/lib/python3.11/site-packages/transformers/generation/utils.py", line 1538, in generate
+    return self.greedy_search(
+           ^^^^^^^^^^^^^^^^^^^
+  File "/home/jkl6486/miniconda3/envs/hermes/lib/python3.11/site-packages/transformers/generation/utils.py", line 2362, in greedy_search
+    outputs = self(
+              ^^^^^
+  File "/home/jkl6486/miniconda3/envs/hermes/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1501, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/jkl6486/miniconda3/envs/hermes/lib/python3.11/site-packages/accelerate/hooks.py", line 165, in new_forward
+    output = module._old_forward(*args, **kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/jkl6486/miniconda3/envs/hermes/lib/python3.11/site-packages/transformers/models/llama/modeling_llama.py", line 806, in forward
+    outputs = self.model(
+              ^^^^^^^^^^^
+  File "/home/jkl6486/miniconda3/envs/hermes/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1501, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/jkl6486/miniconda3/envs/hermes/lib/python3.11/site-packages/transformers/models/llama/modeling_llama.py", line 693, in forward
+    layer_outputs = decoder_layer(
+                    ^^^^^^^^^^^^^^
+  File "/home/jkl6486/miniconda3/envs/hermes/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1501, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/jkl6486/miniconda3/envs/hermes/lib/python3.11/site-packages/accelerate/hooks.py", line 165, in new_forward
+    output = module._old_forward(*args, **kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/jkl6486/miniconda3/envs/hermes/lib/python3.11/site-packages/transformers/models/llama/modeling_llama.py", line 408, in forward
+    hidden_states, self_attn_weights, present_key_value = self.self_attn(
+                                                          ^^^^^^^^^^^^^^^
+  File "/home/jkl6486/miniconda3/envs/hermes/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1501, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/jkl6486/miniconda3/envs/hermes/lib/python3.11/site-packages/accelerate/hooks.py", line 165, in new_forward
+    output = module._old_forward(*args, **kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/jkl6486/miniconda3/envs/hermes/lib/python3.11/site-packages/transformers/models/llama/modeling_llama.py", line 346, in forward
+    attn_weights = nn.functional.softmax(attn_weights, dim=-1, dtype=torch.float32).to(query_states.dtype)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/jkl6486/miniconda3/envs/hermes/lib/python3.11/site-packages/torch/nn/functional.py", line 1845, in softmax
+    ret = input.softmax(dim, dtype=dtype)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+torch.cuda.OutOfMemoryError: CUDA out of memory. Tried to allocate 1.28 GiB (GPU 1; 23.64 GiB total capacity; 11.85 GiB already allocated; 936.50 MiB free; 13.97 GiB reserved in total by PyTorch) If reserved memory is >> allocated memory try setting max_split_size_mb to avoid fragmentation.  See documentation for Memory Management and PYTORCH_CUDA_ALLOC_CONF
+wandb: 
+wandb: Run history:
+wandb: generation_overhead_ratio ▁▃▅▅▆▆▆▇▇▇▇▇▇▇▇█████████████████████████
+wandb:  num_satisfactory_samples ▁▁▁▁▂▂▂▂▂▂▃▃▃▃▃▄▄▄▄▄▅▅▅▅▅▅▆▆▆▆▆▇▇▇▇▇▇███
+wandb:            progress_ratio ▁▁▁▁▂▂▂▂▂▂▃▃▃▃▃▄▄▄▄▄▅▅▅▅▅▅▆▆▆▆▆▇▇▇▇▇▇███
+wandb:   total_generated_samples ▁▁▁▁▂▂▂▂▂▂▃▃▃▃▃▄▄▄▄▄▅▅▅▅▅▅▆▆▆▆▆▇▇▇▇▇▇███
+wandb: 
+wandb: Run summary:
+wandb: generation_overhead_ratio 0.97778
+wandb:  num_satisfactory_samples 44
+wandb:            progress_ratio 0.044
+wandb:   total_generated_samples 44
+wandb: 
+wandb: 🚀 View run gen-c4-xiaoniu23-llama-temp0.4 at: https://wandb.ai/alps-lab-sok/lm-watermarking/runs/4h1xg972
+wandb: ️⚡ View job at https://wandb.ai/alps-lab-sok/lm-watermarking/jobs/QXJ0aWZhY3RDb2xsZWN0aW9uOjEyMzQ2NTIxNg==/version_details/v51
+wandb: Synced 6 W&B file(s), 0 media file(s), 2 artifact file(s) and 0 other file(s)
+wandb: Find logs at: ./wandb/run-20240112_090850-4h1xg972/logs
+wandb: Currently logged in as: ljcpro (alps-lab-sok). Use `wandb login --relogin` to force relogin
+wandb: wandb version 0.16.2 is available!  To upgrade, please run:
+wandb:  $ pip install wandb --upgrade
+wandb: Tracking run with wandb version 0.16.1
+wandb: Run data is saved locally in /home/jkl6486/sok-llm-watermark/wandb/run-20240112_091559-6f8bpa0u
+wandb: Run `wandb offline` to turn off syncing.
+wandb: Syncing run gen-c4-xiaoniu23-opt-temp0.4
+wandb: ⭐️ View project at https://wandb.ai/alps-lab-sok/lm-watermarking
+wandb: 🚀 View run at https://wandb.ai/alps-lab-sok/lm-watermarking/runs/6f8bpa0u
+No limit_indices specified, pulling all examples from the dataset.
+Output dir for this run: runs/xiaoniu23/c4/opt/gen-0.4
+  0%|          | 0/1000 [00:00<?, ?it/s]You're using a GPT2TokenizerFast tokenizer. Please note that with a fast tokenizer, using the `__call__` method is faster than using a method to encode the text followed by a call to the `pad` method to get a padded encoding.
+Xformers is not installed correctly. If you want to use memory_efficient_attention to accelerate training use the following command to install Xformers
+pip install xformers.
+  0%|          | 1/1000 [00:49<13:46:17, 49.63s/it]  0%|          | 5/1000 [01:16<3:35:56, 13.02s/it]   1%|          | 9/1000 [02:21<4:05:42, 14.88s/it]  1%|▏         | 13/1000 [03:46<4:50:22, 17.65s/it]  2%|▏         | 17/1000 [04:53<4:43:41, 17.32s/it]  2%|▏         | 21/1000 [05:21<3:42:43, 13.65s/it]  2%|▎         | 25/1000 [06:02<3:22:37, 12.47s/it]  3%|▎         | 29/1000 [07:03<3:36:36, 13.38s/it]  3%|▎         | 33/1000 [08:05<3:46:21, 14.04s/it]  4%|▎         | 37/1000 [08:34<3:11:28, 11.93s/it]/home/jkl6486/miniconda3/envs/hermes/lib/python3.11/site-packages/transformers/pipelines/base.py:1083: UserWarning: You seem to be using the pipelines sequentially on GPU. In order to maximize efficiency please use a dataset
+  warnings.warn(
+  4%|▍         | 41/1000 [09:05<2:51:00, 10.70s/it]  4%|▍         | 45/1000 [10:22<3:30:44, 13.24s/it]  5%|▍         | 49/1000 [11:22<3:38:53, 13.81s/it]  5%|▌         | 53/1000 [12:25<3:46:44, 14.37s/it]  6%|▌         | 57/1000 [13:04<3:24:10, 12.99s/it]  6%|▌         | 61/1000 [13:34<2:57:12, 11.32s/it]  6%|▋         | 65/1000 [15:04<3:49:50, 14.75s/it]  7%|▋         | 69/1000 [16:02<3:46:52, 14.62s/it]  7%|▋         | 73/1000 [18:03<4:58:11, 19.30s/it]  8%|▊         | 77/1000 [18:44<4:16:08, 16.65s/it]  8%|▊         | 81/1000 [19:24<3:43:52, 14.62s/it]  8%|▊         | 85/1000 [20:23<3:43:22, 14.65s/it]  9%|▉         | 89/1000 [21:12<3:31:19, 13.92s/it]  9%|▉         | 93/1000 [22:47<4:15:14, 16.88s/it] 10%|▉         | 97/1000 [23:22<3:37:20, 14.44s/it] 10%|█         | 101/1000 [24:57<4:18:22, 17.24s/it] 10%|█         | 105/1000 [25:52<4:01:01, 16.16s/it] 11%|█         | 109/1000 [26:29<3:29:31, 14.11s/it] 11%|█▏        | 113/1000 [27:24<3:27:42, 14.05s/it] 12%|█▏        | 117/1000 [28:49<3:57:59, 16.17s/it] 12%|█▏        | 121/1000 [29:52<3:55:15, 16.06s/it] 12%|█▎        | 125/1000 [31:03<4:01:46, 16.58s/it] 13%|█▎        | 129/1000 [32:43<4:36:55, 19.08s/it] 13%|█▎        | 133/1000 [33:19<3:52:15, 16.07s/it] 14%|█▎        | 137/1000 [34:39<4:08:22, 17.27s/it] 14%|█▍        | 141/1000 [35:18<3:34:06, 14.96s/it] 14%|█▍        | 145/1000 [36:21<3:37:11, 15.24s/it] 15%|█▍        | 149/1000 [37:38<3:53:25, 16.46s/it] 15%|█▌        | 153/1000 [38:35<3:42:37, 15.77s/it] 16%|█▌        | 157/1000 [39:59<4:03:39, 17.34s/it] 16%|█▌        | 161/1000 [40:40<3:32:26, 15.19s/it] 16%|█▋        | 165/1000 [42:36<4:29:05, 19.34s/it] 17%|█▋        | 169/1000 [43:06<3:39:06, 15.82s/it] 17%|█▋        | 173/1000 [43:51<3:19:08, 14.45s/it] 18%|█▊        | 177/1000 [44:32<3:00:59, 13.20s/it] 18%|█▊        | 181/1000 [45:49<3:24:53, 15.01s/it] 18%|█▊        | 185/1000 [46:38<3:11:46, 14.12s/it] 19%|█▉        | 189/1000 [47:29<3:05:52, 13.75s/it] 19%|█▉        | 193/1000 [49:02<3:43:20, 16.61s/it] 20%|█▉        | 197/1000 [49:59<3:32:06, 15.85s/it] 20%|██        | 201/1000 [50:30<2:59:23, 13.47s/it] 20%|██        | 205/1000 [51:21<2:55:39, 13.26s/it] 21%|██        | 209/1000 [52:51<3:30:59, 16.00s/it] 21%|██▏       | 213/1000 [53:53<3:27:45, 15.84s/it] 22%|██▏       | 217/1000 [54:29<3:00:31, 13.83s/it] 22%|██▏       | 221/1000 [55:10<2:45:11, 12.72s/it] 22%|██▎       | 225/1000 [55:43<2:26:38, 11.35s/it] 23%|██▎       | 229/1000 [56:52<2:49:30, 13.19s/it] 23%|██▎       | 233/1000 [57:59<3:01:36, 14.21s/it] 24%|██▎       | 237/1000 [59:12<3:16:13, 15.43s/it] 24%|██▍       | 241/1000 [1:00:30<3:30:50, 16.67s/it] 24%|██▍       | 245/1000 [1:01:22<3:15:44, 15.56s/it] 25%|██▍       | 249/1000 [1:02:03<2:54:39, 13.95s/it] 25%|██▌       | 253/1000 [1:02:32<2:29:17, 11.99s/it] 26%|██▌       | 257/1000 [1:03:06<2:14:50, 10.89s/it] 26%|██▌       | 261/1000 [1:03:41<2:06:19, 10.26s/it] 26%|██▋       | 265/1000 [1:04:41<2:23:37, 11.72s/it] 27%|██▋       | 269/1000 [1:06:16<3:06:49, 15.33s/it] 27%|██▋       | 273/1000 [1:07:21<3:08:30, 15.56s/it] 28%|██▊       | 277/1000 [1:08:30<3:13:34, 16.06s/it] 28%|██▊       | 281/1000 [1:09:04<2:45:06, 13.78s/it] 28%|██▊       | 285/1000 [1:09:58<2:43:24, 13.71s/it] 29%|██▉       | 289/1000 [1:11:09<2:56:46, 14.92s/it] 29%|██▉       | 293/1000 [1:11:50<2:39:52, 13.57s/it] 30%|██▉       | 297/1000 [1:12:23<2:19:33, 11.91s/it] 30%|███       | 301/1000 [1:13:38<2:42:53, 13.98s/it] 30%|███       | 305/1000 [1:14:30<2:39:01, 13.73s/it] 31%|███       | 309/1000 [1:15:23<2:36:22, 13.58s/it] 31%|███▏      | 313/1000 [1:16:16<2:34:32, 13.50s/it] 32%|███▏      | 317/1000 [1:16:58<2:22:38, 12.53s/it] 32%|███▏      | 321/1000 [1:17:39<2:14:26, 11.88s/it] 32%|███▎      | 325/1000 [1:18:19<2:07:22, 11.32s/it] 33%|███▎      | 329/1000 [1:19:13<2:14:04, 11.99s/it] 33%|███▎      | 333/1000 [1:19:51<2:04:21, 11.19s/it] 34%|███▎      | 337/1000 [1:20:54<2:18:55, 12.57s/it] 34%|███▍      | 341/1000 [1:22:01<2:32:07, 13.85s/it] 34%|███▍      | 345/1000 [1:22:31<2:10:23, 11.94s/it] 35%|███▍      | 349/1000 [1:23:12<2:04:06, 11.44s/it] 35%|███▌      | 353/1000 [1:23:49<1:56:04, 10.76s/it] 36%|███▌      | 357/1000 [1:24:28<1:52:30, 10.50s/it] 36%|███▌      | 361/1000 [1:24:56<1:40:28,  9.44s/it] 36%|███▋      | 365/1000 [1:26:00<2:00:15, 11.36s/it] 37%|███▋      | 369/1000 [1:26:45<1:59:31, 11.37s/it] 37%|███▋      | 373/1000 [1:27:42<2:08:03, 12.25s/it] 38%|███▊      | 377/1000 [1:28:24<2:01:08, 11.67s/it] 38%|███▊      | 381/1000 [1:29:23<2:09:51, 12.59s/it] 38%|███▊      | 385/1000 [1:30:20<2:14:32, 13.13s/it] 39%|███▉      | 389/1000 [1:31:41<2:35:38, 15.28s/it] 39%|███▉      | 393/1000 [1:32:39<2:31:34, 14.98s/it] 40%|███▉      | 397/1000 [1:33:07<2:07:01, 12.64s/it] 40%|████      | 401/1000 [1:34:34<2:33:37, 15.39s/it] 40%|████      | 405/1000 [1:35:28<2:26:27, 14.77s/it] 41%|████      | 409/1000 [1:36:45<2:38:53, 16.13s/it] 41%|████▏     | 413/1000 [1:37:37<2:28:51, 15.22s/it] 42%|████▏     | 417/1000 [1:38:06<2:04:27, 12.81s/it] 42%|████▏     | 421/1000 [1:39:26<2:24:15, 14.95s/it] 42%|████▎     | 425/1000 [1:40:19<2:18:12, 14.42s/it] 43%|████▎     | 429/1000 [1:41:12<2:14:33, 14.14s/it] 43%|████▎     | 433/1000 [1:42:36<2:32:39, 16.15s/it] 44%|████▎     | 437/1000 [1:43:30<2:24:09, 15.36s/it] 44%|████▍     | 441/1000 [1:43:54<1:56:56, 12.55s/it] 44%|████▍     | 445/1000 [1:45:02<2:08:14, 13.86s/it] 45%|████▍     | 449/1000 [1:45:57<2:07:15, 13.86s/it] 45%|████▌     | 453/1000 [1:46:54<2:07:37, 14.00s/it] 46%|████▌     | 457/1000 [1:47:50<2:06:42, 14.00s/it] 46%|████▌     | 461/1000 [1:49:09<2:20:44, 15.67s/it] 46%|████▋     | 465/1000 [1:50:11<2:19:18, 15.62s/it] 47%|████▋     | 469/1000 [1:51:31<2:30:00, 16.95s/it] 47%|████▋     | 473/1000 [1:53:06<2:46:39, 18.97s/it] 48%|████▊     | 477/1000 [1:54:16<2:41:56, 18.58s/it] 48%|████▊     | 481/1000 [1:55:05<2:23:51, 16.63s/it] 48%|████▊     | 485/1000 [1:56:12<2:23:23, 16.71s/it] 49%|████▉     | 489/1000 [1:57:05<2:13:20, 15.66s/it] 49%|████▉     | 493/1000 [1:58:58<2:44:07, 19.42s/it] 50%|████▉     | 497/1000 [2:00:04<2:35:44, 18.58s/it] 50%|█████     | 501/1000 [2:01:53<2:55:55, 21.15s/it] 50%|█████     | 505/1000 [2:03:11<2:50:26, 20.66s/it] 51%|█████     | 509/1000 [2:04:33<2:48:58, 20.65s/it] 51%|█████▏    | 513/1000 [2:04:59<2:13:12, 16.41s/it] 52%|█████▏    | 517/1000 [2:05:41<1:57:16, 14.57s/it] 52%|█████▏    | 521/1000 [2:06:23<1:46:55, 13.39s/it] 52%|█████▎    | 525/1000 [2:06:48<1:29:00, 11.24s/it] 53%|█████▎    | 529/1000 [2:08:02<1:45:28, 13.44s/it] 53%|█████▎    | 533/1000 [2:08:44<1:37:16, 12.50s/it] 54%|█████▎    | 537/1000 [2:09:21<1:29:17, 11.57s/it] 54%|█████▍    | 541/1000 [2:09:52<1:19:33, 10.40s/it] 55%|█████▍    | 545/1000 [2:10:44<1:25:03, 11.22s/it] 55%|█████▍    | 549/1000 [2:11:51<1:36:50, 12.88s/it] 55%|█████▌    | 553/1000 [2:12:27<1:27:04, 11.69s/it] 56%|█████▌    | 557/1000 [2:13:23<1:31:41, 12.42s/it] 56%|█████▌    | 561/1000 [2:14:14<1:31:14, 12.47s/it] 56%|█████▋    | 565/1000 [2:14:39<1:17:00, 10.62s/it] 57%|█████▋    | 569/1000 [2:15:14<1:12:15, 10.06s/it] 57%|█████▋    | 573/1000 [2:15:47<1:07:31,  9.49s/it] 58%|█████▊    | 577/1000 [2:16:14<1:01:06,  8.67s/it] 58%|█████▊    | 581/1000 [2:16:58<1:05:26,  9.37s/it] 58%|█████▊    | 585/1000 [2:17:15<54:18,  7.85s/it]   59%|█████▉    | 589/1000 [2:17:50<55:50,  8.15s/it] 59%|█████▉    | 593/1000 [2:18:38<1:02:41,  9.24s/it] 60%|█████▉    | 597/1000 [2:18:58<53:42,  8.00s/it]   60%|██████    | 601/1000 [2:19:32<54:27,  8.19s/it] 60%|██████    | 605/1000 [2:20:15<58:50,  8.94s/it] 61%|██████    | 609/1000 [2:21:02<1:03:47,  9.79s/it] 61%|██████▏   | 613/1000 [2:21:18<51:34,  7.99s/it]   62%|██████▏   | 617/1000 [2:22:11<1:01:09,  9.58s/it] 62%|██████▏   | 621/1000 [2:22:58<1:04:56, 10.28s/it] 62%|██████▎   | 625/1000 [2:23:19<54:34,  8.73s/it]   63%|██████▎   | 629/1000 [2:24:05<59:18,  9.59s/it] 63%|██████▎   | 633/1000 [2:24:44<58:40,  9.59s/it] 64%|██████▎   | 637/1000 [2:25:12<53:42,  8.88s/it] 64%|██████▍   | 641/1000 [2:25:36<47:40,  7.97s/it] 64%|██████▍   | 645/1000 [2:25:55<41:28,  7.01s/it] 65%|██████▍   | 649/1000 [2:26:25<41:53,  7.16s/it] 65%|██████▌   | 653/1000 [2:27:31<57:40,  9.97s/it] 66%|██████▌   | 657/1000 [2:28:22<1:01:43, 10.80s/it] 66%|██████▌   | 661/1000 [2:29:12<1:03:51, 11.30s/it] 66%|██████▋   | 665/1000 [2:30:06<1:06:49, 11.97s/it] 67%|██████▋   | 669/1000 [2:30:38<59:33, 10.79s/it]   67%|██████▋   | 673/1000 [2:31:04<51:55,  9.53s/it] 68%|██████▊   | 677/1000 [2:32:09<1:01:49, 11.48s/it] 68%|██████▊   | 681/1000 [2:33:15<1:09:01, 12.98s/it] 68%|██████▊   | 685/1000 [2:34:00<1:05:37, 12.50s/it] 69%|██████▉   | 689/1000 [2:35:02<1:09:28, 13.40s/it] 69%|██████▉   | 693/1000 [2:35:39<1:01:58, 12.11s/it] 70%|██████▉   | 697/1000 [2:36:01<51:18, 10.16s/it]   70%|███████   | 701/1000 [2:36:50<53:50, 10.81s/it] 70%|███████   | 705/1000 [2:37:48<58:39, 11.93s/it] 71%|███████   | 709/1000 [2:38:36<57:44, 11.91s/it] 71%|███████▏  | 713/1000 [2:39:08<51:16, 10.72s/it] 72%|███████▏  | 717/1000 [2:39:52<51:05, 10.83s/it] 72%|███████▏  | 721/1000 [2:40:31<48:59, 10.54s/it] 72%|███████▎  | 725/1000 [2:41:03<44:49,  9.78s/it] 73%|███████▎  | 729/1000 [2:41:31<40:18,  8.92s/it] 73%|███████▎  | 733/1000 [2:42:07<39:38,  8.91s/it] 74%|███████▎  | 737/1000 [2:42:50<41:28,  9.46s/it] 74%|███████▍  | 741/1000 [2:43:41<45:17, 10.49s/it] 74%|███████▍  | 745/1000 [2:44:25<45:00, 10.59s/it] 75%|███████▍  | 749/1000 [2:45:07<44:25, 10.62s/it] 75%|███████▌  | 753/1000 [2:45:41<41:04,  9.98s/it] 76%|███████▌  | 757/1000 [2:46:59<51:51, 12.80s/it]
