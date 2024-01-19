@@ -342,8 +342,11 @@ def compute_z_scores(example, watermark_detector=None, args=None):
     # this just iterates the z-score function over the columns we want to compute z-scores for
     if args.only_attack_zscore:
         example = compute_z_score(
+            example, text_column_name='baseline_completion', watermark_detector=watermark_detector, args=args
+        )
+        example = compute_z_score(
                 example, text_column_name='w_wm_output_attacked', watermark_detector=watermark_detector, args=args
-            )
+            )        
         return example
         
     for col_name in ZSCORE_TEXT_COLUMN_NAMES:
