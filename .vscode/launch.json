@@ -86,7 +86,7 @@
                 "--watermark",
                 "aiwei23",
                 "--run_name",
-                "gen-c4-aiwei23-opt1.3b",
+                "gen-c4-aiwei23-opt-0.4",
                 "--model_name_or_path",
                 "facebook/opt-1.3b",
                 "--min_generations",
@@ -207,18 +207,44 @@
             "console": "integratedTerminal",
             "justMyCode": true,
             "env": {
-                "CUDA_VISIBLE_DEVICES": "0,1,2,3"
+                "CUDA_VISIBLE_DEVICES": "0,1,2"
             },
             "args": [
                 "--watermark",
-                "xiaoniu23",
+                "xuandong23b",
                 "--run_name",
-                "eva-xiaoniu23-c4",
+                "eva-xuandong23b-test-c4",
                 "--input_dir",
-                "/home/jkl6486/sok-llm-watermark/runs/xiaoniu23/c4",
+                "/home/jkl6486/sok-llm-watermark/runs_server3/xuandong23b/c4/opt/copypaste-1-10",
                 "--evaluation_metrics",
-                "z-score",   
+                "z-score",
+                "--only_attack_zscore",
+                "True",
+                "--overwrite_output_file",
+                "True",
                          
+
+            ]
+        },
+        {
+            "name": "evaluation_rohith_fast",
+            "type": "python",
+            "request": "launch",
+            "program": "watermark_reliability_release/evaluation_pipeline.py",
+            "console": "integratedTerminal",
+            "justMyCode": true,
+            "env": {
+                "CUDA_VISIBLE_DEVICES": "0,1,2"
+            },
+            "args": [
+                "--watermark",
+                "rohith23",
+                "--run_name",
+                "eva-rohith23-fast-c4",
+                "--input_dir",
+                "/home/jkl6486/sok-llm-watermark/runs/rohith23/c4/opt",
+                "--evaluation_metrics",
+                "z-score",                 
 
             ]
         },
