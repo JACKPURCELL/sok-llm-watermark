@@ -1,5 +1,6 @@
 from __future__ import annotations
 import torch
+from tqdm import tqdm
 from transformers import LogitsProcessor
 from .mersenne import mersenne_rng
 import numpy as np
@@ -11,6 +12,8 @@ pyximport.install(reload_support=True, language_level=sys.version_info[0],
 from .levenshtein import levenshtein
 
 from scipy.stats import norm
+from datasets import load_dataset
+import pickle
 # from math import sqrt, log
 
 # def levenshtein(x, y, gamma=0.0):
@@ -100,14 +103,54 @@ class rohith23_WatermarkLogitsProcessor(LogitsProcessor):
 
 ### If it is okay that we can have no classes but only funcitons, just put these two funcitons out
 class rohith23_WatermarkDetector:
-    def __init__(self,  vocab_size, tokenizer, n=100, key=42):
+    def __init__(self,  vocab_size, tokenizer, n=100, key=42, fast=True):
         self.n = n
         self.rng = np.random.default_rng(key)
         self.vocab_size = vocab_size
         self.min_prefix_len = 1
         self.tokenizer=tokenizer
+        self.xi = torch.from_numpy(self.rng.random((self.n, self.vocab_size),np.float32)).cuda()
+        if fast:
+            self.build_null_results()
 
         # pval = permutation_test(tokens,args.key,args.n,len(tokens),len(tokenizer))
+    
+    def build_null_results(self, n_runs=500):
+        if os.path.exists("./watermark_reliability_release/watermarks/rohith23/null_results.pkl"):
+            print("Null results already exist, loading.")
+            self.null_results = pickle.load(open("./watermark_reliability_release/watermarks/rohith23/null_results.pkl", "rb"))
+            print("Loading finished.")
+        else:
+            print("Building null results.")
+            ### dataset change here
+            dataset = load_dataset("c4", "realnewslike", split="train", streaming=True)
+            ds_iterator = iter(dataset)
+            null_results = []
+            pbar = tqdm(total=n_runs)
+            run = 0
+            while run < n_runs:
+                example = next(ds_iterator)
+                text = example['text']
+                tokenized_text = self.tokenizer.encode(text, return_tensors='pt', truncation=True, max_length=2048).numpy()[0]
+                if tokenized_text[0] == self.tokenizer.bos_token_id:
+                    tokenized_text = tokenized_text[1:]
+                k = len(tokenized_text)
+                '''tokens = tokenizer.encode(text, return_tensors='pt', truncation=True, max_length=2048-buffer_tokens)[0]
+                if len(tokens) < prompt_tokens + new_tokens:
+                    continue
+                tokens = tokens[-new_tokens:]
+
+                seed = torch.randint(high=args.max_seed,size=(1,)).item()
+                generator.manual_seed(int(seed))'''
+                xi = np.random.rand(self.n, self.vocab_size).astype(np.float32)
+                null_result = self._detect(tokenized_text, k, xi)
+                null_results.append(null_result)
+                run += 1
+                pbar.update(1)
+
+            self.null_results = torch.sort(torch.tensor(null_results)).values
+            pickle.dump(self.null_results, open("./watermark_reliability_release/watermarks/rohith23/null_results.pkl", "wb"))
+        
     
     @staticmethod
     def _detect(tokens, k, xi, gamma=0.0):
@@ -117,11 +160,11 @@ class rohith23_WatermarkDetector:
         A = np.empty((m - (k - 1), n))
         for i in range(m - (k - 1)):
             for j in range(n):
-                A[i][j] = levenshtein(tokens[i:i + k], xi[(j + np.arange(k)) % n], gamma)
+                A[i][j] = levenshtein(tokens[i:i + k], xi[(j + np.arange(k)) % n].cpu().numpy(), gamma)
 
         return np.min(A)
 
-    def detect(self,text,n_runs=100,**kwargs):
+    def __detect(self,text,n_runs=100,**kwargs):
         # tokenized_text = self.tokenizer(text, return_tensors="pt", add_special_tokens=False)["input_ids"][0].cuda()
         tokenized_text = self.tokenizer.encode(text, return_tensors='pt', truncation=True, max_length=2048).numpy()[0]
         if tokenized_text[0] == self.tokenizer.bos_token_id:
@@ -138,12 +181,37 @@ class rohith23_WatermarkDetector:
         test_result = self._detect(tokenized_text,  k, xi)
 
         p_val = 0
-        for i in range(n_runs):
+        for i in range(1):
             xi_alternative = np.random.rand(self.n, self.vocab_size).astype(np.float32)
             null_result = self._detect(tokenized_text, k, xi_alternative)
-
             # assuming lower test values indicate presence of watermark
             p_val += null_result <= test_result
+        output_dict["p_val"] = p_val
+        output_dict["p-value"] = (p_val + 1.0) / (n_runs + 1.0)
+        output_dict["z-score"] = norm.ppf(1 - output_dict["p-value"])
+        output_dict["prediction"] = output_dict["p-value"] < 0.02
+        return output_dict
+    
+    def detect(self, text, n_runs=500, **kwargs):
+        # tokenized_text = self.tokenizer(text, return_tensors="pt", add_special_tokens=False)["input_ids"][0].cuda()
+        tokenized_text = self.tokenizer.encode(text, return_tensors='pt', truncation=True, max_length=2048).numpy()[0]
+        if tokenized_text[0] == self.tokenizer.bos_token_id:
+            tokenized_text = tokenized_text[1:]
+            
+        output_dict = {}
+        
+        k = len(tokenized_text)
+        output_dict["num_tokens_scored"] = k
+        
+        #xi = self.rng.random((self.n, self.vocab_size), np.float32)
+        test_result = self._detect(tokenized_text,  k, self.xi)
+
+        p_val = torch.searchsorted(self.null_results, test_result, right=True) / len(self.null_results)
+        '''p_val = 0
+        for i in range(n_runs):
+            # assuming lower test values indicate presence of watermark
+            p_val += self.null_results[i] <= test_result'''
+
         output_dict["p_val"] = p_val
         output_dict["p-value"] = (p_val + 1.0) / (n_runs + 1.0)
         output_dict["z-score"] = norm.ppf(1 - output_dict["p-value"])
