@@ -1185,7 +1185,7 @@ if __name__ == "__main__":
     parser.add_argument(
         "--wandb_project",
         type=str,
-        default="lm-watermarking",
+        default="test-gen-eva",
         help="The name of the wandb project.",
     )
     parser.add_argument(
