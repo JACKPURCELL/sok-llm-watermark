@@ -160,11 +160,11 @@ class rohith23_WatermarkDetector:
         A = np.empty((m - (k - 1), n))
         for i in range(m - (k - 1)):
             for j in range(n):
-                A[i][j] = levenshtein(tokens[i:i + k], xi[(j + np.arange(k)) % n].cpu().numpy(), gamma)
+                A[i][j] = levenshtein(tokens[i:i + k], xi[(j + np.arange(k)) % n], gamma)
 
         return np.min(A)
 
-    def __detect(self,text,n_runs=100,**kwargs):
+    def detect(self,text,n_runs=100,**kwargs):
         # tokenized_text = self.tokenizer(text, return_tensors="pt", add_special_tokens=False)["input_ids"][0].cuda()
         tokenized_text = self.tokenizer.encode(text, return_tensors='pt', truncation=True, max_length=2048).numpy()[0]
         if tokenized_text[0] == self.tokenizer.bos_token_id:
@@ -181,7 +181,7 @@ class rohith23_WatermarkDetector:
         test_result = self._detect(tokenized_text,  k, xi)
 
         p_val = 0
-        for i in range(1):
+        for i in range(n_runs):
             xi_alternative = np.random.rand(self.n, self.vocab_size).astype(np.float32)
             null_result = self._detect(tokenized_text, k, xi_alternative)
             # assuming lower test values indicate presence of watermark
@@ -192,7 +192,7 @@ class rohith23_WatermarkDetector:
         output_dict["prediction"] = output_dict["p-value"] < 0.02
         return output_dict
     
-    def detect(self, text, n_runs=500, **kwargs):
+    def fast_detect(self, text, n_runs=500, **kwargs):
         # tokenized_text = self.tokenizer(text, return_tensors="pt", add_special_tokens=False)["input_ids"][0].cuda()
         tokenized_text = self.tokenizer.encode(text, return_tensors='pt', truncation=True, max_length=2048).numpy()[0]
         if tokenized_text[0] == self.tokenizer.bos_token_id:
