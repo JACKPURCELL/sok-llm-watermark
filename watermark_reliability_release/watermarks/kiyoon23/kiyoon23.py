@@ -205,8 +205,8 @@ class kiyoon23():
                 if candidate_kwd_cnt > 0:
                     upper_bound += math.log2(candidate_kwd_cnt)
 
-            if word_count:
-                logger.info(f"Bpw : {bit_count / word_count:.3f}")
+            #if word_count:
+                #logger.info(f"Bpw : {bit_count / word_count:.3f}")
 
             num_options = reduce(lambda x, y: x * y, [len(vw) for vw in corpus_level_watermarks])
             available_bit = math.floor(math.log2(num_options))
@@ -361,8 +361,8 @@ class kiyoon23():
                 if candidate_kwd_cnt > 0:
                     upper_bound += math.log2(candidate_kwd_cnt)
 
-                if word_count:
-                    logger.info(f"Bpw : {bit_count / word_count:.3f}")
+                #if word_count:
+                    #logger.info(f"Bpw : {bit_count / word_count:.3f}")
 
                 num_options = reduce(lambda x, y: x * y, [len(vw) for vw in corpus_level_watermarks])
                 available_bit = math.floor(math.log2(num_options))
@@ -414,7 +414,7 @@ class kiyoon23():
         return result
     
     def dummy_detect(self, **kwargs):
-        result = {"msg":"01",
+        result = {"msg":["01"],
                   "ratio": 0.0,
                   "result": [False],
                   "prediction": False}

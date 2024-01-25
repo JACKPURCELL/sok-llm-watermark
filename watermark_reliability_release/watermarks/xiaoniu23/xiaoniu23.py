@@ -91,11 +91,6 @@ class xiaoniu23_detector():
         self.tokenizer = AutoTokenizer.from_pretrained(model_name)
         self.num_beams = num_beams
     
-    def dummy_detect(self, **kwargs):
-        result = {
-                  "z-score": 0.0,
-                  "prediction": False}
-        return result
 
 
     def r_llr_score(self, model_str, texts, dist_qs, watermark_type, key):

@@ -192,7 +192,8 @@ def main(args):
                                                                         top_k=args.lean23_top_k,
                                                                         repeat_penalty=args.repeat_penalty
                                                                         )
-            dill.dump(watermark_processor.watermark_processor, open("/home/jkl6486/sok-llm-watermark/watermark_reliability_release/watermarks/lean23/processor/lean23.pkl", "wb"))
+            dill.dump(watermark_processor.watermark_processor, open("/home/jkl6486/sok-llm-watermark/watermark_reliability_release/watermarks/lean23/processor/lean23_"+str(args.model_name_or_path).replace("/","")+".pkl", "wb"))
+            print()
             '''filename = "/home/jkl6486/codable-watermarking-for-llm/gen_table.jsonl"
             with open(filename, "r", encoding="utf-8") as f:
                 c4_sliced_and_filted = [json.loads(line) for line in f.read().strip().split("\n")]
@@ -678,7 +679,7 @@ if __name__ == "__main__":
     parser.add_argument(
         "--generation_batch_size",
         type=int,
-        default=4,
+        default=1,
         help="The batch size to use for generation.",
     )
     

@@ -188,7 +188,7 @@ class rohith23_WatermarkDetector:
             p_val += null_result <= test_result
         output_dict["p_val"] = p_val
         output_dict["p-value"] = (p_val + 1.0) / (n_runs + 1.0)
-        output_dict["z-score"] = norm.ppf(1 - output_dict["p-value"])
+        output_dict["z_score"] = norm.ppf(1 - output_dict["p-value"])
         output_dict["prediction"] = output_dict["p-value"] < 0.02
         return output_dict
     
@@ -214,14 +214,14 @@ class rohith23_WatermarkDetector:
 
         output_dict["p_val"] = p_val
         output_dict["p-value"] = (p_val + 1.0) / (n_runs + 1.0)
-        output_dict["z-score"] = norm.ppf(1 - output_dict["p-value"])
+        output_dict["z_score"] = norm.ppf(1 - output_dict["p-value"])
         output_dict["prediction"] = output_dict["p-value"] < 0.02
         return output_dict
 
       
     def dummy_detect(self, **kwargs):
         result = {"p_val": float("nan"),
-                  "z-score": float("nan"),
+                  "z_score": float("nan"),
                     "p-value": float("nan"),
                   "num_tokens_scored":float("nan"),
                   "prediction": False}
