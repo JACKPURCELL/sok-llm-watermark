@@ -86,15 +86,17 @@
                 "--watermark",
                 "aiwei23",
                 "--run_name",
-                "gen-c4-aiwei23-opt-0.4",
+                "aiwei_gen_test_opt_50",
                 "--model_name_or_path",
                 "facebook/opt-1.3b",
                 "--min_generations",
-                "1000",
+                "50",
                 "--dataset_name",
                 "c4",
                 "--max_new_tokens",
                 "100",
+                "--output_dir",
+                "aiwei23/c4/llama/train-llama",
             ]
         },
         {
@@ -115,11 +117,15 @@
                 "--model_name_or_path",
                 "meta-llama/Llama-2-7b-chat-hf",
                 "--min_generations",
-                "1000",
+                "10",
                 "--dataset_name",
                 "c4",
                 "--max_new_tokens",
                 "100",
+                "--output_dir",
+                "runs_test/kiyoon23_1",
+                "--generation_batch_size",
+                "1",
             ]
         },
         {
@@ -136,15 +142,19 @@
                 "--watermark",
                 "lean23",
                 "--run_name",
-                "gen-c4-lean23-llama",
+                "gen-c4-lean23-opt",
                 "--model_name_or_path",
-                "meta-llama/Llama-2-7b-chat-hf",
+                "facebook/opt-1.3b",
                 "--min_generations",
-                "1000",
+                "10",
                 "--dataset_name",
                 "c4",
                 "--max_new_tokens",
-                "100",
+                "200",
+                "--output_dir",
+                "/home/jkl6486/sok-llm-watermark/runs/runs_test/lean23_30",
+                "--sampling_temp",
+                "1.0",
             ]
         },
         {
@@ -211,17 +221,36 @@
             },
             "args": [
                 "--watermark",
-                "xuandong23b",
+                "kiyoon23",
                 "--run_name",
-                "eva-xuandong23b-test-c4",
+                "kiyoontest",
                 "--input_dir",
-                "/home/jkl6486/sok-llm-watermark/runs_server3/xuandong23b/c4/opt/copypaste-1-10",
+                "/home/jkl6486/sok-llm-watermark/runs/runs_test/kiyoon23_30",
                 "--evaluation_metrics",
                 "z-score",
-                "--only_attack_zscore",
-                "True",
-                "--overwrite_output_file",
-                "True",
+                         
+
+            ]
+        },
+        {
+            "name": "evaluation_lean",
+            "type": "python",
+            "request": "launch",
+            "program": "watermark_reliability_release/evaluation_pipeline.py",
+            "console": "integratedTerminal",
+            "justMyCode": true,
+            "env": {
+                "CUDA_VISIBLE_DEVICES": "0,1,2"
+            },
+            "args": [
+                "--watermark",
+                "lean23",
+                "--run_name",
+                "leantest_30_llama",
+                "--input_dir",
+                "/home/jkl6486/sok-llm-watermark/runs/home/jkl6486/sok-llm-watermark/runs/runs_test/lean23_30",
+                "--evaluation_metrics",
+                "z-score",
                          
 
             ]

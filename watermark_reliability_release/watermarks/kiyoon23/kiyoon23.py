@@ -104,6 +104,7 @@ class kiyoon23():
         self.init_infillmodel()
 
     def embed_watermark(self, raw_text):
+        raw_text = [text.strip() for text in raw_text]
         message = self.message
         cover_texts = preprocess2sentence(raw_text, corpus_name="custom",
                                           start_sample_idx=0, cutoff_q=(0.0, 1.0), use_cache=False)
@@ -144,8 +145,9 @@ class kiyoon23():
             if len(sentences) == 0:
                 output_list.append("None")
                 continue
+            sentences = [" ".join([str(item) for item in sentences])]
             for s_idx, sen in enumerate(sentences):
-                sen = self.spacy_tokenizer(sen.text.strip())
+                sen = self.spacy_tokenizer(sen.strip())
                 all_keywords, entity_keywords = self.infill_model.keyword_module.extract_keyword([sen])
                 keyword = all_keywords[0]
                 ent_keyword = entity_keywords[0]
@@ -215,7 +217,7 @@ class kiyoon23():
             if available_bit == 0:
                 original_sentences_string = ""
                 for i in sentences:
-                    original_sentences_string = original_sentences_string + i.text + " "
+                    original_sentences_string = original_sentences_string + i + " "
                 output_list.append(original_sentences_string.strip())
                 continue
 
@@ -259,6 +261,7 @@ class kiyoon23():
         self.infill_model = InfillModel(self.infill_args, dirname=self.dirname)
     
     def extract_message(self, watermarked_text):
+        watermarked_text = watermarked_text.strip()
         cover_texts = preprocess2sentence([watermarked_text], corpus_name="custom",
                                           start_sample_idx=0, cutoff_q=(0.0, 1.0), use_cache=False)
 
@@ -300,8 +303,9 @@ class kiyoon23():
             if len(sentences) == 0:
                 return self.message
             corpus_level_watermarks = []
+            sentences = [" ".join([str(item) for item in sentences])]
             for s_idx, sen in enumerate(sentences):
-                sen = self.spacy_tokenizer(sen.text.strip())
+                sen = self.spacy_tokenizer(sen.strip())
                 all_keywords, entity_keywords = self.infill_model.keyword_module.extract_keyword([sen])
                 keyword = all_keywords[0]
                 ent_keyword = entity_keywords[0]
@@ -347,11 +351,8 @@ class kiyoon23():
 
                 punct_removed = sen.text.translate(str.maketrans(dict.fromkeys(string.punctuation)))
                 word_count += len([i for i in punct_removed.split(" ") if i not in stop])
-                print(f"***Sentence {s_idx}***")
                 if len(valid_watermarks) > 1:
                     bit_count += math.log2(len(valid_watermarks))
-                    for vw in valid_watermarks:
-                        print("".join(vw))
 
                 if len(valid_watermarks) == 0:
                     valid_watermarks = [sen.text]
@@ -370,11 +371,12 @@ class kiyoon23():
                 available_candidates = product(*corpus_level_watermarks)
                 watermarked_text_temp = next(available_candidates)
                 result = format_result(watermarked_text_temp)
-                while result != watermarked_text:
+                watermarked_text_no_blank = watermarked_text.replace(" ", "")
+                while result.replace(" ", "") != watermarked_text_no_blank:
                     cnt += 1
                     watermarked_text_temp = next(available_candidates)
                     result = format_result(watermarked_text_temp)
-
+                
                 message = format(cnt, "b")
                 message = message.zfill(available_bit)
                 message_sentences_list.append(message)
@@ -386,13 +388,13 @@ class kiyoon23():
     #     output_with_watermark = self.embed_watermark(output_without_watermark, self.message)
     #     return output_without_watermark, output_with_watermark
 
-    def detect(self, text,**kwargs):
+    def detect(self, text, prompt, **kwargs):
         watermarked = []
         decoded_msg = self.extract_message(text)
         for paragraph in decoded_msg:
             sign = 0
             for sentence_message in paragraph:
-                if sentence_message == self.message:
+                if sentence_message == self.message[-len(sentence_message):]:
                     watermarked.append(True)
                     sign = 1
                     break

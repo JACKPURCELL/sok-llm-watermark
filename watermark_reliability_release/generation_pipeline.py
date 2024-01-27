@@ -193,7 +193,6 @@ def main(args):
                                                                         repeat_penalty=args.repeat_penalty
                                                                         )
             dill.dump(watermark_processor.watermark_processor, open("/home/jkl6486/sok-llm-watermark/watermark_reliability_release/watermarks/lean23/processor/lean23_"+str(args.model_name_or_path).replace("/","")+".pkl", "wb"))
-            print()
             '''filename = "/home/jkl6486/codable-watermarking-for-llm/gen_table.jsonl"
             with open(filename, "r", encoding="utf-8") as f:
                 c4_sliced_and_filted = [json.loads(line) for line in f.read().strip().split("\n")]
@@ -263,8 +262,8 @@ def main(args):
                                     layers=args.layers,
                                     sample_number=args.sample_number,
                                     window_size=args.window_size,
-                                    data_dir="/home/jkl6486/sok-llm-watermark/watermark_reliability_release/watermarks/aiwei23/data/train_generator_data/train_generator_data.jsonl",
-                                    model_dir="/home/jkl6486/sok-llm-watermark/watermark_reliability_release/watermarks/aiwei23/model/")
+                                    data_dir="/home/jkl6486/sok-llm-watermark/watermark_reliability_release/watermarks/aiwei23/data/train_generator_data/"+str(args.model_name_or_path)+"/train_generator_data.jsonl",
+                                    model_dir="/home/jkl6486/sok-llm-watermark/watermark_reliability_release/watermarks/aiwei23/model/"+str(args.model_name_or_path)+"/")
                 
                 watermark_detector = watermarks.aiwei23_WatermarkDetector(bit_number=args.bit_number,
                                                         window_size=args.window_size,
@@ -275,14 +274,14 @@ def main(args):
                                                         beam_size=args.beam_size,
                                                         data_dir=args.data_dir,
                                                         z_value=args.z_value,
-                                                        model_dir="/home/jkl6486/sok-llm-watermark/watermark_reliability_release/watermarks/aiwei23/model/")
+                                                        model_dir="/home/jkl6486/sok-llm-watermark/watermark_reliability_release/watermarks/aiwei23/model/"+str(args.model_name_or_path)+"/")
 
-                watermark_detector.generate_and_save_train_data(num_samples=args.num_samples)
-                watermark_processor = watermark_detector.generate_and_save_test_data(dataset_name=args.train_dataset_name,
-                                                                            sampling_temp=args.sampling_temp,
-                                                                            max_new_tokens=args.max_new_token)
+                #watermark_detector.generate_and_save_train_data(num_samples=args.num_samples)
+                #watermark_processor = watermark_detector.generate_and_save_test_data(dataset_name=args.train_dataset_name,
+                #                                                            sampling_temp=args.sampling_temp,
+                #                                                            max_new_tokens=args.max_new_token)
                 
-                watermark_detector.train_model(output_model_dir="/home/jkl6486/sok-llm-watermark/watermark_reliability_release/watermarks/aiwei23/model/")
+                watermark_detector.train_model(output_model_dir="/home/jkl6486/sok-llm-watermark/watermark_reliability_release/watermarks/aiwei23/model/"+str(args.model_name_or_path)+"/")
                 print()
 
 
@@ -650,7 +649,7 @@ if __name__ == "__main__":
     parser.add_argument(
         "--top_k",
         type=int,
-        default=0,
+        default=1000,
         help="The top k to use when generating using top_k version of multinom sampling",
     )
     parser.add_argument(
@@ -668,7 +667,7 @@ if __name__ == "__main__":
     parser.add_argument(
         "--num_beams",
         type=int,
-        default=1,
+        default=4,
         help="The number of beams to use where '1' is no beam search.",
     )
     parser.add_argument(
@@ -780,7 +779,7 @@ if __name__ == "__main__":
             parser.add_argument("--message", type=list, default=[100,200,300,400,500])
             parser.add_argument("--lean23_top_k", type=int, default=1000)
             parser.add_argument("--repeat_penalty", type=float, default=1.5)
-            parser.add_argument("--generated_length", type=int, default=100)
+            parser.add_argument("--generated_length", type=int, default=200)
             parser.add_argument("--prompt_length", type=int, default=300)
         case 'aiwei23':    
             parser.add_argument("--bit_number", type=int, default=16) ### This is log2(vocab_size), which depends on the model, for opt, it is 16
@@ -815,7 +814,7 @@ if __name__ == "__main__":
             parser.add_argument("--keyword_mask", type=str, default="adjacent",
                                 choices=['adjacent', 'child', 'child_dep', "na"])
             parser.add_argument("--custom_keywords", type=str, default=['watermarking', 'watermark'])
-            parser.add_argument("--message", type=str, default="01")
+            parser.add_argument("--message", type=str, default="111")
             parser.add_argument("--spacy_model", type=str, default="en_core_web_sm")
             parser.add_argument("--exclude_cc", type=str2bool, default=True)
         case 'xiaoniu23':

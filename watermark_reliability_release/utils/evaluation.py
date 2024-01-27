@@ -206,7 +206,22 @@ def load_detector(args):
             watermark_detector = watermarks.rohith23_WatermarkDetector(vocab_size=tokenizer.vocab_size,tokenizer=tokenizer)
     
         case 'lean23':
-            watermark_processor = dill.load(open("/home/jkl6486/sok-llm-watermark/watermark_reliability_release/watermarks/lean23/processor/lean23.pkl", "rb"))
+            model, tokenizer, device = load_model(args)
+            watermark_processor = watermarks.lean23_BalanceMarkingWatermarkLogitsProcessor(tokenizer=tokenizer,
+                                                                        lm_tokenizer=tokenizer,
+                                                                        lm_model=model,
+                                                                        delta=args.lean_delta,
+                                                                        lm_prefix_len=args.lm_prefix_len,
+                                                                        lm_top_k=args.lm_top_k,
+                                                                        message_code_len=args.message_code_len,
+                                                                        random_permutation_num=args.random_permutation_num,
+                                                                        encode_ratio=args.encode_ratio,
+                                                                        max_confidence_lbd=args.max_confidence_lbd,
+                                                                        message_model_strategy=args.message_model_strategy,
+                                                                        message=args.message,
+                                                                        top_k=args.lean23_top_k,
+                                                                        repeat_penalty=args.repeat_penalty
+                                                                        )
             watermark_detector = watermarks.lean23_WatermarkDetector(watermark_processor=watermark_processor,
                                                                      generated_length=args.generated_length,
                                                                      message_code_len=args.message_code_len,
@@ -253,7 +268,7 @@ def load_detector(args):
                                                                             max_new_tokens=args.max_new_token)
                 watermark_detector.train_model()
         case 'kiyoon23':
-            message = "01"
+            message = "111"
             watermark_detector = watermarks.kiyoon23(args.dtype, args.embed, args.exp_name_generic, args.exp_name_infill,
                                               args.extract,
                                               args.num_sample, args.spacy_model, args.exclude_cc, args.custom_keywords,
