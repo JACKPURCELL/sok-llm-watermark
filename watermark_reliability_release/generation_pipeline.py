@@ -241,7 +241,8 @@ def main(args):
 
 
         case 'aiwei23':
-            data_dir = args.data_dir+str(args.model_name_or_path)
+            data_dir = args.data_dir+str(args.model_name_or_path)+"/"
+            model_dir = args.model_dir+str(args.model_name_or_path)+"/"
             if args.aiwei_trained:
                 watermark_detector = watermarks.aiwei23_WatermarkDetector(bit_number=args.bit_number,
                                                         window_size=args.window_size,
@@ -253,7 +254,7 @@ def main(args):
                                                         beam_size=args.beam_size,
                                                         data_dir=data_dir,
                                                         z_value=args.z_value,
-                                                        model_dir="/home/jkl6486/sok-llm-watermark/watermark_reliability_release/watermarks/aiwei23/model/",
+                                                        model_dir=model_dir,
                                                         llm_name = args.model_name_or_path)
                 watermark_detector.get_detector_model()
                 watermark_processor = watermark_detector.build_logits_processor()
@@ -263,8 +264,8 @@ def main(args):
                                     layers=args.layers,
                                     sample_number=args.sample_number,
                                     window_size=args.window_size,
-                                    data_dir="/home/jkl6486/sok-llm-watermark/watermark_reliability_release/watermarks/aiwei23/data/train_generator_data/"+str(args.model_name_or_path)+"/train_generator_data.jsonl",
-                                    model_dir="/home/jkl6486/sok-llm-watermark/watermark_reliability_release/watermarks/aiwei23/model/"+str(args.model_name_or_path)+"/")
+                                    data_dir=data_dir+"train_generator_data/train_generation_data.jsonl",
+                                    model_dir=model_dir)
                 
                 watermark_detector = watermarks.aiwei23_WatermarkDetector(bit_number=args.bit_number,
                                                         window_size=args.window_size,
@@ -275,14 +276,14 @@ def main(args):
                                                         beam_size=args.beam_size,
                                                         data_dir=data_dir,
                                                         z_value=args.z_value,
-                                                        model_dir="/home/jkl6486/sok-llm-watermark/watermark_reliability_release/watermarks/aiwei23/model/"+str(args.model_name_or_path)+"/")
+                                                        model_dir=model_dir)
 
-                #watermark_detector.generate_and_save_train_data(num_samples=args.num_samples)
-                #watermark_processor = watermark_detector.generate_and_save_test_data(dataset_name=args.train_dataset_name,
-                #                                                            sampling_temp=args.sampling_temp,
-                #                                                            max_new_tokens=args.max_new_token)
+                watermark_detector.generate_and_save_train_data(num_samples=args.num_samples)
+                watermark_processor = watermark_detector.generate_and_save_test_data(dataset_name=args.train_dataset_name,
+                                                                            sampling_temp=args.sampling_temp,
+                                                                            max_new_tokens=args.max_new_token)
                 
-                watermark_detector.train_model(output_model_dir="/home/jkl6486/sok-llm-watermark/watermark_reliability_release/watermarks/aiwei23/model/"+str(args.model_name_or_path)+"/")
+                watermark_detector.train_model(output_model_dir=model_dir)
                 print()
 
 
@@ -784,12 +785,12 @@ if __name__ == "__main__":
             parser.add_argument("--prompt_length", type=int, default=300)
         case 'aiwei23':    
             parser.add_argument("--bit_number", type=int, default=16) ### This is log2(vocab_size), which depends on the model, for opt, it is 16
-            parser.add_argument("--layers", type=int, default=7)
+            parser.add_argument("--layers", type=int, default=9)
             parser.add_argument("--window_size", type=int, default=3)
             #parser.add_argument("--llm_name", type=str, default="facebook/opt-1.3b")
             parser.add_argument("--gamma", type=float, default=0.5)
             parser.add_argument("--delta", type=float, default= 2.0)
-            parser.add_argument("--model_dir", type=str, default="./model/")
+            parser.add_argument("--model_dir", type=str, default="/home/jkl6486/sok-llm-watermark/watermark_reliability_release/watermarks/aiwei23/model/")
             parser.add_argument("--beam_size", type=int, default=0)
             parser.add_argument("--data_dir", type=str, default="/home/jkl6486/sok-llm-watermark/watermark_reliability_release/watermarks/aiwei23/data/")
             parser.add_argument("--z_value", type=int, default=1)

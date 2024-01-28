@@ -86,9 +86,9 @@
                 "--watermark",
                 "aiwei23",
                 "--run_name",
-                "aiwei_gen_test_opt_50",
+                "aiwei_gen_test_llama_50",
                 "--model_name_or_path",
-                "facebook/opt-1.3b",
+                "meta-llama/Llama-2-7b-chat-hf",
                 "--min_generations",
                 "50",
                 "--dataset_name",
@@ -96,7 +96,7 @@
                 "--max_new_tokens",
                 "100",
                 "--output_dir",
-                "aiwei23/c4/llama/train-llama",
+                "aiwei23/c4/llama/test-llama",
             ]
         },
         {
