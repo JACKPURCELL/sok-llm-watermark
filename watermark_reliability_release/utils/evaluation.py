@@ -196,14 +196,22 @@ def load_detector(args):
                                     z_threshold=args.detection_z_threshold,
                                     normalizers=args.normalizers)
         case 'xuandong23b':
+            if "opt" in args.model_name_or_path:
+                vocab_size = 50272
+            elif "llama" in args.model_name_or_path:
+                vocab_size = 32000
             watermark_detector = watermarks.xuandong23b_WatermarkDetector(fraction=args.fraction,
                                                     tokenizer=tokenizer,
                                                     strength=args.strength,
-                                                    vocab_size=tokenizer.vocab_size,
+                                                    vocab_size=vocab_size,
                                                     watermark_key=args.wm_key,
                                                     threshold=args.xd_threshold)
         case 'rohith23':
-            watermark_detector = watermarks.rohith23_WatermarkDetector(vocab_size=tokenizer.vocab_size,tokenizer=tokenizer)
+            if "opt" in args.model_name_or_path:
+                vocab_size = 50272
+            elif "llama" in args.model_name_or_path:
+                vocab_size = 32000
+            watermark_detector = watermarks.rohith23_WatermarkDetector(vocab_size=vocab_size,tokenizer=tokenizer)
     
         case 'lean23':
             model, tokenizer, device = load_model(args)
