@@ -241,6 +241,7 @@ def main(args):
 
 
         case 'aiwei23':
+            data_dir = args.data_dir+str(args.model_name_or_path)
             if args.aiwei_trained:
                 watermark_detector = watermarks.aiwei23_WatermarkDetector(bit_number=args.bit_number,
                                                         window_size=args.window_size,
@@ -250,7 +251,7 @@ def main(args):
                                                         lm_model = model,
                                                         lm_tokenizer = tokenizer,
                                                         beam_size=args.beam_size,
-                                                        data_dir=args.data_dir,
+                                                        data_dir=data_dir,
                                                         z_value=args.z_value,
                                                         model_dir="/home/jkl6486/sok-llm-watermark/watermark_reliability_release/watermarks/aiwei23/model/",
                                                         llm_name = args.model_name_or_path)
@@ -272,7 +273,7 @@ def main(args):
                                                         delta=args.delta,
                                                         llm_name = args.model_name_or_path,
                                                         beam_size=args.beam_size,
-                                                        data_dir=args.data_dir,
+                                                        data_dir=data_dir,
                                                         z_value=args.z_value,
                                                         model_dir="/home/jkl6486/sok-llm-watermark/watermark_reliability_release/watermarks/aiwei23/model/"+str(args.model_name_or_path)+"/")
 
