@@ -260,12 +260,12 @@ def main(args):
                 watermark_processor = watermark_detector.build_logits_processor()
                 print("Load processor and detector done.")
             else:
-                watermarks.prepare_generator(bit_number=args.bit_number,
-                                    layers=args.layers,
-                                    sample_number=args.sample_number,
-                                    window_size=args.window_size,
-                                    data_dir=data_dir+"train_generator_data/train_generation_data.jsonl",
-                                    model_dir=model_dir)
+                #watermarks.prepare_generator(bit_number=args.bit_number,
+                #                    layers=args.layers,
+                #                    sample_number=args.sample_number,
+                #                    window_size=args.window_size,
+                #                    data_dir=data_dir+"train_generator_data/train_generation_data.jsonl",
+                #                    model_dir=model_dir)
                 
                 watermark_detector = watermarks.aiwei23_WatermarkDetector(bit_number=args.bit_number,
                                                         window_size=args.window_size,
@@ -278,7 +278,7 @@ def main(args):
                                                         z_value=args.z_value,
                                                         model_dir=model_dir)
 
-                watermark_detector.generate_and_save_train_data(num_samples=args.num_samples)
+                #watermark_detector.generate_and_save_train_data(num_samples=args.num_samples)
                 watermark_processor = watermark_detector.generate_and_save_test_data(dataset_name=args.train_dataset_name,
                                                                             sampling_temp=args.sampling_temp,
                                                                             max_new_tokens=args.max_new_token)

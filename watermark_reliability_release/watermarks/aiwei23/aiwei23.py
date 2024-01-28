@@ -433,6 +433,10 @@ class aiwei23_WatermarkDetector:
                 num_beams=self.beam_size
             ))
 
+        '''gen_kwargs.update(dict(
+                num_beams=0,
+                num_beam_groups=0
+            ))'''
         print(gen_kwargs)
 
         generate_with_watermark = partial(

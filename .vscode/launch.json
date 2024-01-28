@@ -96,7 +96,7 @@
                 "--max_new_tokens",
                 "100",
                 "--output_dir",
-                "aiwei23/c4/llama/test-llama",
+                "aiwei23/c4/opt/test-llama",
             ]
         },
         {
@@ -217,15 +217,15 @@
             "console": "integratedTerminal",
             "justMyCode": true,
             "env": {
-                "CUDA_VISIBLE_DEVICES": "0,1,2"
+                "CUDA_VISIBLE_DEVICES": "0,1,2,3"
             },
             "args": [
                 "--watermark",
-                "kiyoon23",
+                "aiwei23",
                 "--run_name",
-                "kiyoontest",
+                "aiwei_eva_llama_test",
                 "--input_dir",
-                "/home/jkl6486/sok-llm-watermark/runs/runs_test/kiyoon23_30",
+                "/home/jkl6486/sok-llm-watermark/runs/aiwei23/c4/opt/test-opt",
                 "--evaluation_metrics",
                 "z-score",
                          
@@ -325,6 +325,67 @@
                  
               ]
           },
+          {
+            "name": "new_inject_lean23",
+            "type": "python",
+            "request": "launch",
+            "program": "watermark_reliability_release/generation_pipeline.py",
+            "console": "integratedTerminal",
+            "justMyCode": true,
+            "env": {
+                "CUDA_VISIBLE_DEVICES": "0,1,2,3"
+            },
+            "args": [
+                "--watermark",
+                "lean23",
+                "--dataset_name",
+                "c4",
+                "--run_name",
+                "test-gen-lean23",
+                "--model_name_or_path",
+                "facebook/opt-1.3b",
+                "--min_generations",
+                "10",
+                "--max_new_tokens",
+                "200",
+                "--num_beams",
+                "4",
+                "--overwrite",
+                "True",
+                "--output_dir",
+                "lean23/nobeam"
+
+
+
+
+            ]
+        },
+        
+        {
+            "name": "evaluation_lean23",
+            "type": "python",
+            "request": "launch",
+            "program": "watermark_reliability_release/evaluation_pipeline.py",
+            "console": "integratedTerminal",
+            "justMyCode": true,
+            "env": {
+                "CUDA_VISIBLE_DEVICES": "0,1,2,3"
+            },
+            "args": [
+                "--watermark",
+                "lean23",
+                "--run_name",
+                "lean23_eva_test_opt",
+                "--input_dir",
+                "/home/jkl6486/sok-llm-watermark/runs/lean23/c4",
+                "--evaluation_metrics",
+                "z-score",
+                "--overwrite_output_file",
+                "True"
+                         
+
+            ]
+        },
 
     ]
 }

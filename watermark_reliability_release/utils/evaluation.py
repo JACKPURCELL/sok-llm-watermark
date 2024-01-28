@@ -238,43 +238,22 @@ def load_detector(args):
                                                                      tokenizer=tokenizer)
         case 'aiwei23':
             model, tokenizer, device = load_model(args)
-            if args.aiwei_trained:
-                watermark_detector = watermarks.aiwei23_WatermarkDetector(bit_number=args.bit_number,
-                                                        window_size=args.window_size,
-                                                        layers=args.layers,
-                                                        gamma=args.gamma,
-                                                        delta=args.delta,
-                                                        lm_model = model,
-                                                        lm_tokenizer = tokenizer,
-                                                        beam_size=args.beam_size,
-                                                        data_dir=args.data_dir,
-                                                        z_value=args.z_value,
-                                                        model_dir="/home/jkl6486/sok-llm-watermark/watermark_reliability_release/watermarks/aiwei23/model/",
-                                                        llm_name = args.model_name_or_path)
-                watermark_detector.get_detector_model()
-                watermark_processor = watermark_detector.build_logits_processor()
-                print("Load processor and detector done.")
-            else:
-                watermarks.prepare_generator(bit_number=args.bit_number,
-                                    layers=args.layers,
-                                    sample_number=args.sample_number,
-                                    window_size=args.window_size)
-                watermark_detector = watermarks.aiwei23_WatermarkDetector(bit_number=args.bit_number,
-                                                        window_size=args.window_size,
-                                                        layers=args.layers,
-                                                        gamma=args.gamma,
-                                                        delta=args.delta,
-                                                        lm_model =model,
-                                                        lm_tokenizer = tokenizer,
-                                                        beam_size=args.beam_size,
-                                                        data_dir=args.data_dir,
-                                                        z_value=args.z_value)
-
-                watermark_detector.generate_and_save_train_data(num_samples=args.num_samples)
-                watermark_processor = watermark_detector.generate_and_save_test_data(dataset_name=args.train_dataset_name,
-                                                                            sampling_temp=args.sampling_temp,
-                                                                            max_new_tokens=args.max_new_token)
-                watermark_detector.train_model()
+            data_dir = args.data_dir+str(args.model_name_or_path)+"/"
+            model_dir = args.model_dir+str(args.model_name_or_path)+"/"
+            watermark_detector = watermarks.aiwei23_WatermarkDetector(bit_number=args.bit_number,
+                                                    window_size=args.window_size,
+                                                    layers=args.layers,
+                                                    gamma=args.gamma,
+                                                    delta=args.delta,
+                                                    lm_model = model,
+                                                    lm_tokenizer = tokenizer,
+                                                    beam_size=args.beam_size,
+                                                    data_dir=data_dir,
+                                                    z_value=args.z_value,
+                                                    model_dir=model_dir,
+                                                    llm_name = args.model_name_or_path)
+            watermark_detector.get_detector_model()
+            
         case 'kiyoon23':
             message = "111"
             watermark_detector = watermarks.kiyoon23(args.dtype, args.embed, args.exp_name_generic, args.exp_name_infill,

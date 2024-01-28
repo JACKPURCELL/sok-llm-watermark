@@ -1339,12 +1339,12 @@ if __name__ == "__main__":
             parser.add_argument("--prompt_length", type=int, default=300)
         case 'aiwei23':    
             parser.add_argument("--bit_number", type=int, default=16) ### This is log2(vocab_size), which depends on the model, for opt, it is 16
-            parser.add_argument("--layers", type=int, default=7)
+            parser.add_argument("--layers", type=int, default=9)
             parser.add_argument("--window_size", type=int, default=3)
             #parser.add_argument("--llm_name", type=str, default="llama-7b")
             parser.add_argument("--gamma", type=float, default=0.5)
             parser.add_argument("--delta", type=float, default= 2.0)
-            parser.add_argument("--model_dir", type=str, default="./model/")
+            parser.add_argument("--model_dir", type=str, default="/home/jkl6486/sok-llm-watermark/watermark_reliability_release/watermarks/aiwei23/model/")
             parser.add_argument("--beam_size", type=int, default=0)
             parser.add_argument("--data_dir", type=str, default="/home/jkl6486/sok-llm-watermark/watermark_reliability_release/watermarks/aiwei23/data/")
             parser.add_argument("--z_value", type=int, default=1)
@@ -1353,7 +1353,7 @@ if __name__ == "__main__":
             parser.add_argument("--train_dataset_name", type=str, default="c4", help="The dataset used for training detector.")
             # parser.add_argument("--sampling_temp", type=float, default=0.7)
             parser.add_argument("--max_new_token", type=int, default=100)
-            parser.add_argument("--aiwei_trained", type=str2bool, default="True")
+            parser.add_argument("--aiwei_trained", type=str2bool, default="False")
         case 'xiaoniu23':
             parser.add_argument("--n", type=int, default=5)
             parser.add_argument("--alpha", type=float, default=0.01)
