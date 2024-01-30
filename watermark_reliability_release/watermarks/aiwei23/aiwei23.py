@@ -391,7 +391,7 @@ class aiwei23_WatermarkDetector:
                                                        llm_name=self.llm_name)
         return watermark_processor
 
-    def generate_and_save_test_data(self, dataset_name, sampling_temp, max_new_tokens):
+    def generate_and_save_test_data(self, dataset_name, sampling_temp, max_new_tokens,args):
         """Instatiate the WatermarkLogitsProcessor according to the watermark parameters
         and generate watermarked text by passing it to the generate method of the model
         as a logits processor. """
@@ -420,18 +420,21 @@ class aiwei23_WatermarkDetector:
                                                        llm_name=self.llm_name)
         custom_processor = CustomLogitsProcessor(llm_name=self.llm_name)
 
-        gen_kwargs = dict(max_new_tokens=max_new_tokens)
+        gen_kwargs = dict(max_new_tokens=args.max_new_tokens)
 
-        if self.beam_size == 0:
-            gen_kwargs.update(dict(
-                do_sample=True,
-                top_k=20,
-                temperature=sampling_temp
-            ))
+        # FIXME can add typica
+        if args.use_sampling:
+            gen_kwargs.update(
+                dict(
+                    do_sample=True,
+                    top_k=args.top_k,
+                    top_p=args.top_p,
+                    typical_p=args.typical_p,
+                    temperature=args.sampling_temp,
+                )
+            )
         else:
-            gen_kwargs.update(dict(
-                num_beams=self.beam_size
-            ))
+            gen_kwargs.update(dict(num_beams=args.num_beams))
 
         '''gen_kwargs.update(dict(
                 num_beams=0,

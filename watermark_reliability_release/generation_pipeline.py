@@ -251,7 +251,7 @@ def main(args):
                                                         delta=args.delta,
                                                         lm_model = model,
                                                         lm_tokenizer = tokenizer,
-                                                        beam_size=args.beam_size,
+                                                        beam_size=args.num_beams,
                                                         data_dir=data_dir,
                                                         z_value=args.z_value,
                                                         model_dir=model_dir,
@@ -273,7 +273,7 @@ def main(args):
                                                         gamma=args.gamma,
                                                         delta=args.delta,
                                                         llm_name = args.model_name_or_path,
-                                                        beam_size=args.beam_size,
+                                                        beam_size=args.num_beams,
                                                         data_dir=data_dir,
                                                         z_value=args.z_value,
                                                         model_dir=model_dir)
@@ -281,7 +281,7 @@ def main(args):
                 watermark_detector.generate_and_save_train_data(num_samples=args.num_samples)
                 watermark_processor = watermark_detector.generate_and_save_test_data(dataset_name=args.train_dataset_name,
                                                                             sampling_temp=args.sampling_temp,
-                                                                            max_new_tokens=args.max_new_token)
+                                                                            max_new_tokens=args.max_new_token,args=args)
                 
                 watermark_detector.train_model(output_model_dir=model_dir)
                 print()
@@ -651,7 +651,7 @@ if __name__ == "__main__":
     parser.add_argument(
         "--top_k",
         type=int,
-        default=1000,
+        default=0,
         help="The top k to use when generating using top_k version of multinom sampling",
     )
     parser.add_argument(
@@ -669,7 +669,7 @@ if __name__ == "__main__":
     parser.add_argument(
         "--num_beams",
         type=int,
-        default=4,
+        default=1,
         help="The number of beams to use where '1' is no beam search.",
     )
     parser.add_argument(
@@ -791,7 +791,7 @@ if __name__ == "__main__":
             parser.add_argument("--gamma", type=float, default=0.5)
             parser.add_argument("--delta", type=float, default= 2.0)
             parser.add_argument("--model_dir", type=str, default="/home/jkl6486/sok-llm-watermark/watermark_reliability_release/watermarks/aiwei23/model/")
-            parser.add_argument("--beam_size", type=int, default=0)
+            # parser.add_argument("--beam_size", type=int, default=0)
             parser.add_argument("--data_dir", type=str, default="/home/jkl6486/sok-llm-watermark/watermark_reliability_release/watermarks/aiwei23/data/")
             parser.add_argument("--z_value", type=int, default=1)
             parser.add_argument("--sample_number", type=int, default=2000, help="Number of samples for training generator.")
@@ -799,7 +799,7 @@ if __name__ == "__main__":
             parser.add_argument("--train_dataset_name", type=str, default="c4", help="The dataset used for training detector.")
             # parser.add_argument("--sampling_temp", type=float, default=0.7)
             parser.add_argument("--max_new_token", type=int, default=100)
-            parser.add_argument("--aiwei_trained", type=str2bool, default="True")
+            parser.add_argument("--aiwei_trained", type=str2bool, default="False")
         case 'kiyoon23':
             parser.add_argument("--exp_name_generic", type=str, default="tmp")
             parser.add_argument("--embed", type=str2bool, default=False)
