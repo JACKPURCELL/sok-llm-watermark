@@ -260,12 +260,12 @@ def main(args):
                 watermark_processor = watermark_detector.build_logits_processor()
                 print("Load processor and detector done.")
             else:
-                #watermarks.prepare_generator(bit_number=args.bit_number,
-                #                    layers=args.layers,
-                #                    sample_number=args.sample_number,
-                #                    window_size=args.window_size,
-                #                    data_dir=data_dir+"train_generator_data/train_generation_data.jsonl",
-                #                    model_dir=model_dir)
+                watermarks.prepare_generator(bit_number=args.bit_number,
+                                    layers=args.layers,
+                                    sample_number=args.sample_number,
+                                    window_size=args.window_size,
+                                    data_dir=data_dir+"train_generator_data/train_generation_data.jsonl",
+                                    model_dir=model_dir)
                 
                 watermark_detector = watermarks.aiwei23_WatermarkDetector(bit_number=args.bit_number,
                                                         window_size=args.window_size,
@@ -278,7 +278,7 @@ def main(args):
                                                         z_value=args.z_value,
                                                         model_dir=model_dir)
 
-                #watermark_detector.generate_and_save_train_data(num_samples=args.num_samples)
+                watermark_detector.generate_and_save_train_data(num_samples=args.num_samples)
                 watermark_processor = watermark_detector.generate_and_save_test_data(dataset_name=args.train_dataset_name,
                                                                             sampling_temp=args.sampling_temp,
                                                                             max_new_tokens=args.max_new_token)
@@ -681,7 +681,7 @@ if __name__ == "__main__":
     parser.add_argument(
         "--generation_batch_size",
         type=int,
-        default=1,
+        default=4,
         help="The batch size to use for generation.",
     )
     
@@ -781,7 +781,7 @@ if __name__ == "__main__":
             parser.add_argument("--message", type=list, default=[100,200,300,400,500])
             parser.add_argument("--lean23_top_k", type=int, default=1000)
             parser.add_argument("--repeat_penalty", type=float, default=1.5)
-            parser.add_argument("--generated_length", type=int, default=200)
+            # parser.add_argument("--generated_length", type=int, default=200)
             parser.add_argument("--prompt_length", type=int, default=300)
         case 'aiwei23':    
             parser.add_argument("--bit_number", type=int, default=16) ### This is log2(vocab_size), which depends on the model, for opt, it is 16
@@ -799,13 +799,13 @@ if __name__ == "__main__":
             parser.add_argument("--train_dataset_name", type=str, default="c4", help="The dataset used for training detector.")
             # parser.add_argument("--sampling_temp", type=float, default=0.7)
             parser.add_argument("--max_new_token", type=int, default=100)
-            parser.add_argument("--aiwei_trained", type=str2bool, default="False")
+            parser.add_argument("--aiwei_trained", type=str2bool, default="True")
         case 'kiyoon23':
             parser.add_argument("--exp_name_generic", type=str, default="tmp")
             parser.add_argument("--embed", type=str2bool, default=False)
             parser.add_argument("--extract", type=str2bool, default=False)
             parser.add_argument("--dtype", type=str, default="agnews")
-            parser.add_argument("--num_sample", type=int, default=100)
+            parser.add_argument("--num_sample", type=int, default=200)
             parser.add_argument("--exp_name_infill", type=str, default="")
             parser.add_argument("--num_epochs", type=int, default=10)
             parser.add_argument("--keyword_ratio", type=float, default=0.05)

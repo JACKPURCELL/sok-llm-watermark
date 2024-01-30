@@ -26,7 +26,7 @@ cache = {
 }
 
 def get_prompt_length(tokenizer, prompt):
-    inputs = tokenizer(prompt, return_tensors="pt", padding=True)
+    inputs = tokenizer(prompt, return_tensors="pt", add_special_tokens=False)
     return inputs["input_ids"].shape[1]
 
 def get_threshold(n, alpha):
@@ -81,14 +81,14 @@ def set_seed(seed: int):
 
 
 class xiaoniu23_detector():
-    def __init__(self, model_name, n, alpha, private_key, watermark_type, num_beams):
+    def __init__(self, model_name, n, alpha, private_key, watermark_type, num_beams,tokenizer):
         self.model_name = model_name
         self.n = n
         self.alpha = alpha
         self.threshold = get_threshold(n, alpha)
         self.private_key = private_key.encode("utf-8")
         self.watermark_type = watermark_type
-        self.tokenizer = AutoTokenizer.from_pretrained(model_name)
+        self.tokenizer = tokenizer
         self.num_beams = num_beams
     
 

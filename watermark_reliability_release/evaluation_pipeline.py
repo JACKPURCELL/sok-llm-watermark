@@ -1335,7 +1335,7 @@ if __name__ == "__main__":
             parser.add_argument("--message", type=list, default=[100,200,300,400,500])
             parser.add_argument("--lean23_top_k", type=int, default=1000)
             parser.add_argument("--repeat_penalty", type=float, default=1.5)
-            parser.add_argument("--generated_length", type=int, default=200)
+            # parser.add_argument("--generated_length", type=int, default=200)
             parser.add_argument("--prompt_length", type=int, default=300)
         case 'aiwei23':    
             parser.add_argument("--bit_number", type=int, default=16) ### This is log2(vocab_size), which depends on the model, for opt, it is 16
@@ -1353,7 +1353,7 @@ if __name__ == "__main__":
             parser.add_argument("--train_dataset_name", type=str, default="c4", help="The dataset used for training detector.")
             # parser.add_argument("--sampling_temp", type=float, default=0.7)
             parser.add_argument("--max_new_token", type=int, default=100)
-            parser.add_argument("--aiwei_trained", type=str2bool, default="False")
+            parser.add_argument("--aiwei_trained", type=str2bool, default="True")
         case 'xiaoniu23':
             parser.add_argument("--n", type=int, default=5)
             parser.add_argument("--alpha", type=float, default=0.01)

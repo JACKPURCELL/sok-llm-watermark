@@ -231,7 +231,7 @@ def load_detector(args):
                                                                         repeat_penalty=args.repeat_penalty
                                                                         )
             watermark_detector = watermarks.lean23_WatermarkDetector(watermark_processor=watermark_processor,
-                                                                     generated_length=args.generated_length,
+                                                                     generated_length=args.max_new_tokens,
                                                                      message_code_len=args.message_code_len,
                                                                      encode_ratio=args.encode_ratio,
                                                                      message=args.message,
@@ -265,7 +265,7 @@ def load_detector(args):
                                               args.topk, message)
         case 'xiaoniu23':
             watermark_detector = watermarks.xiaoniu23_detector(args.model_name_or_path, args.n, 
-                                                               args.alpha, args.private_key, args.watermark_type, args.num_beams)
+                                                               args.alpha, args.private_key, args.watermark_type, args.num_beams,tokenizer)
             
     
         case _:
