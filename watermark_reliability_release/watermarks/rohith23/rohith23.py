@@ -103,22 +103,24 @@ class rohith23_WatermarkLogitsProcessor(LogitsProcessor):
 
 ### If it is okay that we can have no classes but only funcitons, just put these two funcitons out
 class rohith23_WatermarkDetector:
-    def __init__(self,  vocab_size, tokenizer, n=50, key=42, fast=True):
+    def __init__(self,  vocab_size, tokenizer, args,n=50, key=42, fast=True):
         self.n = n
         self.rng = np.random.default_rng(key)
         self.vocab_size = vocab_size
         self.min_prefix_len = 1
         self.tokenizer=tokenizer
         self.xi = self.rng.random((self.n, self.vocab_size)).astype(np.float32)
+        self.args = args
         if fast:
             self.build_null_results()
 
         # pval = permutation_test(tokens,args.key,args.n,len(tokens),len(tokenizer))
     
     def build_null_results(self, n_runs=1000):
-        if os.path.exists("./watermark_reliability_release/watermarks/rohith23/null_results_1000.pkl"):
+        path = "./watermark_reliability_release/watermarks/rohith23/null_results_1000"+self.args.max_new_tokens+self.model_name_or_path+".pkl"
+        if os.path.exists(path):
             print("Null results already exist, loading.")
-            self.null_results = pickle.load(open("./watermark_reliability_release/watermarks/rohith23/null_results_1000.pkl", "rb"))
+            self.null_results = pickle.load(open(path, "rb"))
             print("Loading finished.")
         else:
             print("Building null results.")
@@ -150,7 +152,7 @@ class rohith23_WatermarkDetector:
                 pbar.update(1)
 
             self.null_results = torch.sort(torch.tensor(null_results)).values
-            pickle.dump(self.null_results, open("./watermark_reliability_release/watermarks/rohith23/null_results_1000.pkl", "wb"))
+            pickle.dump(self.null_results, open(path, "wb"))
         
     
     @staticmethod
