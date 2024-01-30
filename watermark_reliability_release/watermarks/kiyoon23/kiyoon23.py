@@ -394,7 +394,7 @@ class kiyoon23():
         for paragraph in decoded_msg:
             sign = 0
             for sentence_message in paragraph:
-                if sentence_message == self.message[-len(sentence_message):]:
+                if sentence_message == self.message[-len(sentence_message):] or sentence_message[-len(self.message):] == self.message:
                     watermarked.append(True)
                     sign = 1
                     break
