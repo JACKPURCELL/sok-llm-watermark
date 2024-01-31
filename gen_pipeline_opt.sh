@@ -3,7 +3,7 @@
 # usecommand nohup bash gen_pipeline_opt.sh > gen_pipeline_opt_v2.log 2>&1 &
 #===============================================================================
 
-watermark_types=("lean23"	"xiaoniu23")
+watermark_types=("xiaoniu23"	"lean23")
 
 models=("opt" )
 gpus=("1,2,3")
