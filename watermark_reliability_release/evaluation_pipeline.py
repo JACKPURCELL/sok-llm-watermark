@@ -1352,7 +1352,7 @@ if __name__ == "__main__":
             parser.add_argument("--num_samples", type=int, default=10000, help="Number of samples for training detector.")
             parser.add_argument("--train_dataset_name", type=str, default="c4", help="The dataset used for training detector.")
             # parser.add_argument("--sampling_temp", type=float, default=0.7)
-            parser.add_argument("--max_new_token", type=int, default=100)
+            # parser.add_argument("--max_new_token", type=int, default=100)
             parser.add_argument("--aiwei_trained", type=str2bool, default="False")
         case 'xiaoniu23':
             parser.add_argument("--n", type=int, default=5)

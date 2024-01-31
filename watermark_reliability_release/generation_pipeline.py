@@ -281,7 +281,7 @@ def main(args):
                 watermark_detector.generate_and_save_train_data(num_samples=args.num_samples)
                 watermark_processor = watermark_detector.generate_and_save_test_data(dataset_name=args.train_dataset_name,
                                                                             sampling_temp=args.sampling_temp,
-                                                                            max_new_tokens=args.max_new_token,args=args)
+                                                                            max_new_tokens=args.max_new_tokens,args=args)
                 
                 watermark_detector.train_model(output_model_dir=model_dir)
                 print()
@@ -798,7 +798,7 @@ if __name__ == "__main__":
             parser.add_argument("--num_samples", type=int, default=10000, help="Number of samples for training detector.")
             parser.add_argument("--train_dataset_name", type=str, default="c4", help="The dataset used for training detector.")
             # parser.add_argument("--sampling_temp", type=float, default=0.7)
-            parser.add_argument("--max_new_token", type=int, default=100)
+            # parser.add_argument("--max_new_token", type=int, default=100)
             parser.add_argument("--aiwei_trained", type=str2bool, default="False")
         case 'kiyoon23':
             parser.add_argument("--exp_name_generic", type=str, default="tmp")
