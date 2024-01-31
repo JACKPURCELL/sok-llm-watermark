@@ -117,7 +117,8 @@ class rohith23_WatermarkDetector:
         # pval = permutation_test(tokens,args.key,args.n,len(tokens),len(tokenizer))
     
     def build_null_results(self, n_runs=1000):
-        path = "./watermark_reliability_release/watermarks/rohith23/null_results_1000"+self.args.max_new_tokens+self.model_name_or_path+".pkl"
+        path = "./watermark_reliability_release/watermarks/rohith23/null_results_1000_"+str(self.args.max_new_tokens)+self.args.model_name_or_path.replace("/","-")+".pkl"
+        print(path)
         if os.path.exists(path):
             print("Null results already exist, loading.")
             self.null_results = pickle.load(open(path, "rb"))
@@ -136,7 +137,7 @@ class rohith23_WatermarkDetector:
                 tokenized_text = self.tokenizer.encode(text, return_tensors='pt', truncation=True, max_length=2048).numpy()[0]
                 if tokenized_text[0] == self.tokenizer.bos_token_id:
                     tokenized_text = tokenized_text[1:]
-                tokenized_text = tokenized_text[:100]
+                tokenized_text = tokenized_text[:self.args.max_new_tokens]
                 k = len(tokenized_text)
                 '''tokens = tokenizer.encode(text, return_tensors='pt', truncation=True, max_length=2048-buffer_tokens)[0]
                 if len(tokens) < prompt_tokens + new_tokens:

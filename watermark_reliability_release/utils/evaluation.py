@@ -211,7 +211,7 @@ def load_detector(args):
                 vocab_size = 50272
             elif "llama" in args.model_name_or_path:
                 vocab_size = 32000
-            watermark_detector = watermarks.rohith23_WatermarkDetector(vocab_size=vocab_size,tokenizer=tokenizer)
+            watermark_detector = watermarks.rohith23_WatermarkDetector(vocab_size=vocab_size,tokenizer=tokenizer,args=args)
     
         case 'lean23':
             model, tokenizer, device = load_model(args)
