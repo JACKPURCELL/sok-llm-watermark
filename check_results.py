@@ -10,14 +10,14 @@ if __name__ == "__main__":
     for method in methodS:
         for model in modelS:    
             for attack in attackS:
-                file_path = "./runs/" + method + "/c4/" + model + "/" + attack + "/"
-                if not os.path.exists(file_path+"gen_table_attacked.jsonl") or not os.path.exists(file_path+"gen_table_attacked_meta.jsonl"):
+                file_path = "/home/jkl6486/sok-llm-watermark/runs/" + method + "/c4/" + model + "/" + attack + "/"
+                if not os.path.exists(file_path+"gen_table_attacked.jsonl") or not os.path.exists(file_path+"gen_table_attacked_meta.json"):
                     if method in no_atk:
                         no_atk[method].append(attack)
                     else:
                         no_atk[method] = [attack]
                     ### Add more here
-                if not os.path.exists(file_path+"gen_table_w_metrics.jsonl") or not os.path.exists(file_path+"gen_table_w_metrics_meta.jsonl"):
+                if not os.path.exists(file_path+"gen_table_w_metrics.jsonl") or not os.path.exists(file_path+"gen_table_w_metrics_meta.json"):
                     if method in no_eva:
                         no_eva[method].append(attack)
                     else:
