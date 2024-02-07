@@ -16,8 +16,11 @@ def evaluate_sentiment(gt_texts, modify_texts,tokenizer, **kwargs):
     bertscore = load("bertscore")
     wer = load("wer")
     
+
+    gt_texts = ['erroroutputflag' if not text.strip() else text for text in gt_texts]
+    modify_texts = ['erroroutputflag' if not text.strip() else text for text in modify_texts]
     wer_score = wer.compute(predictions=modify_texts, references=gt_texts)
-    
+
     bert_results = bertscore.compute(predictions=modify_texts, references=gt_texts, lang="en")
     bert_results = bert_results['f1']
     
