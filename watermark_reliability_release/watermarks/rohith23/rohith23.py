@@ -217,7 +217,7 @@ class rohith23_WatermarkDetector:
         output_dict["p_val"] = p_val
         output_dict["p-value"] = (p_val + 1.0) / (n_runs + 1.0)
         output_dict["z_score"] = norm.ppf(1 - output_dict["p-value"])
-        output_dict["prediction"] = output_dict["p_val"] < 0.02
+        output_dict["prediction"] = output_dict["p-value"] < 0.02
         return output_dict
 
       
