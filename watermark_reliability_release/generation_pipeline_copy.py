@@ -241,8 +241,8 @@ def main(args):
 
 
         case 'aiwei23':
-            data_dir = args.data_dir+str(args.model_name_or_path)+"/"
-            model_dir = args.model_dir+str(args.model_name_or_path)+"/"
+            data_dir = args.data_dir+str(args.model_name_or_path)+"/"+str(args.sampling_temp)+"/"
+            model_dir = args.model_dir+str(args.model_name_or_path)+"/"+str(args.sampling_temp)+"/"
             if args.aiwei_trained:
                 watermark_detector = watermarks.aiwei23_WatermarkDetector(bit_number=args.bit_number,
                                                         window_size=args.window_size,

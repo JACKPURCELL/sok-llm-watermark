@@ -694,12 +694,15 @@ class aiwei23_WatermarkDetector:
         output = self.detector_model(input_list)
         watermarked = []
         z_score = []
+        t_list = []
         for t in output:
             watermarked.append(True if t.float() > 0.5 else False)
             z_score.append((t.float() - mu) / sigma)
+            t_list.append(t.float())
 
 
         output_dict = {}
+        output_dict["t"] = t_list[0]
         output_dict["stat_z_score"] = stat_z_score
         output_dict["z_score"] = float(z_score[0])
         output_dict["prediction"] = watermarked[0]
@@ -708,6 +711,7 @@ class aiwei23_WatermarkDetector:
     
     def dummy_detect(self, **kwargs):
         output_dict = {}
+        output_dict["t"] = float("nan")
         output_dict["z_score"] = float("nan")
         output_dict["prediction"] = False
         output_dict["model_output"] = float("nan")

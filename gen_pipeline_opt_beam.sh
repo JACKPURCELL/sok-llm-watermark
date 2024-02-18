@@ -3,14 +3,14 @@
 # usecommand nohup bash gen_pipeline_opt.sh > gen_pipeline_opt_john23.log 2>&1 &
 #===============================================================================
 
-watermark_types=("lean23")
+watermark_types=("john23" "lean23" "rohith23" "xiaoniu23" "xuandong23b")
 #"john23" "lean23"
 #"rohith23" "xiaoniu23" "xuandong23b" "kiyoon23" 
 ### Aiwei23
 ###"john23" "kiyoon23" "lean23" "rohith23" "xiaoniu23" "xuandong23b" "aiwei23"
 models=("opt")
-gpus=("0, 2, 3")
-temps=("1.3")
+gpus=("0, 1, 2, 3")
+num_beams=("4" "8")
 
 # cp_attack_types=("single-single" "triple-single")
 # 遍历数组中的每个元素
@@ -19,10 +19,10 @@ for watermark_type in "${watermark_types[@]}"; do
 echo "start $watermark_type"
     for model in "${models[@]}"; do
     echo "start $model"
-        for temp in "${temps[@]}"; do
+        for beams in "${num_beams[@]}"; do
         echo "start $temp"
             # 对每个元素执行CUDA_VISIBLE_DEVICES="$gpus" python命令
-            CUDA_VISIBLE_DEVICES="$gpus" python watermark_reliability_release/generation_pipeline.py --overwrite True --watermark "$watermark_type" --wandb_project gen-c4-v2.0-200tokens-"$temp"temp --run_name gen-c4-"$watermark_type"-"$model"  --output_dir "token_200/$watermark_type"/c4/"$model"-"$temp" --min_generations 700 --max_new_tokens 200 --generation_batch_size 1 --model_name_or_path facebook/opt-1.3b --use_sampling True --sampling_temp "$temp"
+            CUDA_VISIBLE_DEVICES="$gpus" python watermark_reliability_release/generation_pipeline.py --overwrite True --watermark "$watermark_type" --wandb_project gen-c4-v2.0-200tokens-"$beams"beams --run_name gen-c4-"$watermark_type"-"$model"  --output_dir "token_200/$watermark_type"/c4/"$model"-"$beams"beams --min_generations 700 --max_new_tokens 200 --use_sampling False --generation_batch_size 1 --model_name_or_path facebook/opt-1.3b 
             CUDA_VISIBLE_DEVICES="$gpus" nohup python watermark_reliability_release/evaluation_pipeline.py --overwrite_output_file True --watermark "$watermark_type" --wandb_project gen-c4-v2.0-200tokens-"$temp"temp --run_name eva-c4-"$watermark_type"-"$model"  --input_dir "/home/jkl6486/sok-llm-watermark/runs/token_200/$watermark_type"/c4/"$model"-"$temp"  --overwrite_args True  --overwrite_output_file True --evaluation_metrics z-score --limit_rows 500 --lower_tolerance_T 50 --upper_tolerance_T 100 &
         done
     done

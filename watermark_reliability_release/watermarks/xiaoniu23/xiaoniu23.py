@@ -32,7 +32,7 @@ def get_prompt_length(tokenizer, prompt):
 def get_threshold(n, alpha):
     return -1*log(alpha)+log(n)
 
-def load_model(model_str, num_beams):
+def load_model(model_str, num_beams, temps):
     if model_str == cache["model_str"]:
         return cache
     else:
@@ -43,6 +43,7 @@ def load_model(model_str, num_beams):
             do_sample=True,
             num_beams=num_beams,
             device_map='auto',
+            temperature=temps,
         )
 
         cache["model_str"] = model_str
@@ -81,7 +82,7 @@ def set_seed(seed: int):
 
 
 class xiaoniu23_detector():
-    def __init__(self, model_name, n, alpha, private_key, watermark_type, num_beams,tokenizer):
+    def __init__(self, model_name, n, alpha, private_key, watermark_type, num_beams, tokenizer):
         self.model_name = model_name
         self.n = n
         self.alpha = alpha
@@ -115,7 +116,7 @@ class xiaoniu23_detector():
             logits_processor=[],
         )
         logits_warper = model._get_logits_warper(generation_config)
-
+#TODO fix align with parameters
         outputs = model(input_ids=input_ids, attention_mask=attention_mask, use_cache=False)
         logits = outputs.logits
         old_logits = torch.clone(logits)
@@ -173,7 +174,9 @@ class xiaoniu23_detector():
                   "prediction": False}
         return result
 def generate_with_watermark(model_str, input_ids, wp, **kwargs):
-    cache = load_model(model_str, kwargs["num_beams"])
+    if "num_beams" not in kwargs:
+        kwargs["num_beams"] = 1
+    cache = load_model(model_str, kwargs["num_beams"], kwargs["temperature"])
     generator = cache["generator"]
     prompt = [cache["tokenizer"].decode(i) for i in input_ids]
     kwargs = {"max_new_tokens": kwargs["max_new_tokens"]}
