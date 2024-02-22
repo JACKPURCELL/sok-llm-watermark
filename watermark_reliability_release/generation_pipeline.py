@@ -310,6 +310,29 @@ def main(args):
             
             watermarks.patch_model(model)
 
+        case 'aiwei23b':
+            if not args.aiwei23b_trained:
+                watermarks.aiwei23b_prepare_watermark_model(args.embedding_input_path, 
+                                                            args.embedding_output_path, 
+                                                            args.aiwei23b_model_path, 
+                                                            args.aiwei23b_size, 
+                                                            args.aiwei23b_output_model, 
+                                                            args.watermark_model_epochs, 
+                                                            args.watermark_model_lr, 
+                                                            args.aiwei23b_input_dim, 
+                                                            args.mapping_length, 
+                                                            args.mapping_output_dir)
+            if tokenizer.pad_token_id is None:
+                tokenizer.pad_token = tokenizer.eos_token
+                model.config.pad_token_id = model.config.eos_token_id
+
+            if args.aiwei23b_watermark_type == "window": # use a window of previous tokens to hash, e.g. KGW
+                watermark_model = watermarks.aiwei23b_watermark.WatermarkWindow(device, args.aiwei23b_window_size, tokenizer)
+                watermark_processor = WatermarkLogitsProcessor(watermark_model)
+            elif args.aiwei23b_watermark_type == "context":
+                watermark_model = watermarks.aiwei23b_watermark.WatermarkContext(device, args.aiwei23b_chunk_size, tokenizer, delta = args.aiwei23b_delta,transform_model_path=args.transform_model, embedding_model=args.embedding_model)
+                watermark_processor = watermarks.aiwei23b_WatermarkLogitsProcessor(watermark_model)
+
         ######################################################################
         # Add your code here
         ######################################################################
@@ -823,6 +846,26 @@ if __name__ == "__main__":
             parser.add_argument("--watermark_type", type=str, default="delta")
             parser.add_argument("--private_key", type=str, default="private key")
             parser.add_argument("--n", type=int, default=5)
+        case 'aiwei23b':
+            parser.add_argument("--embedding_input_path", type=str, default="/home/jkl6486/sok-llm-watermark/watermark_reliability_release/watermarks/aiwei23b/data/sts/train.jsonl")
+            parser.add_argument("--embedding_output_path", type=str, default="/home/jkl6486/sok-llm-watermark/watermark_reliability_release/watermarks/aiwei23b/data/embeddings/train_embeddings.txt")
+            parser.add_argument("--aiwei23b_model_path", type=str, default="/home/jkl6486/sok-llm-watermark/watermark_reliability_release/watermarks/aiwei23b/model/compositional-bert-large-uncased")
+            parser.add_argument("--aiwei23b_size", type=int, default=2000)
+            parser.add_argument("--aiwei23b_output_model", type=str, default="/home/jkl6486/sok-llm-watermark/watermark_reliability_release/watermarks/aiwei23b/model/transform_model_cbert.pth")
+            parser.add_argument("--watermark_model_epochs", type=int, default=2000)
+            parser.add_argument("--watermark_model_lr", type=float, default=0.006)
+            parser.add_argument("--aiwei23b_input_dim", type=int, default=1024)
+            parser.add_argument("--mapping_length", type=int, default=50257)
+            parser.add_argument("--mapping_output_dir", type=str, default="/home/jkl6486/sok-llm-watermark/watermark_reliability_release/watermarks/aiwei23b/data/mappings/")
+            parser.add_argument("--aiwei23b_watermark_type", type=str, default="context")
+            parser.add_argument("--aiwei23b_window_size", type=int, default=0)
+            parser.add_argument("--aiwei23b_chunk_size", type=int, default=10)
+            parser.add_argument("--aiwei23b_delta", type=int, default=1)
+            parser.add_argument("--transform_model", type=str, default="/home/jkl6486/sok-llm-watermark/watermark_reliability_release/watermarks/aiwei23b/model/transform_model_cbert.pth")
+            parser.add_argument("--embedding_model", type=str, default="/home/jkl6486/sok-llm-watermark/watermark_reliability_release/watermarks/aiwei23b/model/compositional-bert-large-uncased")
+            parser.add_argument("--aiwei23b_trained", type=str2bool, default=True)
+            
+            
 
             ######################################################################
             # Add your code here

@@ -45,14 +45,14 @@
             ]
         },
         {
-            "name": "new_inject",
+            "name": "new_inject——rohith",
             "type": "python",
             "request": "launch",
             "program": "watermark_reliability_release/generation_pipeline.py",
             "console": "integratedTerminal",
             "justMyCode": true,
             "env": {
-                "CUDA_VISIBLE_DEVICES": "0,1,2"
+                "CUDA_VISIBLE_DEVICES": "1,2,3"
             },
             "args": [
                 "--watermark",
@@ -67,6 +67,12 @@
                 "8",
                 "--max_new_tokens",
                 "100",
+                // "--num_beams",
+                // "1",
+                // "--use_sampling",
+                // "False",
+                // "--top_k",
+                // "0",
 
 
 
@@ -76,7 +82,7 @@
             "name": "new_inject_aiwei",
             "type": "python",
             "request": "launch",
-            "program": "watermark_reliability_release/generation_pipeline.py",
+            "program": "watermark_reliability_release/generation_pipeline_copy.py",
             "console": "integratedTerminal",
             "justMyCode": true,
             "env": {
@@ -86,17 +92,52 @@
                 "--watermark",
                 "aiwei23",
                 "--run_name",
-                "aiwei_gen_test_llama_50",
+                "aiwei_train_opt_temp1.3",
                 "--model_name_or_path",
-                "meta-llama/Llama-2-7b-chat-hf",
+                "facebook/opt-1.3b",
                 "--min_generations",
-                "50",
+                "700",
                 "--dataset_name",
                 "c4",
                 "--max_new_tokens",
-                "100",
+                "200",
                 "--output_dir",
-                "aiwei23/c4/opt/test-llama",
+                "token200/aiwei23/c4/opt-0.7",
+                "--top_k",
+                "50",
+                "--use_sampling",
+                "True",
+                "--sampling_temp",
+                "0.7",
+            ]
+        },
+        {
+            "name": "new_inject_aiwei23b",
+            "type": "python",
+            "request": "launch",
+            "program": "watermark_reliability_release/generation_pipeline.py",
+            "console": "integratedTerminal",
+            "justMyCode": true,
+            "env": {
+                "CUDA_VISIBLE_DEVICES": "0,2,3"
+            },
+            "args": [
+                "--watermark",
+                "aiwei23b",
+                "--run_name",
+                "aiwei23b_train_opt_test",
+                "--model_name_or_path",
+                "facebook/opt-1.3b",
+                "--min_generations",
+                "700",
+                "--dataset_name",
+                "c4",
+                "--max_new_tokens",
+                "200",
+                "--output_dir",
+                "token_200/aiwei23b/c4/opt",
+                "--generation_batch_size",
+                "1",
             ]
         },
         {
@@ -128,6 +169,7 @@
                 "1",
             ]
         },
+        
         {
             "name": "new_inject_lean",
             "type": "python",
@@ -210,7 +252,7 @@
             ]
         },
         {
-            "name": "evaluation",
+            "name": "evaluationxiaoniu",
             "type": "python",
             "request": "launch",
             "program": "watermark_reliability_release/evaluation_pipeline.py",
@@ -221,13 +263,19 @@
             },
             "args": [
                 "--watermark",
-                "aiwei23",
+                "xiaoniu23",
                 "--run_name",
-                "aiwei_eva_llama_test",
+                "aiwei_xiaoniu_opt_test",
                 "--input_dir",
-                "/home/jkl6486/sok-llm-watermark/runs/aiwei23/c4/opt/test-opt",
+                "/home/jkl6486/sok-llm-watermark/runs/xiaoniu23/c4/opt/",
+                "--output_dir",
+                "/home/jkl6486/sok-llm-watermark/runs/xiaoniu23/c4/opt/test",
                 "--evaluation_metrics",
                 "z-score",
+                "--overwrite_args",
+                "True"
+
+            
                          
 
             ]
@@ -249,6 +297,29 @@
                 "leantest_30_llama",
                 "--input_dir",
                 "/home/jkl6486/sok-llm-watermark/runs/home/jkl6486/sok-llm-watermark/runs/runs_test/lean23_30",
+                "--evaluation_metrics",
+                "z-score",
+                         
+
+            ]
+        },
+        {
+            "name": "evaluation_aiwei23b",
+            "type": "python",
+            "request": "launch",
+            "program": "watermark_reliability_release/evaluation_pipeline.py",
+            "console": "integratedTerminal",
+            "justMyCode": true,
+            "env": {
+                "CUDA_VISIBLE_DEVICES": "0,1,2"
+            },
+            "args": [
+                "--watermark",
+                "aiwei23b",
+                "--run_name",
+                "test",
+                "--input_dir",
+                "/home/jkl6486/sok-llm-watermark/runs/token_200/aiwei23b/c4/opt-test",
                 "--evaluation_metrics",
                 "z-score",
                          
@@ -278,11 +349,10 @@
             ]
         },
         {
-          "name": "attack_pipeline",
-          
+          "name": "eva_expa",
             "type": "python",
             "request": "launch",
-            "program": "watermark_reliability_release/attack_pipeline.py",
+            "program": "watermark_reliability_release/evaluation_pipeline.py",
             "console": "integratedTerminal",
             "justMyCode": true,
             "env": {
@@ -291,13 +361,14 @@
             "args": [
                 
                 "--run_name",
-                "test-helm-attack-xuandong23b",
+                "test-ExpansionAttack",
+                "--watermark",
+                "xuandong23b",
+                "--overwrite_args",
+                "True",
                 "--input_dir",
-                "/home/jkl6486/sok-llm-watermark/runs/xuandong23b/hc3",
-                "--output_dir",
-                "/home/jkl6486/sok-llm-watermark/runs/xuandong23b/hc3/helm",
-                "--attack_method",
-                "helm"
+                "/home/jkl6486/sok-llm-watermark/runs/token_50/xuandong23b/c4/opt/ExpansionAttack",
+                
                
             ]
         },

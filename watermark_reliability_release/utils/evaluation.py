@@ -267,7 +267,10 @@ def load_detector(args):
             watermark_detector = watermarks.xiaoniu23_detector(args.model_name_or_path, args.n, 
                                                                args.alpha, args.private_key, args.watermark_type, args.num_beams,tokenizer, args.sampling_temp)
             
-    
+        case 'aiwei23b':
+            model, tokenizer, device = load_model(args)
+            watermark_detector = watermarks.aiwei23b_WatermarkDetector(watermark_type=args.aiwei23b_watermark_type, window_size=args.aiwei23b_window_size, tokenizer=tokenizer, chunk_size=args.aiwei23b_chunk_size, delta=args.aiwei23b_delta, transform_model=args.transform_model, embedding_model=args.embedding_model)
+
         case _:
             raise ValueError(f"Unknown watermark type: {args.watermark}")
             

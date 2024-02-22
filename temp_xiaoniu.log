@@ -1,505 +1,0 @@
-nohup: ignoring input
-start xiaoniu23
-start 0.4
-wandb: Currently logged in as: ljcpro (alps-lab-sok). Use `wandb login --relogin` to force relogin
-wandb: wandb version 0.16.2 is available!  To upgrade, please run:
-wandb:  $ pip install wandb --upgrade
-wandb: Tracking run with wandb version 0.16.1
-wandb: Run data is saved locally in /home/jkl6486/sok-llm-watermark/wandb/run-20240114_022804-oxu1eoh2
-wandb: Run `wandb offline` to turn off syncing.
-wandb: Syncing run gen-c4-xiaoniu23-llama-temp0.4
-wandb: ⭐️ View project at https://wandb.ai/alps-lab-sok/lm-watermarking
-wandb: 🚀 View run at https://wandb.ai/alps-lab-sok/lm-watermarking/runs/oxu1eoh2
-No limit_indices specified, pulling all examples from the dataset.
-Output dir for this run: runs/xiaoniu23/c4/llama/gen-0.4
-Output dir for this run already exists!
-Contents: []
-Loading checkpoint shards:   0%|          | 0/2 [00:00<?, ?it/s]Loading checkpoint shards:  50%|█████     | 1/2 [00:02<00:02,  2.95s/it]Loading checkpoint shards: 100%|██████████| 2/2 [00:04<00:00,  1.87s/it]Loading checkpoint shards: 100%|██████████| 2/2 [00:04<00:00,  2.03s/it]
-  0%|          | 0/1000 [00:00<?, ?it/s]You're using a LlamaTokenizerFast tokenizer. Please note that with a fast tokenizer, using the `__call__` method is faster than using a method to encode the text followed by a call to the `pad` method to get a padded encoding.
-
-Loading checkpoint shards:   0%|          | 0/2 [00:00<?, ?it/s][A
-Loading checkpoint shards:  50%|█████     | 1/2 [00:07<00:07,  7.93s/it][A
-Loading checkpoint shards: 100%|██████████| 2/2 [00:10<00:00,  5.00s/it][ALoading checkpoint shards: 100%|██████████| 2/2 [00:10<00:00,  5.44s/it]
-  0%|          | 1/1000 [00:45<12:41:00, 45.71s/it]  0%|          | 5/1000 [01:11<3:23:19, 12.26s/it]   1%|          | 9/1000 [01:47<2:54:02, 10.54s/it]  1%|▏         | 13/1000 [02:26<2:47:01, 10.15s/it]  2%|▏         | 17/1000 [03:00<2:35:28,  9.49s/it]  2%|▏         | 21/1000 [03:27<2:19:01,  8.52s/it]  2%|▎         | 25/1000 [03:58<2:14:13,  8.26s/it]  3%|▎         | 29/1000 [04:32<2:14:47,  8.33s/it]  3%|▎         | 33/1000 [05:05<2:13:55,  8.31s/it]  4%|▎         | 37/1000 [05:34<2:08:10,  7.99s/it]/home/jkl6486/miniconda3/envs/hermes/lib/python3.11/site-packages/transformers/pipelines/base.py:1083: UserWarning: You seem to be using the pipelines sequentially on GPU. In order to maximize efficiency please use a dataset
-  warnings.warn(
-  4%|▍         | 41/1000 [05:57<1:56:28,  7.29s/it]  4%|▍         | 45/1000 [06:36<2:07:53,  8.03s/it]  5%|▍         | 49/1000 [07:05<2:03:49,  7.81s/it]  5%|▌         | 53/1000 [07:32<1:58:51,  7.53s/it]  6%|▌         | 57/1000 [07:54<1:48:16,  6.89s/it]  6%|▌         | 61/1000 [08:22<1:48:23,  6.93s/it]  6%|▋         | 65/1000 [08:58<1:57:43,  7.56s/it]  7%|▋         | 69/1000 [09:43<2:14:16,  8.65s/it]  7%|▋         | 73/1000 [10:27<2:24:10,  9.33s/it]  8%|▊         | 77/1000 [10:55<2:13:48,  8.70s/it]  8%|▊         | 81/1000 [11:26<2:08:41,  8.40s/it]  8%|▊         | 85/1000 [11:56<2:03:23,  8.09s/it]  9%|▉         | 89/1000 [12:26<2:00:22,  7.93s/it]  9%|▉         | 93/1000 [13:07<2:10:49,  8.65s/it] 10%|▉         | 97/1000 [13:35<2:02:46,  8.16s/it] 10%|█         | 101/1000 [14:17<2:12:26,  8.84s/it] 10%|█         | 105/1000 [14:46<2:04:28,  8.34s/it] 11%|█         | 109/1000 [15:12<1:56:20,  7.83s/it] 11%|█▏        | 113/1000 [15:38<1:49:40,  7.42s/it] 12%|█▏        | 117/1000 [16:17<1:59:09,  8.10s/it] 12%|█▏        | 121/1000 [16:49<1:58:14,  8.07s/it] 12%|█▎        | 125/1000 [17:23<2:00:03,  8.23s/it] 13%|█▎        | 129/1000 [17:55<1:58:35,  8.17s/it] 13%|█▎        | 133/1000 [18:32<2:02:16,  8.46s/it] 14%|█▎        | 137/1000 [18:59<1:54:26,  7.96s/it] 14%|█▍        | 141/1000 [19:32<1:55:08,  8.04s/it] 14%|█▍        | 145/1000 [20:03<1:53:37,  7.97s/it] 15%|█▍        | 149/1000 [20:28<1:45:31,  7.44s/it] 15%|█▌        | 153/1000 [21:06<1:53:34,  8.05s/it] 16%|█▌        | 157/1000 [21:26<1:40:25,  7.15s/it] 16%|█▌        | 161/1000 [22:09<1:54:57,  8.22s/it] 16%|█▋        | 165/1000 [23:05<2:18:24,  9.95s/it] 17%|█▋        | 169/1000 [23:47<2:19:46, 10.09s/it] 17%|█▋        | 173/1000 [24:18<2:09:25,  9.39s/it] 18%|█▊        | 177/1000 [24:48<2:01:10,  8.83s/it] 18%|█▊        | 181/1000 [25:20<1:57:43,  8.62s/it] 18%|█▊        | 185/1000 [25:55<1:57:09,  8.63s/it] 19%|█▉        | 189/1000 [26:22<1:49:06,  8.07s/it] 19%|█▉        | 193/1000 [26:53<1:47:18,  7.98s/it] 20%|█▉        | 197/1000 [27:30<1:51:28,  8.33s/it] 20%|██        | 201/1000 [28:05<1:52:32,  8.45s/it] 20%|██        | 205/1000 [28:33<1:46:38,  8.05s/it] 21%|██        | 209/1000 [29:18<1:59:01,  9.03s/it] 21%|██▏       | 213/1000 [30:01<2:05:19,  9.55s/it] 22%|██▏       | 217/1000 [30:34<1:59:05,  9.13s/it]
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-Traceback (most recent call last):
-  File "/home/jkl6486/sok-llm-watermark/watermark_reliability_release/generation_pipeline.py", line 871, in <module>
-    main(args)
-  File "/home/jkl6486/sok-llm-watermark/watermark_reliability_release/generation_pipeline.py", line 404, in main
-    ex = next(ds_iterator)
-         ^^^^^^^^^^^^^^^^^
-  File "/home/jkl6486/miniconda3/envs/hermes/lib/python3.11/site-packages/datasets/iterable_dataset.py", line 981, in __iter__
-    for key, example in ex_iterable:
-  File "/home/jkl6486/miniconda3/envs/hermes/lib/python3.11/site-packages/datasets/iterable_dataset.py", line 477, in __iter__
-    transformed_batch.update(self.function(*function_args, **self.fn_kwargs))
-                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/home/jkl6486/sok-llm-watermark/watermark_reliability_release/utils/generation.py", line 485, in generate
-    output_without_watermark = generate_without_watermark(input_ids=input_ids)
-                               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/home/jkl6486/sok-llm-watermark/watermark_reliability_release/watermarks/xiaoniu23/unbiased_watermark/monkeypatch.py", line 20, in generate
-    return original_generate(*args, **kargs)
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/home/jkl6486/miniconda3/envs/hermes/lib/python3.11/site-packages/torch/utils/_contextlib.py", line 115, in decorate_context
-    return func(*args, **kwargs)
-           ^^^^^^^^^^^^^^^^^^^^^
-  File "/home/jkl6486/miniconda3/envs/hermes/lib/python3.11/site-packages/transformers/generation/utils.py", line 1538, in generate
-    return self.greedy_search(
-           ^^^^^^^^^^^^^^^^^^^
-  File "/home/jkl6486/miniconda3/envs/hermes/lib/python3.11/site-packages/transformers/generation/utils.py", line 2362, in greedy_search
-    outputs = self(
-              ^^^^^
-  File "/home/jkl6486/miniconda3/envs/hermes/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1518, in _wrapped_call_impl
-    return self._call_impl(*args, **kwargs)
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/home/jkl6486/miniconda3/envs/hermes/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1527, in _call_impl
-    return forward_call(*args, **kwargs)
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/home/jkl6486/miniconda3/envs/hermes/lib/python3.11/site-packages/accelerate/hooks.py", line 165, in new_forward
-    output = module._old_forward(*args, **kwargs)
-             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/home/jkl6486/miniconda3/envs/hermes/lib/python3.11/site-packages/transformers/models/llama/modeling_llama.py", line 806, in forward
-    outputs = self.model(
-              ^^^^^^^^^^^
-  File "/home/jkl6486/miniconda3/envs/hermes/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1518, in _wrapped_call_impl
-    return self._call_impl(*args, **kwargs)
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/home/jkl6486/miniconda3/envs/hermes/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1527, in _call_impl
-    return forward_call(*args, **kwargs)
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/home/jkl6486/miniconda3/envs/hermes/lib/python3.11/site-packages/transformers/models/llama/modeling_llama.py", line 693, in forward
-    layer_outputs = decoder_layer(
-                    ^^^^^^^^^^^^^^
-  File "/home/jkl6486/miniconda3/envs/hermes/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1518, in _wrapped_call_impl
-    return self._call_impl(*args, **kwargs)
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/home/jkl6486/miniconda3/envs/hermes/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1527, in _call_impl
-    return forward_call(*args, **kwargs)
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/home/jkl6486/miniconda3/envs/hermes/lib/python3.11/site-packages/accelerate/hooks.py", line 165, in new_forward
-    output = module._old_forward(*args, **kwargs)
-             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/home/jkl6486/miniconda3/envs/hermes/lib/python3.11/site-packages/transformers/models/llama/modeling_llama.py", line 408, in forward
-    hidden_states, self_attn_weights, present_key_value = self.self_attn(
-                                                          ^^^^^^^^^^^^^^^
-  File "/home/jkl6486/miniconda3/envs/hermes/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1518, in _wrapped_call_impl
-    return self._call_impl(*args, **kwargs)
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/home/jkl6486/miniconda3/envs/hermes/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1527, in _call_impl
-    return forward_call(*args, **kwargs)
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/home/jkl6486/miniconda3/envs/hermes/lib/python3.11/site-packages/accelerate/hooks.py", line 165, in new_forward
-    output = module._old_forward(*args, **kwargs)
-             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/home/jkl6486/miniconda3/envs/hermes/lib/python3.11/site-packages/transformers/models/llama/modeling_llama.py", line 346, in forward
-    attn_weights = nn.functional.softmax(attn_weights, dim=-1, dtype=torch.float32).to(query_states.dtype)
-                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-torch.cuda.OutOfMemoryError: CUDA out of memory. Tried to allocate 3.55 GiB. GPU 0 has a total capacty of 23.64 GiB of which 334.50 MiB is free. Including non-PyTorch memory, this process has 23.31 GiB memory in use. Of the allocated memory 20.03 GiB is allocated by PyTorch, and 2.50 GiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting max_split_size_mb to avoid fragmentation.  See documentation for Memory Management and PYTORCH_CUDA_ALLOC_CONF
-wandb: 
-wandb: Run history:
-wandb: generation_overhead_ratio ▁▅▆▇▇▇▇█████████████████████████████████
-wandb:  num_satisfactory_samples ▁▁▁▂▂▂▂▂▂▃▃▃▃▃▄▄▄▄▄▄▅▅▅▅▅▅▆▆▆▆▆▇▇▇▇▇▇███
-wandb:            progress_ratio ▁▁▁▂▂▂▂▂▂▃▃▃▃▃▄▄▄▄▄▄▅▅▅▅▅▅▆▆▆▆▆▇▇▇▇▇▇███
-wandb:   total_generated_samples ▁▁▁▂▂▂▂▂▂▃▃▃▃▃▄▄▄▄▄▄▅▅▅▅▅▅▆▆▆▆▆▇▇▇▇▇▇███
-wandb: 
-wandb: Run summary:
-wandb: generation_overhead_ratio 0.99548
-wandb:  num_satisfactory_samples 220
-wandb:            progress_ratio 0.22
-wandb:   total_generated_samples 220
-wandb: 
-wandb: 🚀 View run gen-c4-xiaoniu23-llama-temp0.4 at: https://wandb.ai/alps-lab-sok/lm-watermarking/runs/oxu1eoh2
-wandb: ️⚡ View job at https://wandb.ai/alps-lab-sok/lm-watermarking/jobs/QXJ0aWZhY3RDb2xsZWN0aW9uOjEyMzQ2NTIxNg==/version_details/v63
-wandb: Synced 6 W&B file(s), 0 media file(s), 2 artifact file(s) and 0 other file(s)
-wandb: Find logs at: ./wandb/run-20240114_022804-oxu1eoh2/logs
-finish 0.4
-start 1.0
-wandb: Currently logged in as: ljcpro (alps-lab-sok). Use `wandb login --relogin` to force relogin
-wandb: wandb version 0.16.2 is available!  To upgrade, please run:
-wandb:  $ pip install wandb --upgrade
-wandb: Tracking run with wandb version 0.16.1
-wandb: Run data is saved locally in /home/jkl6486/sok-llm-watermark/wandb/run-20240114_025913-xgxp3q3n
-wandb: Run `wandb offline` to turn off syncing.
-wandb: Syncing run gen-c4-xiaoniu23-llama-temp1.0
-wandb: ⭐️ View project at https://wandb.ai/alps-lab-sok/lm-watermarking
-wandb: 🚀 View run at https://wandb.ai/alps-lab-sok/lm-watermarking/runs/xgxp3q3n
-No limit_indices specified, pulling all examples from the dataset.
-Output dir for this run: runs/xiaoniu23/c4/llama/gen-1.0
-Output dir for this run already exists!
-Contents: []
-Loading checkpoint shards:   0%|          | 0/2 [00:00<?, ?it/s]Loading checkpoint shards:  50%|█████     | 1/2 [00:02<00:02,  2.94s/it]Loading checkpoint shards: 100%|██████████| 2/2 [00:04<00:00,  1.86s/it]Loading checkpoint shards: 100%|██████████| 2/2 [00:04<00:00,  2.02s/it]
-  0%|          | 0/1000 [00:00<?, ?it/s]You're using a LlamaTokenizerFast tokenizer. Please note that with a fast tokenizer, using the `__call__` method is faster than using a method to encode the text followed by a call to the `pad` method to get a padded encoding.
-
-Loading checkpoint shards:   0%|          | 0/2 [00:00<?, ?it/s][A
-Loading checkpoint shards:  50%|█████     | 1/2 [00:08<00:08,  8.25s/it][A
-Loading checkpoint shards: 100%|██████████| 2/2 [00:11<00:00,  5.16s/it][ALoading checkpoint shards: 100%|██████████| 2/2 [00:11<00:00,  5.62s/it]
-  0%|          | 1/1000 [00:46<13:02:16, 46.98s/it]  0%|          | 5/1000 [01:11<3:22:32, 12.21s/it]   1%|          | 9/1000 [01:47<2:53:27, 10.50s/it]  1%|▏         | 13/1000 [02:25<2:44:15,  9.99s/it]  2%|▏         | 17/1000 [02:58<2:33:14,  9.35s/it]  2%|▏         | 21/1000 [03:24<2:16:10,  8.35s/it]  2%|▎         | 25/1000 [03:54<2:10:54,  8.06s/it]  3%|▎         | 29/1000 [04:28<2:12:03,  8.16s/it]  3%|▎         | 33/1000 [05:00<2:11:24,  8.15s/it]  4%|▎         | 37/1000 [05:28<2:05:00,  7.79s/it]/home/jkl6486/miniconda3/envs/hermes/lib/python3.11/site-packages/transformers/pipelines/base.py:1083: UserWarning: You seem to be using the pipelines sequentially on GPU. In order to maximize efficiency please use a dataset
-  warnings.warn(
-  4%|▍         | 41/1000 [05:49<1:51:32,  6.98s/it]  4%|▍         | 45/1000 [06:28<2:04:31,  7.82s/it]  5%|▍         | 49/1000 [06:57<2:01:33,  7.67s/it]  5%|▌         | 53/1000 [07:25<1:57:19,  7.43s/it]  6%|▌         | 57/1000 [07:46<1:47:14,  6.82s/it]  6%|▌         | 61/1000 [08:14<1:47:45,  6.89s/it]  6%|▋         | 65/1000 [08:50<1:57:19,  7.53s/it]  7%|▋         | 69/1000 [09:35<2:14:02,  8.64s/it]  7%|▋         | 73/1000 [10:18<2:22:43,  9.24s/it]  8%|▊         | 77/1000 [10:47<2:12:47,  8.63s/it]  8%|▊         | 81/1000 [11:16<2:06:46,  8.28s/it]  8%|▊         | 85/1000 [11:42<1:57:30,  7.70s/it]  9%|▉         | 89/1000 [12:13<1:57:23,  7.73s/it]  9%|▉         | 93/1000 [12:55<2:08:48,  8.52s/it] 10%|▉         | 97/1000 [13:23<2:01:30,  8.07s/it] 10%|█         | 101/1000 [14:04<2:11:36,  8.78s/it] 10%|█         | 105/1000 [14:33<2:03:55,  8.31s/it] 11%|█         | 109/1000 [15:00<1:56:09,  7.82s/it] 11%|█▏        | 113/1000 [15:26<1:49:34,  7.41s/it] 12%|█▏        | 117/1000 [16:07<2:01:55,  8.29s/it] 12%|█▏        | 121/1000 [16:39<2:00:09,  8.20s/it] 12%|█▎        | 125/1000 [17:14<2:01:25,  8.33s/it] 13%|█▎        | 129/1000 [17:46<1:59:32,  8.23s/it] 13%|█▎        | 133/1000 [18:22<2:02:56,  8.51s/it] 14%|█▎        | 137/1000 [18:53<1:58:59,  8.27s/it] 14%|█▍        | 141/1000 [19:26<1:58:23,  8.27s/it] 14%|█▍        | 145/1000 [19:58<1:56:19,  8.16s/it] 15%|█▍        | 149/1000 [20:24<1:48:36,  7.66s/it] 15%|█▌        | 153/1000 [21:02<1:55:53,  8.21s/it] 16%|█▌        | 157/1000 [21:25<1:45:21,  7.50s/it] 16%|█▌        | 161/1000 [22:08<1:58:34,  8.48s/it] 16%|█▋        | 165/1000 [23:04<2:20:47, 10.12s/it] 17%|█▋        | 169/1000 [23:46<2:21:17, 10.20s/it] 17%|█▋        | 173/1000 [24:16<2:09:30,  9.40s/it] 18%|█▊        | 177/1000 [24:45<2:00:32,  8.79s/it] 18%|█▊        | 181/1000 [25:16<1:55:10,  8.44s/it] 18%|█▊        | 185/1000 [25:50<1:55:10,  8.48s/it] 19%|█▉        | 189/1000 [26:16<1:46:32,  7.88s/it] 19%|█▉        | 193/1000 [26:46<1:44:32,  7.77s/it] 20%|█▉        | 197/1000 [27:22<1:49:23,  8.17s/it] 20%|██        | 201/1000 [27:57<1:50:44,  8.32s/it] 20%|██        | 205/1000 [28:24<1:44:12,  7.86s/it] 21%|██        | 209/1000 [29:09<1:57:10,  8.89s/it] 21%|██▏       | 213/1000 [29:52<2:03:52,  9.44s/it] 22%|██▏       | 217/1000 [30:25<1:57:57,  9.04s/it]
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-Traceback (most recent call last):
-  File "/home/jkl6486/sok-llm-watermark/watermark_reliability_release/generation_pipeline.py", line 871, in <module>
-    main(args)
-  File "/home/jkl6486/sok-llm-watermark/watermark_reliability_release/generation_pipeline.py", line 404, in main
-    ex = next(ds_iterator)
-         ^^^^^^^^^^^^^^^^^
-  File "/home/jkl6486/miniconda3/envs/hermes/lib/python3.11/site-packages/datasets/iterable_dataset.py", line 981, in __iter__
-    for key, example in ex_iterable:
-  File "/home/jkl6486/miniconda3/envs/hermes/lib/python3.11/site-packages/datasets/iterable_dataset.py", line 477, in __iter__
-    transformed_batch.update(self.function(*function_args, **self.fn_kwargs))
-                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/home/jkl6486/sok-llm-watermark/watermark_reliability_release/utils/generation.py", line 485, in generate
-    output_without_watermark = generate_without_watermark(input_ids=input_ids)
-                               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/home/jkl6486/sok-llm-watermark/watermark_reliability_release/watermarks/xiaoniu23/unbiased_watermark/monkeypatch.py", line 20, in generate
-    return original_generate(*args, **kargs)
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/home/jkl6486/miniconda3/envs/hermes/lib/python3.11/site-packages/torch/utils/_contextlib.py", line 115, in decorate_context
-    return func(*args, **kwargs)
-           ^^^^^^^^^^^^^^^^^^^^^
-  File "/home/jkl6486/miniconda3/envs/hermes/lib/python3.11/site-packages/transformers/generation/utils.py", line 1538, in generate
-    return self.greedy_search(
-           ^^^^^^^^^^^^^^^^^^^
-  File "/home/jkl6486/miniconda3/envs/hermes/lib/python3.11/site-packages/transformers/generation/utils.py", line 2362, in greedy_search
-    outputs = self(
-              ^^^^^
-  File "/home/jkl6486/miniconda3/envs/hermes/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1518, in _wrapped_call_impl
-    return self._call_impl(*args, **kwargs)
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/home/jkl6486/miniconda3/envs/hermes/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1527, in _call_impl
-    return forward_call(*args, **kwargs)
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/home/jkl6486/miniconda3/envs/hermes/lib/python3.11/site-packages/accelerate/hooks.py", line 165, in new_forward
-    output = module._old_forward(*args, **kwargs)
-             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/home/jkl6486/miniconda3/envs/hermes/lib/python3.11/site-packages/transformers/models/llama/modeling_llama.py", line 806, in forward
-    outputs = self.model(
-              ^^^^^^^^^^^
-  File "/home/jkl6486/miniconda3/envs/hermes/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1518, in _wrapped_call_impl
-    return self._call_impl(*args, **kwargs)
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/home/jkl6486/miniconda3/envs/hermes/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1527, in _call_impl
-    return forward_call(*args, **kwargs)
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/home/jkl6486/miniconda3/envs/hermes/lib/python3.11/site-packages/transformers/models/llama/modeling_llama.py", line 693, in forward
-    layer_outputs = decoder_layer(
-                    ^^^^^^^^^^^^^^
-  File "/home/jkl6486/miniconda3/envs/hermes/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1518, in _wrapped_call_impl
-    return self._call_impl(*args, **kwargs)
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/home/jkl6486/miniconda3/envs/hermes/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1527, in _call_impl
-    return forward_call(*args, **kwargs)
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/home/jkl6486/miniconda3/envs/hermes/lib/python3.11/site-packages/accelerate/hooks.py", line 165, in new_forward
-    output = module._old_forward(*args, **kwargs)
-             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/home/jkl6486/miniconda3/envs/hermes/lib/python3.11/site-packages/transformers/models/llama/modeling_llama.py", line 408, in forward
-    hidden_states, self_attn_weights, present_key_value = self.self_attn(
-                                                          ^^^^^^^^^^^^^^^
-  File "/home/jkl6486/miniconda3/envs/hermes/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1518, in _wrapped_call_impl
-    return self._call_impl(*args, **kwargs)
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/home/jkl6486/miniconda3/envs/hermes/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1527, in _call_impl
-    return forward_call(*args, **kwargs)
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/home/jkl6486/miniconda3/envs/hermes/lib/python3.11/site-packages/accelerate/hooks.py", line 165, in new_forward
-    output = module._old_forward(*args, **kwargs)
-             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/home/jkl6486/miniconda3/envs/hermes/lib/python3.11/site-packages/transformers/models/llama/modeling_llama.py", line 346, in forward
-    attn_weights = nn.functional.softmax(attn_weights, dim=-1, dtype=torch.float32).to(query_states.dtype)
-                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-torch.cuda.OutOfMemoryError: CUDA out of memory. Tried to allocate 3.55 GiB. GPU 0 has a total capacty of 23.64 GiB of which 334.50 MiB is free. Including non-PyTorch memory, this process has 23.31 GiB memory in use. Of the allocated memory 20.03 GiB is allocated by PyTorch, and 2.50 GiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting max_split_size_mb to avoid fragmentation.  See documentation for Memory Management and PYTORCH_CUDA_ALLOC_CONF
-wandb: 
-wandb: Run history:
-wandb: generation_overhead_ratio ▁▅▆▇▇▇▇█████████████████████████████████
-wandb:  num_satisfactory_samples ▁▁▁▂▂▂▂▂▂▃▃▃▃▃▄▄▄▄▄▄▅▅▅▅▅▅▆▆▆▆▆▇▇▇▇▇▇███
-wandb:            progress_ratio ▁▁▁▂▂▂▂▂▂▃▃▃▃▃▄▄▄▄▄▄▅▅▅▅▅▅▆▆▆▆▆▇▇▇▇▇▇███
-wandb:   total_generated_samples ▁▁▁▂▂▂▂▂▂▃▃▃▃▃▄▄▄▄▄▄▅▅▅▅▅▅▆▆▆▆▆▇▇▇▇▇▇███
-wandb: 
-wandb: Run summary:
-wandb: generation_overhead_ratio 0.99548
-wandb:  num_satisfactory_samples 220
-wandb:            progress_ratio 0.22
-wandb:   total_generated_samples 220
-wandb: 
-wandb: 🚀 View run gen-c4-xiaoniu23-llama-temp1.0 at: https://wandb.ai/alps-lab-sok/lm-watermarking/runs/xgxp3q3n
-wandb: ️⚡ View job at https://wandb.ai/alps-lab-sok/lm-watermarking/jobs/QXJ0aWZhY3RDb2xsZWN0aW9uOjEyMzQ2NTIxNg==/version_details/v63
-wandb: Synced 6 W&B file(s), 0 media file(s), 0 artifact file(s) and 0 other file(s)
-wandb: Find logs at: ./wandb/run-20240114_025913-xgxp3q3n/logs
-finish 1.0
-start 1.3
-wandb: Currently logged in as: ljcpro (alps-lab-sok). Use `wandb login --relogin` to force relogin
-wandb: wandb version 0.16.2 is available!  To upgrade, please run:
-wandb:  $ pip install wandb --upgrade
-wandb: Tracking run with wandb version 0.16.1
-wandb: Run data is saved locally in /home/jkl6486/sok-llm-watermark/wandb/run-20240114_033009-un1wm9aw
-wandb: Run `wandb offline` to turn off syncing.
-wandb: Syncing run gen-c4-xiaoniu23-llama-temp1.3
-wandb: ⭐️ View project at https://wandb.ai/alps-lab-sok/lm-watermarking
-wandb: 🚀 View run at https://wandb.ai/alps-lab-sok/lm-watermarking/runs/un1wm9aw
-No limit_indices specified, pulling all examples from the dataset.
-Output dir for this run: runs/xiaoniu23/c4/llama/gen-1.3
-Output dir for this run already exists!
-Contents: []
-Loading checkpoint shards:   0%|          | 0/2 [00:00<?, ?it/s]Loading checkpoint shards:  50%|█████     | 1/2 [00:02<00:02,  2.97s/it]Loading checkpoint shards: 100%|██████████| 2/2 [00:04<00:00,  1.88s/it]Loading checkpoint shards: 100%|██████████| 2/2 [00:04<00:00,  2.04s/it]
-  0%|          | 0/1000 [00:00<?, ?it/s]You're using a LlamaTokenizerFast tokenizer. Please note that with a fast tokenizer, using the `__call__` method is faster than using a method to encode the text followed by a call to the `pad` method to get a padded encoding.
-
-Loading checkpoint shards:   0%|          | 0/2 [00:00<?, ?it/s][A
-Loading checkpoint shards:  50%|█████     | 1/2 [00:08<00:08,  8.04s/it][A
-Loading checkpoint shards: 100%|██████████| 2/2 [00:10<00:00,  4.93s/it][ALoading checkpoint shards: 100%|██████████| 2/2 [00:10<00:00,  5.40s/it]
-  0%|          | 1/1000 [00:46<13:02:29, 47.00s/it]  0%|          | 5/1000 [01:12<3:26:34, 12.46s/it]   1%|          | 9/1000 [01:49<2:55:40, 10.64s/it]  1%|▏         | 13/1000 [02:27<2:47:59, 10.21s/it]  2%|▏         | 17/1000 [03:01<2:36:09,  9.53s/it]  2%|▏         | 21/1000 [03:28<2:19:29,  8.55s/it]  2%|▎         | 25/1000 [03:59<2:14:31,  8.28s/it]  3%|▎         | 29/1000 [04:33<2:15:03,  8.35s/it]  3%|▎         | 33/1000 [05:06<2:14:11,  8.33s/it]  4%|▎         | 37/1000 [05:35<2:08:22,  8.00s/it]/home/jkl6486/miniconda3/envs/hermes/lib/python3.11/site-packages/transformers/pipelines/base.py:1083: UserWarning: You seem to be using the pipelines sequentially on GPU. In order to maximize efficiency please use a dataset
-  warnings.warn(
-  4%|▍         | 41/1000 [05:58<1:56:46,  7.31s/it]  4%|▍         | 45/1000 [06:38<2:08:22,  8.07s/it]  5%|▍         | 49/1000 [07:07<2:04:45,  7.87s/it]  5%|▌         | 53/1000 [07:35<1:59:59,  7.60s/it]  6%|▌         | 57/1000 [07:58<1:50:08,  7.01s/it]  6%|▌         | 61/1000 [08:27<1:51:10,  7.10s/it]  6%|▋         | 65/1000 [09:03<1:59:53,  7.69s/it]  7%|▋         | 69/1000 [09:48<2:15:57,  8.76s/it]  7%|▋         | 73/1000 [10:32<2:25:29,  9.42s/it]  8%|▊         | 77/1000 [11:02<2:15:53,  8.83s/it]  8%|▊         | 81/1000 [11:34<2:11:00,  8.55s/it]  8%|▊         | 85/1000 [12:04<2:05:58,  8.26s/it]  9%|▉         | 89/1000 [12:32<2:00:03,  7.91s/it]  9%|▉         | 93/1000 [13:12<2:09:20,  8.56s/it] 10%|▉         | 97/1000 [13:42<2:03:12,  8.19s/it] 10%|█         | 101/1000 [14:24<2:12:56,  8.87s/it] 10%|█         | 105/1000 [14:56<2:08:30,  8.62s/it] 11%|█         | 109/1000 [15:24<2:00:37,  8.12s/it] 11%|█▏        | 113/1000 [15:49<1:52:40,  7.62s/it] 12%|█▏        | 117/1000 [16:31<2:04:05,  8.43s/it] 12%|█▏        | 121/1000 [17:03<2:01:44,  8.31s/it] 12%|█▎        | 125/1000 [17:37<2:02:31,  8.40s/it] 13%|█▎        | 129/1000 [18:09<2:00:20,  8.29s/it] 13%|█▎        | 133/1000 [18:46<2:03:32,  8.55s/it] 14%|█▎        | 137/1000 [19:17<1:59:23,  8.30s/it] 14%|█▍        | 141/1000 [19:50<1:58:35,  8.28s/it] 14%|█▍        | 145/1000 [20:21<1:56:00,  8.14s/it] 15%|█▍        | 149/1000 [20:46<1:47:13,  7.56s/it] 15%|█▌        | 153/1000 [21:24<1:54:48,  8.13s/it] 16%|█▌        | 157/1000 [21:48<1:45:28,  7.51s/it] 16%|█▌        | 161/1000 [22:31<1:58:29,  8.47s/it] 16%|█▋        | 165/1000 [23:27<2:20:45, 10.11s/it] 17%|█▋        | 169/1000 [24:08<2:21:13, 10.20s/it] 17%|█▋        | 173/1000 [24:38<2:09:25,  9.39s/it] 18%|█▊        | 177/1000 [25:08<2:00:30,  8.79s/it] 18%|█▊        | 181/1000 [25:40<1:56:38,  8.55s/it] 18%|█▊        | 185/1000 [26:14<1:56:16,  8.56s/it] 19%|█▉        | 189/1000 [26:40<1:47:15,  7.94s/it] 19%|█▉        | 193/1000 [27:10<1:45:01,  7.81s/it] 20%|█▉        | 197/1000 [27:46<1:49:43,  8.20s/it] 20%|██        | 201/1000 [28:21<1:51:00,  8.34s/it] 20%|██        | 205/1000 [28:48<1:44:21,  7.88s/it] 21%|██        | 209/1000 [29:33<1:57:16,  8.90s/it] 21%|██▏       | 213/1000 [30:16<2:03:56,  9.45s/it] 22%|██▏       | 217/1000 [30:49<1:57:59,  9.04s/it]
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-Traceback (most recent call last):
-  File "/home/jkl6486/sok-llm-watermark/watermark_reliability_release/generation_pipeline.py", line 871, in <module>
-    main(args)
-  File "/home/jkl6486/sok-llm-watermark/watermark_reliability_release/generation_pipeline.py", line 404, in main
-    ex = next(ds_iterator)
-         ^^^^^^^^^^^^^^^^^
-  File "/home/jkl6486/miniconda3/envs/hermes/lib/python3.11/site-packages/datasets/iterable_dataset.py", line 981, in __iter__
-    for key, example in ex_iterable:
-  File "/home/jkl6486/miniconda3/envs/hermes/lib/python3.11/site-packages/datasets/iterable_dataset.py", line 477, in __iter__
-    transformed_batch.update(self.function(*function_args, **self.fn_kwargs))
-                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/home/jkl6486/sok-llm-watermark/watermark_reliability_release/utils/generation.py", line 485, in generate
-    output_without_watermark = generate_without_watermark(input_ids=input_ids)
-                               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/home/jkl6486/sok-llm-watermark/watermark_reliability_release/watermarks/xiaoniu23/unbiased_watermark/monkeypatch.py", line 20, in generate
-    return original_generate(*args, **kargs)
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/home/jkl6486/miniconda3/envs/hermes/lib/python3.11/site-packages/torch/utils/_contextlib.py", line 115, in decorate_context
-    return func(*args, **kwargs)
-           ^^^^^^^^^^^^^^^^^^^^^
-  File "/home/jkl6486/miniconda3/envs/hermes/lib/python3.11/site-packages/transformers/generation/utils.py", line 1538, in generate
-    return self.greedy_search(
-           ^^^^^^^^^^^^^^^^^^^
-  File "/home/jkl6486/miniconda3/envs/hermes/lib/python3.11/site-packages/transformers/generation/utils.py", line 2362, in greedy_search
-    outputs = self(
-              ^^^^^
-  File "/home/jkl6486/miniconda3/envs/hermes/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1518, in _wrapped_call_impl
-    return self._call_impl(*args, **kwargs)
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/home/jkl6486/miniconda3/envs/hermes/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1527, in _call_impl
-    return forward_call(*args, **kwargs)
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/home/jkl6486/miniconda3/envs/hermes/lib/python3.11/site-packages/accelerate/hooks.py", line 165, in new_forward
-    output = module._old_forward(*args, **kwargs)
-             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/home/jkl6486/miniconda3/envs/hermes/lib/python3.11/site-packages/transformers/models/llama/modeling_llama.py", line 806, in forward
-    outputs = self.model(
-              ^^^^^^^^^^^
-  File "/home/jkl6486/miniconda3/envs/hermes/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1518, in _wrapped_call_impl
-    return self._call_impl(*args, **kwargs)
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/home/jkl6486/miniconda3/envs/hermes/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1527, in _call_impl
-    return forward_call(*args, **kwargs)
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/home/jkl6486/miniconda3/envs/hermes/lib/python3.11/site-packages/transformers/models/llama/modeling_llama.py", line 693, in forward
-    layer_outputs = decoder_layer(
-                    ^^^^^^^^^^^^^^
-  File "/home/jkl6486/miniconda3/envs/hermes/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1518, in _wrapped_call_impl
-    return self._call_impl(*args, **kwargs)
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/home/jkl6486/miniconda3/envs/hermes/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1527, in _call_impl
-    return forward_call(*args, **kwargs)
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/home/jkl6486/miniconda3/envs/hermes/lib/python3.11/site-packages/accelerate/hooks.py", line 165, in new_forward
-    output = module._old_forward(*args, **kwargs)
-             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/home/jkl6486/miniconda3/envs/hermes/lib/python3.11/site-packages/transformers/models/llama/modeling_llama.py", line 408, in forward
-    hidden_states, self_attn_weights, present_key_value = self.self_attn(
-                                                          ^^^^^^^^^^^^^^^
-  File "/home/jkl6486/miniconda3/envs/hermes/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1518, in _wrapped_call_impl
-    return self._call_impl(*args, **kwargs)
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/home/jkl6486/miniconda3/envs/hermes/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1527, in _call_impl
-    return forward_call(*args, **kwargs)
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/home/jkl6486/miniconda3/envs/hermes/lib/python3.11/site-packages/accelerate/hooks.py", line 165, in new_forward
-    output = module._old_forward(*args, **kwargs)
-             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/home/jkl6486/miniconda3/envs/hermes/lib/python3.11/site-packages/transformers/models/llama/modeling_llama.py", line 346, in forward
-    attn_weights = nn.functional.softmax(attn_weights, dim=-1, dtype=torch.float32).to(query_states.dtype)
-                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-torch.cuda.OutOfMemoryError: CUDA out of memory. Tried to allocate 3.55 GiB. GPU 0 has a total capacty of 23.64 GiB of which 334.50 MiB is free. Including non-PyTorch memory, this process has 23.31 GiB memory in use. Of the allocated memory 20.03 GiB is allocated by PyTorch, and 2.50 GiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting max_split_size_mb to avoid fragmentation.  See documentation for Memory Management and PYTORCH_CUDA_ALLOC_CONF
-wandb: 
-wandb: Run history:
-wandb: generation_overhead_ratio ▁▅▆▇▇▇▇█████████████████████████████████
-wandb:  num_satisfactory_samples ▁▁▁▂▂▂▂▂▂▃▃▃▃▃▄▄▄▄▄▄▅▅▅▅▅▅▆▆▆▆▆▇▇▇▇▇▇███
-wandb:            progress_ratio ▁▁▁▂▂▂▂▂▂▃▃▃▃▃▄▄▄▄▄▄▅▅▅▅▅▅▆▆▆▆▆▇▇▇▇▇▇███
-wandb:   total_generated_samples ▁▁▁▂▂▂▂▂▂▃▃▃▃▃▄▄▄▄▄▄▅▅▅▅▅▅▆▆▆▆▆▇▇▇▇▇▇███
-wandb: 
-wandb: Run summary:
-wandb: generation_overhead_ratio 0.99548
-wandb:  num_satisfactory_samples 220
-wandb:            progress_ratio 0.22
-wandb:   total_generated_samples 220
-wandb: 
-wandb: 🚀 View run gen-c4-xiaoniu23-llama-temp1.3 at: https://wandb.ai/alps-lab-sok/lm-watermarking/runs/un1wm9aw
-wandb: ️⚡ View job at https://wandb.ai/alps-lab-sok/lm-watermarking/jobs/QXJ0aWZhY3RDb2xsZWN0aW9uOjEyMzQ2NTIxNg==/version_details/v63
-wandb: Synced 6 W&B file(s), 0 media file(s), 0 artifact file(s) and 0 other file(s)
-wandb: Find logs at: ./wandb/run-20240114_033009-un1wm9aw/logs
-finish 1.3
-finish xiaoniu23
-finish all

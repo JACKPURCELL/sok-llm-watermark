@@ -1,16 +1,16 @@
 #!/bin/bash
 #===============================================================================
-# usecommand nohup bash gen_pipeline_opt.sh > gen_pipeline_opt_john23.log 2>&1 &
+# usecommand nohup bash gen_pipeline_opt.sh > gen_pipeline_opt_aiwei23b_temp.log 2>&1 &
 #===============================================================================
 
-watermark_types=("lean23")
+watermark_types=("aiwei23b")
 #"john23" "lean23"
 #"rohith23" "xiaoniu23" "xuandong23b" "kiyoon23" 
 ### Aiwei23
 ###"john23" "kiyoon23" "lean23" "rohith23" "xiaoniu23" "xuandong23b" "aiwei23"
 models=("opt")
-gpus=("0, 2, 3")
-temps=("1.3")
+gpus=("2, 3")
+temps=("1.3" "0.7")
 
 # cp_attack_types=("single-single" "triple-single")
 # 遍历数组中的每个元素

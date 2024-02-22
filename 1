@@ -1,0 +1,27 @@
+nohup: ignoring input
+Traceback (most recent call last):
+  File "/home/jkl6486/sok-llm-watermark/watermark_reliability_release/evaluation_pipeline.py", line 31, in <module>
+    from transformers import DataCollatorWithPadding
+  File "<frozen importlib._bootstrap>", line 1231, in _handle_fromlist
+  File "/home/jkl6486/miniconda3/envs/hermes/lib/python3.11/site-packages/transformers/utils/import_utils.py", line 1089, in __getattr__
+    module = self._get_module(self._class_to_module[name])
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/jkl6486/miniconda3/envs/hermes/lib/python3.11/site-packages/transformers/utils/import_utils.py", line 1099, in _get_module
+    return importlib.import_module("." + module_name, self.__name__)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/jkl6486/miniconda3/envs/hermes/lib/python3.11/importlib/__init__.py", line 126, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/jkl6486/miniconda3/envs/hermes/lib/python3.11/site-packages/transformers/data/__init__.py", line 15, in <module>
+    from .data_collator import (
+  File "/home/jkl6486/miniconda3/envs/hermes/lib/python3.11/site-packages/transformers/data/data_collator.py", line 24, in <module>
+    from ..models.bert import BertTokenizer, BertTokenizerFast
+  File "/home/jkl6486/miniconda3/envs/hermes/lib/python3.11/site-packages/transformers/models/__init__.py", line 15, in <module>
+    from . import (
+  File "<frozen importlib._bootstrap>", line 1178, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1149, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 690, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 936, in exec_module
+  File "<frozen importlib._bootstrap_external>", line 1032, in get_code
+  File "<frozen importlib._bootstrap_external>", line 1130, in get_data
+KeyboardInterrupt

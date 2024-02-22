@@ -1360,7 +1360,14 @@ if __name__ == "__main__":
             parser.add_argument("--private_key", type=str, default="private key")
             parser.add_argument("--watermark_type", type=str, default="delta")
             parser.add_argument("--num_beams", type=int, default=1)
+        case 'aiwei23b':
+            parser.add_argument("--aiwei23b_watermark_type", type=str, default="context")
+            parser.add_argument("--aiwei23b_window_size", type=int, default=0)
+            parser.add_argument("--aiwei23b_chunk_size", type=int, default=10)
+            parser.add_argument("--aiwei23b_delta", type=int, default=1)
+            parser.add_argument("--transform_model", type=str, default="/home/jkl6486/sok-llm-watermark/watermark_reliability_release/watermarks/aiwei23b/model/transform_model_cbert.pth")
 
+            parser.add_argument("--embedding_model", type=str, default="/home/jkl6486/sok-llm-watermark/watermark_reliability_release/watermarks/aiwei23b/model/compositional-bert-large-uncased")
             ######################################################################
             # Add your code here
             ######################################################################

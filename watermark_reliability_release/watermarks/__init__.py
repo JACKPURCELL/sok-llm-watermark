@@ -7,6 +7,9 @@ from .aiwei23.aiwei23 import aiwei23_WatermarkLogitsProcessor, aiwei23_Watermark
 from .kiyoon23.kiyoon23 import kiyoon23
 from .xiaoniu23.unbiased_watermark import Delta_Reweight, Gamma_Reweight, PrevN_ContextCodeExtractor, patch_model, WatermarkLogitsProcessor as xiaoniu23_WatermarkLogitsProcessor
 from .xiaoniu23.xiaoniu23 import xiaoniu23_detector, generate_with_watermark as generate_with_watermark_xiaoniu23
+from .aiwei23b.aiwei23b import prepare_watermark_model as aiwei23b_prepare_watermark_model, watermark as aiwei23b_watermark, aiwei23b_WatermarkDetector
+from .aiwei23b.watermark import WatermarkLogitsProcessor as aiwei23b_WatermarkLogitsProcessor
+
 
     ######################################################################
     # Add your code here

@@ -36,15 +36,23 @@ def load_model(model_str, num_beams, temps):
     if model_str == cache["model_str"]:
         return cache
     else:
-
-        generator = pipeline(
-            "text-generation",
-            model=model_str,
-            do_sample=True,
-            num_beams=num_beams,
-            device_map='auto',
-            temperature=temps,
-        )
+        if temps is None:
+            generator = pipeline(
+                "text-generation",
+                model=model_str,
+                do_sample=True,
+                num_beams=num_beams,
+                device_map='auto',
+            )
+        else:
+            generator = pipeline(
+                "text-generation",
+                model=model_str,
+                do_sample=True,
+                num_beams=num_beams,
+                device_map='auto',
+                temperature=temps,
+            )
 
         cache["model_str"] = model_str
         cache["generator"] = generator
@@ -177,6 +185,8 @@ class xiaoniu23_detector():
 def generate_with_watermark(model_str, input_ids, wp, **kwargs):
     if "num_beams" not in kwargs:
         kwargs["num_beams"] = 1
+    if "temperature" not in kwargs:
+        kwargs["temperature"] = None
     cache = load_model(model_str, kwargs["num_beams"], kwargs["temperature"])
     generator = cache["generator"]
     prompt = [cache["tokenizer"].decode(i) for i in input_ids]
