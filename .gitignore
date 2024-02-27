@@ -34,7 +34,7 @@ watermark_reliability_release/watermarks/aiwei23/model/
 
 result_kiyoon23.txt
 aiwei_result_main.txt
-watermark_reliability_release/watermarks/aiwei23/
+
 watermark_reliability_release/watermarks/aiwei23/model/combine_model.pt
 watermark_reliability_release/watermarks/aiwei23/model/sub_net.pt
 result.txt
@@ -45,20 +45,5 @@ eva_pipe.log
 *.text
 *.pt
 *.jsonl
-watermark_reliability_release/evaluation_pipeline.py
-watermark_reliability_release/generation_pipeline.py
-watermark_reliability_release/utils/evaluation.py
-watermark_reliability_release/utils/generation.py
-watermark_reliability_release/watermarks/__init__.py
-watermark_reliability_release/watermarks/aiwei23b/aiwei23b.py
-watermark_reliability_release/watermarks/aiwei23b/generate_embeddings.py
-watermark_reliability_release/watermarks/aiwei23b/generate_mappings.py
-watermark_reliability_release/watermarks/aiwei23b/train_watermark_model.py
-watermark_reliability_release/watermarks/aiwei23b/watermark_and_detect.py
-watermark_reliability_release/watermarks/aiwei23b/watermark.py
-watermark_reliability_release/watermarks/rohith23/levenshtein.cpython-311-x86_64-linux-gnu.so
-watermark_reliability_release/watermarks/rohith23/build/lib.linux-x86_64-cpython-311/levenshtein.cpython-311-x86_64-linux-gnu.so
-watermark_reliability_release/watermarks/rohith23/build/temp.linux-x86_64-cpython-311/levenshtein.o
-watermark_reliability_release/watermarks/xiaoniu23/xiaoniu23.py
 watermark_reliability_release/watermarks/christ23/static_data/encoding.tsv.tar.gz
 watermark_reliability_release/watermarks/christ23/static_data/encoding.tsv
