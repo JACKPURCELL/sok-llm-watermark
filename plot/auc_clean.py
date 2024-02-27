@@ -5,7 +5,7 @@ import json
 from sklearn.metrics import roc_curve, auc
 from transformers import AutoTokenizer
 plt.rcParams['font.size'] = 14  # 设置全局字体大小为14
-watermark_types = ["john23","xuandong23b","aiwei23","lean23","rohith23"]
+watermark_types = ["john23","xuandong23b","aiwei23","lean23","rohith23","aiwei23b"]
 
 
 tokenizer = AutoTokenizer.from_pretrained("facebook/opt-1.3b")

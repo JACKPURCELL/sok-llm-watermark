@@ -60,3 +60,5 @@ watermark_reliability_release/watermarks/rohith23/levenshtein.cpython-311-x86_64
 watermark_reliability_release/watermarks/rohith23/build/lib.linux-x86_64-cpython-311/levenshtein.cpython-311-x86_64-linux-gnu.so
 watermark_reliability_release/watermarks/rohith23/build/temp.linux-x86_64-cpython-311/levenshtein.o
 watermark_reliability_release/watermarks/xiaoniu23/xiaoniu23.py
+watermark_reliability_release/watermarks/christ23/static_data/encoding.tsv.tar.gz
+watermark_reliability_release/watermarks/christ23/static_data/encoding.tsv

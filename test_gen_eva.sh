@@ -15,7 +15,7 @@ for watermark_type in "${watermark_types[@]}"; do
 
      echo "start $watermark_type evaluation"
 
-        CUDA_VISIBLE_DEVICES=0,1,2,3 python watermark_reliability_release/evaluation_pipeline.py --watermark "$watermark_type" --run_name "$watermark_type"-eva-test --input_dir runs_test/"$watermark_type" --evaluation_metrics z-score 
+        CUDA_VISIBLE_DEVICES=0,1,2,3 python watermark_reliability_release/evaluation_pipeline.py --watermark "$watermark_type" --run_name "$watermark_type"-eva-test --input_dir runs_test/"$watermark_type"  
 
     echo "finish $watermark_type evaluation"
 

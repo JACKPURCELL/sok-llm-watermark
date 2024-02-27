@@ -702,7 +702,7 @@ class aiwei23_WatermarkDetector:
 
 
         output_dict = {}
-        output_dict["t"] = t_list[0]
+        output_dict["t"] = float(t_list[0])
         output_dict["stat_z_score"] = stat_z_score
         output_dict["z_score"] = float(z_score[0])
         output_dict["prediction"] = watermarked[0]

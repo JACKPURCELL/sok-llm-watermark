@@ -2,15 +2,15 @@ import os
 
 if __name__ == "__main__":
     server = "Server 3"
-    attackS = ["ContractionAttack", "copypaste-1-10", "copypaste-3-10", "dipper_l20_o0", "ExpansionAttack", "LowercaseAttack", "MisspellingAttack", "swap", "synonym-0.4", "TypoAttack"]
+    attackS = ["ContractionAttack", "copypaste-1-10", "copypaste-3-10", "copypaste-1-25", "copypaste-3-25","dipper_l20_o0", "ExpansionAttack", "LowercaseAttack", "MisspellingAttack", "swap", "synonym-0.4", "TypoAttack"]
     modelS = ["opt"]
-    methodS = ["aiwei23", "john23", "lean23", "rohith23", "xiaoniu23", "xuandong23b"]
+    methodS = ["aiwei23", "john23", "lean23", "rohith23", "xiaoniu23", "xuandong23b","aiwei23b"]
     no_atk = {}
     no_eva = {}
     for method in methodS:
         for model in modelS:    
             for attack in attackS:
-                file_path = "/home/jkl6486/sok-llm-watermark/runs/" + method + "/c4/" + model + "/" + attack + "/"
+                file_path = "/home/jkl6486/sok-llm-watermark/runs/token_200/" + method + "/c4/" + model + "/" + attack + "/"
                 if not os.path.exists(file_path+"gen_table_attacked.jsonl") or not os.path.exists(file_path+"gen_table_attacked_meta.json"):
                     if method in no_atk:
                         no_atk[method].append(attack)

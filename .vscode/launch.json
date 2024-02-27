@@ -215,7 +215,7 @@
                 "--run_name",
                 "gen-c4-xiaoniu23-llama",
                 "--model_name_or_path",
-                "meta-llama/Llama-2-7b-chat-hf",
+                "facebook/opt-1.3b",
                 "--min_generations",
                 "1000",
                 "--dataset_name",
@@ -259,17 +259,17 @@
             "console": "integratedTerminal",
             "justMyCode": true,
             "env": {
-                "CUDA_VISIBLE_DEVICES": "0,1,2,3"
+                "CUDA_VISIBLE_DEVICES": "3"
             },
             "args": [
                 "--watermark",
                 "xiaoniu23",
                 "--run_name",
-                "aiwei_xiaoniu_opt_test",
+                "xiaoniu_opt_test",
                 "--input_dir",
-                "/home/jkl6486/sok-llm-watermark/runs/xiaoniu23/c4/opt/",
+                "/home/jkl6486/sok-llm-watermark/runs/token_200/xiaoniu23/c4/opt",
                 "--output_dir",
-                "/home/jkl6486/sok-llm-watermark/runs/xiaoniu23/c4/opt/test",
+                "/home/jkl6486/sok-llm-watermark/runs/token_200/xiaoniu23/c4/opt/test",
                 "--evaluation_metrics",
                 "z-score",
                 "--overwrite_args",
@@ -304,24 +304,26 @@
             ]
         },
         {
-            "name": "evaluation_aiwei23b",
+            "name": "evaluation_aiwei23",
             "type": "python",
             "request": "launch",
             "program": "watermark_reliability_release/evaluation_pipeline.py",
             "console": "integratedTerminal",
             "justMyCode": true,
             "env": {
-                "CUDA_VISIBLE_DEVICES": "0,1,2"
+                "CUDA_VISIBLE_DEVICES": "0,1,2,3"
             },
             "args": [
                 "--watermark",
-                "aiwei23b",
+                "aiwei23",
                 "--run_name",
                 "test",
                 "--input_dir",
-                "/home/jkl6486/sok-llm-watermark/runs/token_200/aiwei23b/c4/opt-test",
+                "/home/jkl6486/sok-llm-watermark/runs/token_200/aiwei23/c4/opt-4beams",
                 "--evaluation_metrics",
                 "z-score",
+                "--overwrite_args",
+                "True"
                          
 
             ]
@@ -440,7 +442,7 @@
             "console": "integratedTerminal",
             "justMyCode": true,
             "env": {
-                "CUDA_VISIBLE_DEVICES": "0,1,2,3"
+                "CUDA_VISIBLE_DEVICES": "3"
             },
             "args": [
                 "--watermark",
@@ -448,15 +450,76 @@
                 "--run_name",
                 "lean23_eva_test_opt",
                 "--input_dir",
-                "/home/jkl6486/sok-llm-watermark/runs/lean23/c4",
+                "/home/jkl6486/sok-llm-watermark/runs/token_200/lean23/c4/opt",
                 "--evaluation_metrics",
                 "z-score",
-                "--overwrite_output_file",
+                "--overwrite_args",
                 "True"
+                "--output_dir",
+                "lean23/test"
                          
 
             ]
         },
+
+
+        {
+            "name": "new_inject_christ",
+            "type": "python",
+            "request": "launch",
+            "program": "watermark_reliability_release/generation_pipeline.py",
+            "console": "integratedTerminal",
+            "justMyCode": true,
+            "env": {
+                "CUDA_VISIBLE_DEVICES": "0,1,2,3"
+            },
+            "args": [
+                "--watermark",
+                "christ23",
+                "--run_name",
+                "gen-c4-christ23",
+                "--model_name_or_path",
+                "facebook/opt-1.3b",
+                "--min_generations",
+                "10",
+                "--dataset_name",
+                "c4",
+                "--max_new_tokens",
+                "100",
+                "--generation_batch_size",
+                "1",
+            ]
+        },
+        {
+            "name": "evaluationchrist23",
+            "type": "python",
+            "request": "launch",
+            "program": "watermark_reliability_release/evaluation_pipeline.py",
+            "console": "integratedTerminal",
+            "justMyCode": true,
+            "env": {
+                "CUDA_VISIBLE_DEVICES": "0,1,2,3"
+            },
+            "args": [
+                "--watermark",
+                "christ23",
+                "--run_name",
+                "christ23_opt_test",
+                "--input_dir",
+                "/home/jkl6486/sok-llm-watermark/runs/christ23/c4/opt/",
+                "--output_dir",
+                "/home/jkl6486/sok-llm-watermark/runs/christ23/c4/opt/test",
+                "--evaluation_metrics",
+                "z-score",
+                "--overwrite_args",
+                "True"
+
+            
+                         
+
+            ]
+        },
+
 
     ]
 }

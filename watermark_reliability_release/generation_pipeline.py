@@ -333,6 +333,10 @@ def main(args):
                 watermark_model = watermarks.aiwei23b_watermark.WatermarkContext(device, args.aiwei23b_chunk_size, tokenizer, delta = args.aiwei23b_delta,transform_model_path=args.transform_model, embedding_model=args.embedding_model)
                 watermark_processor = watermarks.aiwei23b_WatermarkLogitsProcessor(watermark_model)
 
+        case "christ23":
+                                                    
+            watermark_processor = watermarks.christ23_WatermarkLogitsProcessor(tokenizer=tokenizer,vocab_size=model.config.vocab_size, temp=args.sampling_temp,  device=device)
+            
         ######################################################################
         # Add your code here
         ######################################################################

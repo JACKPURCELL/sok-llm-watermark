@@ -35,6 +35,6 @@ for i in range(len(chunks)):
     # 复制文件
     shutil.copy(source_file, destination_file)
     # 运行 Python 程序，文件作为 --input_dir 的参数输入
-    command = f'CUDA_VISIBLE_DEVICES=0 nohup python watermark_reliability_release/evaluation_pipeline.py --wandb True --watermark rohith23 --run_name eva-rohith23-c4-t300-dipper --input_dir {folder_name} --evaluation_metrics z-score &'
+    command = f'CUDA_VISIBLE_DEVICES=0 nohup python watermark_reliability_release/evaluation_pipeline.py --wandb True --watermark rohith23 --run_name eva-rohith23-c4-t300-dipper --input_dir {folder_name}  &'
     subprocess.run(command, shell=True)
     
