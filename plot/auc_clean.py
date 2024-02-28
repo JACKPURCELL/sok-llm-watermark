@@ -16,7 +16,7 @@ colors = ['b', 'g', 'r', 'c', 'm', 'y', 'k']  # 添加这一行来定义颜色�
 for i, watermark_type in enumerate(watermark_types):
     file_paths = [
         f'/home/jkl6486/sok-llm-watermark/runs/token_200/{watermark_type}/c4/opt/gen_table_w_metrics.jsonl',
-        f'/home/jkl6486/sok-llm-watermark/runs/token_50/{watermark_type}/c4/opt/gen_table_w_metrics.jsonl'
+        f'/home/jkl6486/sok-llm-watermark/runs/token_100/{watermark_type}/c4/opt/gen_table_w_metrics.jsonl'
     ]
 
     for file_path in file_paths:
@@ -29,7 +29,7 @@ for i, watermark_type in enumerate(watermark_types):
                     length = data["w_wm_output_length"]
                 except:
                     length = len(tokenizer(data["w_wm_output"])['input_ids'])
-                length_limit = 30 if 'token_50' in file_path else 150
+                length_limit = 70 if 'token_100' in file_path else 150
                 
                 if length>length_limit:
                     data_list.append(json.loads(line))
@@ -57,8 +57,8 @@ for i, watermark_type in enumerate(watermark_types):
         print(f"AUC Value for z_score : {roc_auc}")
 
         # 画出 ROC 曲线
-        label = f'token_50_{watermark_type} (AUC = {roc_auc:.2f})' if 'token_50' in file_path else f'token200_{watermark_type} (AUC = {roc_auc:.2f})'
-        linestyle = '--' if 'token_50' in file_path else '-'
+        label = f'token_100_{watermark_type} (AUC = {roc_auc:.2f})' if 'token_100' in file_path else f'token200_{watermark_type} (AUC = {roc_auc:.2f})'
+        linestyle = '--' if 'token_100' in file_path else '-'
         ax.plot(new_fpr, new_tpr, lw=2, color=colors[i % len(colors)], linestyle=linestyle, label=label)
 
 
@@ -70,4 +70,4 @@ ax.set_ylabel('True Positive Rate')
 ax.legend(loc="lower right")
 
 plt.tight_layout()
-plt.savefig(f'./plot/auc_cleantoken_50.pdf')
+plt.savefig(f'./plot/auc_cleantoken_100.pdf')

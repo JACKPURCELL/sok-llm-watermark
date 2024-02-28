@@ -4,11 +4,10 @@
 #===============================================================================
 
 # SUPPORTED_ATTACK_METHODS = [ "dipper"  "copy-paste"  "scramble" "helm" "oracle" "swap" "synonym"]
-watermark_types=( "aiwei23b" )
+watermark_types=( "john23" )
 # "xiaoniu23" "xuandong23b" "aiwei23" "aiwei23b"
 #"john23" "lean23" "rohith23" "xiaoniu23" "xuandong23b" "aiwei23" "kiyoon23" "|"
 models=("opt")
-num_beams=( "4" "8")
 
 # attack_types=( "dipper"  "copy-paste"  "scramble" "helm" "oracle" "swap" "synonym")
 # ===============================================================================
@@ -44,9 +43,9 @@ for watermark_type in "${watermark_types[@]}"; do
 
         #copypaste
         for cp_attack_insertion_len in "${cp_attack_insertion_lens[@]}"; do
-            python watermark_reliability_release/attack_pipeline.py --cp_attack_type single-single --wandb False --overwrite_args True  --run_name copypaste-1-"$cp_attack_insertion_len"-attack-"$watermark_type"-c4 --input_dir /home/jkl6486/sok-llm-watermark/runs/token_200/"$watermark_type"/c4/"$model"-"$beams"beams  --output_dir /home/jkl6486/sok-llm-watermark/runs/token_200/"$watermark_type"/c4/"$model"-"$beams"beams/copypaste-1-"$cp_attack_insertion_len" --attack_method copy-paste --cp_attack_insertion_len "$cp_attack_insertion_len"
+            python watermark_reliability_release/attack_pipeline.py --cp_attack_type single-single --wandb False --overwrite_args True  --run_name copypaste-1-"$cp_attack_insertion_len"-attack-"$watermark_type"-c4 --input_dir /home/jkl6486/sok-llm-watermark/runs/token_200/"$watermark_type"/c4/"$model"  --output_dir /home/jkl6486/sok-llm-watermark/runs/token_200/"$watermark_type"/c4/"$model"/copypaste-1-"$cp_attack_insertion_len" --attack_method copy-paste --cp_attack_insertion_len "$cp_attack_insertion_len"
             #if [$cp_attack_insertion_len != "25"]; then
-            python watermark_reliability_release/attack_pipeline.py --cp_attack_type triple-single --wandb False --overwrite_args True  --run_name copypaste-3-"$cp_attack_insertion_len"-attack-"$watermark_type"-c4 --input_dir /home/jkl6486/sok-llm-watermark/runs/token_200/"$watermark_type"/c4/"$model"-"$beams"beams  --output_dir /home/jkl6486/sok-llm-watermark/runs/token_200/"$watermark_type"/c4/"$model"-"$beams"beams/copypaste-3-"$cp_attack_insertion_len" --attack_method copy-paste --cp_attack_insertion_len "$cp_attack_insertion_len"
+            python watermark_reliability_release/attack_pipeline.py --cp_attack_type triple-single --wandb False --overwrite_args True  --run_name copypaste-3-"$cp_attack_insertion_len"-attack-"$watermark_type"-c4 --input_dir /home/jkl6486/sok-llm-watermark/runs/token_200/"$watermark_type"/c4/"$model"  --output_dir /home/jkl6486/sok-llm-watermark/runs/token_200/"$watermark_type"/c4/"$model"/copypaste-3-"$cp_attack_insertion_len" --attack_method copy-paste --cp_attack_insertion_len "$cp_attack_insertion_len"
             #fi
         done
 
@@ -61,7 +60,6 @@ for watermark_type in "${watermark_types[@]}"; do
         # done
         # CUDA_VISIBLE_DEVICES="$gpus" python watermark_reliability_release/attack_pipeline.py --wandb False --overwrite_args True  --run_name dipper-attack-"$watermark_type"-c4 --input_dir /home/jkl6486/sok-llm-watermark/runs/token_200/"$watermark_type"/c4/"$model"-"$beams"beams  --output_dir /home/jkl6486/sok-llm-watermark/runs/token_200/"$watermark_type"/c4/"$model"-"$beams"beams/dipper_l60_o20 --attack_method dipper --lex 60 --order 20
       
-        echo "finish $beams"
         
         echo "finish $model"
     done

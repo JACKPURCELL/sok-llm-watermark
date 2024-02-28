@@ -1,6 +1,6 @@
 #!/bin/bash
 #===============================================================================
-# usecommand  nohup bash shell/eva_pipe0131_aiwei23b.sh > shell/eva_pipe0131_aiwei23b.log 2>&1 &
+# usecommand  nohup bash shell/eva_pipe0131_aiwei23b.sh > shell/eva_pipe0131_aiwei23b_llama.log 2>&1 &
 #===============================================================================
 
 # 定义一个包含不同watermark类型的数组
@@ -12,14 +12,14 @@ watermark_types=("aiwei23b")
 #gpu2
 # watermark_types=(	"lean23" "aiwei23" "rohith23")
 
-models=("opt")
+models=("llama")
 # attack_types=( "dipper"  "copy-paste"  "scramble" "helm" "oracle" "swap" "synonym")
 attack_types=( "swap")
 synonym_probs=( "0.4" )
 helm_attack_methods=("MisspellingAttack" "TypoAttack" "ContractionAttack" "LowercaseAttack" "ExpansionAttack")
 dipper_lexs=("20" "40")
 cp_attack_insertion_lens=("10" "25")
-gpus=("3")
+gpus=("0")
 tokens=("token_200")
 # cp_attack_types=("single-single" "triple-single")
 # 遍历数组中的每个元素
@@ -54,9 +54,9 @@ echo "start $watermark_type"
         done
 
         # dipper need 48gb memory
-        # for dipper_lex in "${dipper_lexs[@]}"; do
-        #     CUDA_VISIBLE_DEVICES="$gpus" python watermark_reliability_release/evaluation_pipeline.py --only_attack_zscore True   --overwrite_output_file True --watermark "$watermark_type" --run_name dipper-neweva-"$watermark_type"-c4-"$model"-dipper_l"$dipper_lex"_o0   --input_dir /home/jkl6486/sok-llm-watermark/runs/"$token"/"$watermark_type"/c4/"$model"/dipper_l"$dipper_lex"_o0   --wandb_project eva-aiwei23b-attack --overwrite_args True
-        # done
+        for dipper_lex in "${dipper_lexs[@]}"; do
+            CUDA_VISIBLE_DEVICES="$gpus" python watermark_reliability_release/evaluation_pipeline.py --only_attack_zscore True   --overwrite_output_file True --watermark "$watermark_type" --run_name dipper-neweva-"$watermark_type"-c4-"$model"-dipper_l"$dipper_lex"_o0   --input_dir /home/jkl6486/sok-llm-watermark/runs/"$token"/"$watermark_type"/c4/"$model"/dipper_l"$dipper_lex"_o0   --wandb_project eva-aiwei23b-attack --overwrite_args True
+        done
         # CUDA_VISIBLE_DEVICES=0,2 python watermark_reliability_release/evaluation_pipeline.py --only_attack_zscore True   --overwrite_output_file True --watermark "$watermark_type" --run_name dipper-neweva-"$watermark_type"-c4-"$model"-dipper_l60_o20   --input_dir /home/jkl6486/sok-llm-watermark/runs/"$token"/"$watermark_type"/c4/"$model"/dipper_l60_o20  --wandb_project eva-aiwei23b-attack --overwrite_args True
     done
     done

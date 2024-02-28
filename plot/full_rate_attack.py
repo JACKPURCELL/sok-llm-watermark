@@ -39,13 +39,14 @@ fig, axs = plt.subplots(2, 3, figsize=(40, 20))
 axs = axs.flatten()
 bar_width = 0.35
 opacity = 0.8
-tokenizer = AutoTokenizer.from_pretrained("meta-llama/Llama-2-7b-chat-hf")
+# tokenizer = AutoTokenizer.from_pretrained("meta-llama/Llama-2-7b-chat-hf")
+tokenizer = AutoTokenizer.from_pretrained("facebook/opt-1.3b")
 for i, watermark_type in enumerate(watermark_types):
     f1_scores = []
     tpr_scores = []
     fpr_scores = []  # 新增 FPR 列表
     
-    clean_data_list = read_file(f'/home/jkl6486/sok-llm-watermark/runs/token_200/{watermark_type}/c4/llama/gen_table_w_metrics.jsonl')
+    clean_data_list = read_file(f'/home/jkl6486/sok-llm-watermark/runs/token_200/{watermark_type}/c4/opt/gen_table_w_metrics.jsonl')
     try:
         clean_baseline_completion_prediction = [1 if data["baseline_completion_prediction"] else 0 for data in clean_data_list]
         clean_w_wm_output_attacked_prediction = [1 if data["w_wm_output_prediction"] else 0 for data in clean_data_list]
@@ -71,7 +72,7 @@ for i, watermark_type in enumerate(watermark_types):
     for j, attack in enumerate(attacks):
         print(f"Processing {watermark_type} with {attack}...")
         try:
-            data_list = read_file(f'/home/jkl6486/sok-llm-watermark/runs/token_200/{watermark_type}/c4/llama/{attack}/gen_table_w_metrics.jsonl')
+            data_list = read_file(f'/home/jkl6486/sok-llm-watermark/runs/token_200/{watermark_type}/c4/opt/{attack}/gen_table_w_metrics.jsonl')
         except:
             print(f"Missing {watermark_type} with {attack}...")
             continue
@@ -122,4 +123,4 @@ for i, watermark_type in enumerate(watermark_types):
     # axs[i].legend()
 
 plt.tight_layout()
-plt.savefig(f'./plot/f1_scores_and_tpr_token_200_llama.pdf')
+plt.savefig(f'./plot/f1_scores_and_tpr_token_200.pdf')
