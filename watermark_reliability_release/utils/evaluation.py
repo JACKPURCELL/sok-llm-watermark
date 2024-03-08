@@ -240,6 +240,9 @@ def load_detector(args):
             model, tokenizer, device = load_model(args)
             data_dir = args.data_dir+str(args.model_name_or_path)+"/"
             model_dir = args.model_dir+str(args.model_name_or_path)+"/"
+            if args.use_sampling:
+                data_dir += str(args.sampling_temp) + "/"
+                model_dir += str(args.sampling_temp) + "/"
             watermark_detector = watermarks.aiwei23_WatermarkDetector(bit_number=args.bit_number,
                                                     window_size=args.window_size,
                                                     layers=args.layers,
@@ -265,7 +268,7 @@ def load_detector(args):
                                               args.topk, message)
         case 'xiaoniu23':
             watermark_detector = watermarks.xiaoniu23_detector(args.model_name_or_path, args.n, 
-                                                               args.alpha, args.private_key, args.watermark_type, args.num_beams,tokenizer, args.sampling_temp)
+                                                               args.alpha, args.private_key, args.watermark_type, args.num_beams, tokenizer, args.sampling_temp, args.top_p)
             
         case 'aiwei23b':
             model, tokenizer, device = load_model(args)

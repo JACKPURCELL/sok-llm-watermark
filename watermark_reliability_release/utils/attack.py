@@ -97,6 +97,49 @@ def dipper_attack(dataset, lex=None, order=None, args=None):
     dataset = generate_dipper_paraphrases(dataset, lex=lex, order=order, args=args)
     return dataset
 
+#     if self._use_google_translate and queue is None:
+#         self._init_translate(translate_lang)
+
+# def _init_translate(self, lang):
+#     from_code = "en"
+#     to_code = lang
+#     argostranslate.package.update_package_index()
+#     available_packages = argostranslate.package.get_available_packages()
+#     package_to_install = next(
+#         filter(
+#             lambda x: (x.from_code == to_code and x.to_code == from_code),
+#             available_packages,
+#         )
+#     )
+#     argostranslate.package.install_from_path(package_to_install.download())
+#     package_to_install = next(
+#         filter(
+#             lambda x: (x.from_code == from_code and x.to_code == to_code),
+#             available_packages,
+#         )
+#     )
+#     argostranslate.package.install_from_path(package_to_install.download())
+    
+    
+# def _query_google_translate(
+#     self, text: str, back_translate: bool = False
+# ) -> str:
+#     lang = "en" if back_translate else self._translate_lang
+#     from_lang = self._translate_lang if back_translate else "en"
+
+#     if self._queue is None:
+#         answer = argostranslate.translate.translate(text, from_lang, lang)
+#     else:
+#         self._queue["translate"].put(
+#             (text, from_lang, lang, self._resp_queue)
+#         )
+#         answer = self._resp_queue.get(block=True)
+
+#     if not back_translate:
+#         logger.debug("Text in %s:\n%s", self._translate_lang, answer)
+#         answer = self._query_google_translate(answer, back_translate=True)
+#     return answer
+    
 
 def check_output_column_lengths(example, min_len=0):
     baseline_completion_len = example["baseline_completion_length"]
@@ -144,6 +187,10 @@ def copy_paste_attack(example, tokenizer=None, args=None):
     min_token_count = min(len(tokenized_dst), len(tokenized_src))
 
     if args.cp_attack_type == "single-single":  # 1-t
+        if min_token_count < args.cp_attack_insertion_len:
+            example["w_wm_output_attacked"] = example["w_wm_output"]
+            example["w_wm_output_attacked_length"] = example["w_wm_output_length"]
+            return example
         tokenized_attacked_output = single_insertion(
             args.cp_attack_insertion_len,
             min_token_count,
@@ -151,6 +198,10 @@ def copy_paste_attack(example, tokenizer=None, args=None):
             tokenized_src,
         )
     elif args.cp_attack_type == "triple-single":  # 3-t
+        if min_token_count < args.cp_attack_insertion_len:
+            example["w_wm_output_attacked"] = example["w_wm_output"]
+            example["w_wm_output_attacked_length"] = example["w_wm_output_length"]
+            return example
         tokenized_attacked_output = triple_insertion_single_len(
             args.cp_attack_insertion_len,
             min_token_count,

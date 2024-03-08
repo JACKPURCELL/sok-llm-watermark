@@ -12,7 +12,7 @@ import os
 
 from transformers import AutoTokenizer
 from metrics.detect_retrieval_utils.detection_utils import print_tpr_target, get_roc, f1_score
-from metrics.detect_retrieval_utils.models import load_model
+from metrics.detect_retrieval_utils.models_gpu import load_model
 from metrics.detect_retrieval_utils.embed_sentences import embed_all
 import torch
 

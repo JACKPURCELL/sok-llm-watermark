@@ -27,8 +27,12 @@ def triple_insertion_single_len(
     tokenized_no_wm_output,  # dst
     tokenized_w_wm_output,  # src
 ):
-    tmp_attack_lens = (attack_len, attack_len, attack_len)
 
+    tmp_attack_lens = (attack_len, attack_len, attack_len)
+    if 3*attack_len > min_token_count:
+        tokenized_no_wm_output = (3*attack_len//len(tokenized_no_wm_output))*tokenized_no_wm_output 
+        tokenized_no_wm_output += tokenized_no_wm_output[:3*attack_len - len(tokenized_no_wm_output)]
+        min_token_count = 3*attack_len
     while True:
         rand_insert_locs = torch.randint(low=0, high=min_token_count, size=(len(tmp_attack_lens),))
         _, indices = torch.sort(rand_insert_locs)
@@ -39,18 +43,22 @@ def triple_insertion_single_len(
             and rand_insert_locs[indices[2]] + attack_len <= min_token_count
         ):
             break
-
+    
+    if len(tokenized_w_wm_output) == 0:
+        tokenized_w_wm_output = [1]*attack_len 
+    if len(tokenized_no_wm_output) == 0:
+        tokenized_no_wm_output = [1]*attack_len
     # replace watermarked sections into unwatermarked ones
     # tokenized_no_wm_output_cloned = torch.clone(tokenized_no_wm_output) # used to be tensor
     tokenized_no_wm_output_cloned = torch.tensor(tokenized_no_wm_output)
     tokenized_w_wm_output = torch.tensor(tokenized_w_wm_output)
-
-    for i in range(len(tmp_attack_lens)):
-        start_idx = rand_insert_locs[indices[i]]
-        end_idx = rand_insert_locs[indices[i]] + attack_len
-
-        tokenized_no_wm_output_cloned[start_idx:end_idx] = tokenized_w_wm_output[start_idx:end_idx]
-
+    try:
+        for i in range(len(tmp_attack_lens)):
+            start_idx = rand_insert_locs[indices[i]]
+            end_idx = rand_insert_locs[indices[i]] + attack_len
+            tokenized_no_wm_output_cloned[start_idx:end_idx] = tokenized_w_wm_output[start_idx:end_idx]
+    except:
+        return tokenized_w_wm_output
     return tokenized_no_wm_output_cloned
 
 

@@ -89,6 +89,7 @@ class lean23_WatermarkDetector:
 
     def detect(self, text, prompt, **kwargs):
         if len(self.tokenizer.tokenize(text))<12:
+            print("error length@")
             return {
                   "z_score": 0.0,
                   "prediction": False}

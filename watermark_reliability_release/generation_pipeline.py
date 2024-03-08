@@ -243,6 +243,9 @@ def main(args):
         case 'aiwei23':
             data_dir = args.data_dir+str(args.model_name_or_path)+"/"
             model_dir = args.model_dir+str(args.model_name_or_path)+"/"
+            if args.use_sampling:
+                data_dir += str(args.sampling_temp) + "/"
+                model_dir += str(args.sampling_temp) + "/"
             if args.aiwei_trained:
                 watermark_detector = watermarks.aiwei23_WatermarkDetector(bit_number=args.bit_number,
                                                         window_size=args.window_size,
@@ -333,9 +336,9 @@ def main(args):
                 watermark_model = watermarks.aiwei23b_watermark.WatermarkContext(device, args.aiwei23b_chunk_size, tokenizer, delta = args.aiwei23b_delta,transform_model_path=args.transform_model, embedding_model=args.embedding_model)
                 watermark_processor = watermarks.aiwei23b_WatermarkLogitsProcessor(watermark_model)
 
-        case "christ23":
+        # case "christ23":
                                                     
-            watermark_processor = watermarks.christ23_WatermarkLogitsProcessor(tokenizer=tokenizer,vocab_size=model.config.vocab_size, temp=args.sampling_temp,  device=device)
+        #     watermark_processor = watermarks.christ23_WatermarkLogitsProcessor(tokenizer=tokenizer,vocab_size=model.config.vocab_size, temp=args.sampling_temp,  device=device)
             
         ######################################################################
         # Add your code here

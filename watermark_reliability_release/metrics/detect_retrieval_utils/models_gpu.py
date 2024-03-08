@@ -16,7 +16,7 @@ def load_model(path, gpu=1, sp_model="/home/jkl6486/sok-llm-watermark/watermark_
     if not gpu:
         model = torch.load(path, map_location=torch.device('cpu'))
     else:
-        model = torch.load(path, map_location=torch.device('cpu'))
+        model = torch.load(path)
 
     state_dict = model['state_dict']
     model_args = model['args']
@@ -207,8 +207,8 @@ class Averaging(ParaModel):
         self.parameters = self.parameters()
         self.optimizer = optim.Adam(self.parameters, lr=self.args.lr)
 
-#        if args.gpu:
-#           self.cuda()
+        if args.gpu:
+           self.cuda()
 
         print(self)
 

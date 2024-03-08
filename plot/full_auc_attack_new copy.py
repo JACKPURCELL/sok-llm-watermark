@@ -197,39 +197,39 @@ plt.savefig(f'./plot/full_roc_value_token_200.pdf')
 
 print("=======TPR===========")
 # 创建子图2
-fig3, axs3 = plt.subplots(2, 4, figsize=(40, 20))
+fig3, axs3 = plt.subplots(3, 4, figsize=(40, 30))
 axs3 = axs3.flatten()
 
-for i, watermark in enumerate(watermark_types):
+for i, attack in enumerate(attacks):
     # 对于 'clean' 条目，我们需要特殊处理
-    clean_roc_auc = tpr_dict[watermark]['CLEAN'] 
+    # clean_roc_auc = tpr_dict[watermark]['CLEAN'] 
     # 为 'clean' 条目画虚线作为基线
-    axs3[i].axhline(y=clean_roc_auc, color='r', linestyle='--', label='Baseline (clean)', linewidth=2)
+    # axs3[i].axhline(y=clean_roc_auc, color='r', linestyle='--', label='Baseline (clean)', linewidth=2)
     
-    print(f'{watermark},CLEAN : {clean_roc_auc}')
+    # print(f'{watermark},CLEAN : {clean_roc_auc}')
     # 获取这个 watermark 下的所有 roc_auc
     
-    roc_aucs = [tpr_dict[watermark][attack] for attack in attacks]
-    for attack in attacks:
-        print(f'{watermark},{attack}: {tpr_dict[watermark][attack]}')
+    roc_aucs = [tpr_dict[watermark][attack] for watermark in watermark_types]
+    # for attack in attacks:
+    #     print(f'{watermark},{attack}: {tpr_dict[watermark][attack]}')
     
     # 创建柱状图，每个 attack 使用不同颜色f
     for j, roc_auc in enumerate(roc_aucs):
-        axs3[i].bar(attacks[j], roc_auc, width=0.8, color=colors[j % len(colors)])
+        axs3[i].bar(watermark_types[j], roc_auc, width=0.8, color=colors[j % len(colors)])
     
     # 设置标题
-    axs3[i].set_title(f'TPR at FPR=0.01 for {watermark}')
+    axs3[i].set_title(f'TPR at FPR=0.01 for {attack}')
     # 设置y轴标签
     axs3[i].set_ylabel('TPR at FPR=0.01')
     axs3[i].set_ylim([0, 1])
     # 旋转 x 轴标签 45 度
-    axs3[i].set_xticklabels(attacks, rotation=45, ha="right")
+    axs3[i].set_xticklabels(watermark_types, rotation=45, ha="right")
 
 # 调整布局
 plt.tight_layout()
 
 # 保存图形
-plt.savefig(f'./plot/full_roc_value_token_200_tpr001.pdf')
+plt.savefig(f'./plot/full_roc_value_token_200_tpr001111.pdf')
 
 
 # methods = list(tpr_dict.keys())
