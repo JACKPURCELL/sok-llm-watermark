@@ -9,6 +9,10 @@
 # print(tokenize('hello preferences'))
 # print(tokenize.decode([2063]))
 
+from queue import Queue
+
+
+
 def translate_process(translation_queue, langs):
     import os
     import argostranslate.package
@@ -67,4 +71,11 @@ def translate_process(translation_queue, langs):
             return
 
 if __name__ == "__main__":
-    translate_process(None, ["en", "fr"])
+    # 创建一个队列
+    translation_queue = Queue()
+
+    # 将你的数据添加到队列中
+    translation_queue.put(' The Department of Computer Science is deeply committed to broadening participation in computing. Historically, computer science as a discipline which suffers from underrepresentation in a number of areas which coincides with the increasingly pervasive role of computing in our society.')
+
+
+    translate_process(translation_queue, ["en", "fr"])

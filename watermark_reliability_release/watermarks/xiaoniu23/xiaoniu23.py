@@ -91,7 +91,7 @@ def set_seed(seed: int):
 
 
 class xiaoniu23_detector():
-    def __init__(self, model_name, n, alpha, private_key, watermark_type, num_beams, tokenizer, temperature, top_p):
+    def __init__(self, model_name, n, alpha, private_key, watermark_type, num_beams, tokenizer, temperature, top_p,model):
         self.model_name = model_name
         self.n = n
         self.alpha = alpha
@@ -102,6 +102,7 @@ class xiaoniu23_detector():
         self.num_beams = num_beams
         self.temperature = temperature
         self.top_p = top_p
+        self.model = model
     
 
 
@@ -109,11 +110,11 @@ class xiaoniu23_detector():
         score = RobustLLR_Score_Batch_v2.from_grid([0.0], dist_qs)
         wp = get_wp(watermark_type, key)
         wp.ignore_history = True
-        cache = load_model(model_str, num_beams=self.num_beams, temps=self.temperature, top_p=self.top_p)
-        inputs = cache["tokenizer"](texts, return_tensors="pt", padding=True)
+        # cache = load_model(model_str, num_beams=self.num_beams, temps=self.temperature, top_p=self.top_p)
+        inputs = self.tokenizer(texts, return_tensors="pt", padding=True)
 
 
-        model = cache["generator"].model
+        model = self.model
         input_ids = inputs["input_ids"][..., :-1].to(model.device)
         attention_mask = inputs["attention_mask"][..., :-1].to(model.device)
         labels = inputs["input_ids"][..., 1:].to(model.device)

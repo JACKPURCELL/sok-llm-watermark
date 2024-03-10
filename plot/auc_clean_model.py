@@ -8,7 +8,7 @@ from transformers import AutoTokenizer
 import matplotlib.cm as cm
 plt.rcParams['font.size'] = 14  # 设置全局字体大小为14
 # watermark_types = ["john23","xuandong23b","aiwei23","lean23","rohith23","aiwei23b"]
-watermark_types = ["john23","xuandong23b","aiwei23","rohith23","aiwei23b","xiaoniu23"]
+watermark_types = ["john23","xuandong23b","aiwei23","rohith23","aiwei23b","xiaoniu23","lean23"]
 
 
 tokenizer = AutoTokenizer.from_pretrained("facebook/opt-1.3b")
@@ -16,14 +16,14 @@ fig, ax = plt.subplots(figsize=(7, 7))
 tpr_dict = defaultdict(dict)
 colors = ['b', 'g', 'r', 'c', 'm', 'y', 'k']  # 添加这一行来定义颜色列表
 # colors = cm.rainbow(np.linspace(0, 1, len(watermark_types)))  # 生成一个颜色映射
-models = ['OPT','LLAMA2']
+models = ['OPT']
 alphas = [1.0, 0.7]  # 定义透明度列表，你可以根据需要调整这个列表
 
 linestyles = ['-', '--', '-.']
 for i, watermark_type in enumerate(watermark_types):
     file_paths = [
         f'/home/jkl6486/sok-llm-watermark/runs/token_200/{watermark_type}/c4/opt/gen_table_w_metrics.jsonl',
-        f'/home/jkl6486/sok-llm-watermark/runs/token_200/{watermark_type}/c4/llama/gen_table_w_metrics.jsonl'
+        # f'/home/jkl6486/sok-llm-watermark/runs/token_200/{watermark_type}/c4/llama/gen_table_w_metrics.jsonl'
     ]
 
     for k,file_path in enumerate(file_paths):
@@ -108,7 +108,7 @@ plt.savefig(f'./plot/auc_clean_model.pdf')
 
 methods = list(tpr_dict.keys())
 opt_scores = [tpr_dict[method]["OPT"] for method in methods]
-llama2_scores = [tpr_dict[method]["LLAMA2"] for method in methods]
+# llama2_scores = [tpr_dict[method]["LLAMA2"] for method in methods]
 
 x = list(range(len(methods)))  # 将range对象转换为列表
 
@@ -118,7 +118,7 @@ width = 0.3  # 定义柱子的宽度
 # Plot
 fig, ax = plt.subplots(figsize=(7, 4))
 ax.bar([xi - width/2 for xi in x], opt_scores, width=width, label="OPT", align="center")
-ax.bar([xi + width/2 for xi in x], llama2_scores, width=width, label="LLAMA2", align="center")
+# ax.bar([xi + width/2 for xi in x], llama2_scores, width=width, label="LLAMA2", align="center")
 
 ax.set_xlabel("Methods")
 ax.set_ylabel('TPR at FPR=0.01')

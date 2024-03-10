@@ -20,6 +20,7 @@ import torch
 from tqdm import tqdm
 
 from utils.dipper_attack_pipeline import generate_dipper_paraphrases
+from utils.generate_translation import generate_translation
 
 from utils.evaluation import OUTPUT_TEXT_COLUMN_NAMES
 from utils.copy_paste_attack import single_insertion, triple_insertion_single_len, k_insertion_t_len
@@ -30,7 +31,7 @@ from utils.swap_attack import SwapAttack
 import utils.oracle_attack.attack as oracle_att
 from utils.synonym import SynonymAttack
 # SUPPORTED_ATTACK_METHODS = ["gpt", "dipper", "copy-paste", "scramble"]
-SUPPORTED_ATTACK_METHODS = [ "dipper", "copy-paste", "scramble","helm","oracle","swap","synonym"]
+SUPPORTED_ATTACK_METHODS = [ "dipper", "copy-paste", "scramble","helm","oracle","swap","synonym","translation"]
 
 
 def scramble_attack(example, tokenizer=None, args=None):
@@ -95,6 +96,10 @@ def gpt_attack(example, attack_prompt=None, args=None):
 
 def dipper_attack(dataset, lex=None, order=None, args=None):
     dataset = generate_dipper_paraphrases(dataset, lex=lex, order=order, args=args)
+    return dataset
+
+def translation_attack(dataset, args=None):
+    dataset = generate_translation(dataset, args=args)
     return dataset
 
 #     if self._use_google_translate and queue is None:

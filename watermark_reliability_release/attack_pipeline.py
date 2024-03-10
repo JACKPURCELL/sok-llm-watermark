@@ -32,6 +32,7 @@ from utils.attack import (
     get_helm_attack_att,
     gpt_attack,
     dipper_attack,
+    translation_attack,
     tokenize_for_copy_paste,
     copy_paste_attack,
     scramble_attack,
@@ -232,6 +233,18 @@ def main(args):
                                                   args=args)
         gen_table_attacked_ds = gen_table_ds.map(tokenize_for_copy_paste_partial, batched=False)
 
+
+    ###########################################################################
+    # Translation attack
+    ###########################################################################
+
+
+    elif args.attack_method == "translation":
+        print("Running Translation attack")
+        gen_table_attacked_ds = translation_attack(
+            gen_table_ds, args=args
+        )
+        
 
     ###########################################################################
     # Oracle attack
