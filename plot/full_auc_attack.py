@@ -15,7 +15,7 @@ tokenizer = AutoTokenizer.from_pretrained("facebook/opt-1.3b")
 for i, watermark_type in enumerate(watermark_types):
     for attack in attacks:
         print(f"Processing {watermark_type} with {attack}...")
-        file = f'/home/jkl6486/sok-llm-watermark/runs/{watermark_type}/c4/opt/{attack}/gen_table_w_metrics.jsonl'
+        file = f'~/sok-llm-watermark/runs/{watermark_type}/c4/opt/{attack}/gen_table_w_metrics.jsonl'
         data_list = []
         with open(file, 'r') as f:
             for line in f:

@@ -141,7 +141,7 @@ if __name__ == '__main__':
     message_code_len=20
     encode_ratio=10.0
     device='cuda:0,1,2'
-    root_path='/home/jkl6486/codable-watermarking-for-llm/my_watermark_result'
+    root_path='~/codable-watermarking-for-llm/my_watermark_result'
     wm_strategy='lm_new_7_10'
     lm_prefix_len=10
     lm_top_k=-1
@@ -173,7 +173,7 @@ if __name__ == '__main__':
                                                   encode_ratio=encode_ratio,
                                                   tokenizer=tokenizer,
                                                   message=message)
-    filename = "/home/jkl6486/sok-llm-watermark/runs/runs_test/lean23_30/gen_table.jsonl"
+    filename = "~/sok-llm-watermark/runs/runs_test/lean23_30/gen_table.jsonl"
     with open(filename, "r", encoding="utf-8") as f:
         c4_sliced_and_filted = [json.loads(line) for line in f.read().strip().split("\n")]
         decoded_message_list = []
@@ -247,7 +247,7 @@ if __name__ == '__main__':
                                                   message=message,
                                                   )
 
-    filename = "/home/jkl6486/sok-llm-watermark/runs/runs_test/lean23_30/gen_table.jsonl"
+    filename = "~/sok-llm-watermark/runs/runs_test/lean23_30/gen_table.jsonl"
     with open(filename, "r", encoding="utf-8") as f:
         c4_sliced_and_filted = [json.loads(line) for line in f.read().strip().split("\n")]
         decoded_message_list = []

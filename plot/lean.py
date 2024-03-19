@@ -20,7 +20,7 @@
 
 # for watermark_type in watermark_types:
 #     print(f"Processing {watermark_type}...")
-#     file = f'/home/jkl6486/sok-llm-watermark/runs/{watermark_type}/c4/opt/gen_table_w_metrics.jsonl'
+#     file = f'~/sok-llm-watermark/runs/{watermark_type}/c4/opt/gen_table_w_metrics.jsonl'
 #     data_list = []
 #     with open(file, 'r') as f:
 #         for line in f:
@@ -76,7 +76,7 @@ def sigmoid(x):
 
 for watermark_type in watermark_types:
     print(f"Processing {watermark_type}...")
-    file = f'/home/jkl6486/sok-llm-watermark/runs/{watermark_type}/c4/opt/MisspellingAttack/gen_table_w_metrics.jsonl'
+    file = f'~/sok-llm-watermark/runs/{watermark_type}/c4/opt/MisspellingAttack/gen_table_w_metrics.jsonl'
     data_list = []
     with open(file, 'r') as f:
         for line in f:

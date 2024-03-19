@@ -11,7 +11,7 @@ if __name__ == "__main__":
     for method in methodS:
         for model in modelS:    
             for attack in attackS:
-                file_path = "/home/jkl6486/sok-llm-watermark/runs/token_200/" + method + "/c4/" + model + "/" + attack + "/"
+                file_path = "~/sok-llm-watermark/runs/token_200/" + method + "/c4/" + model + "/" + attack + "/"
                 if not os.path.exists(file_path+"gen_table_attacked.jsonl") or not os.path.exists(file_path+"gen_table_attacked_meta.json"):
                     if method in no_atk:
                         no_atk[method].append(attack)

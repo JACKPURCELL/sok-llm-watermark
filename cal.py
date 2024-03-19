@@ -1,7 +1,7 @@
 import json
 
 count = 0
-with open('/home/jkl6486/sok-llm-watermark/runs/xuandong23b/dipper.json', 'r') as f:
+with open('~/sok-llm-watermark/runs/xuandong23b/dipper.json', 'r') as f:
     for line in f:
         data = json.loads(line)
         if data['attack_output_result']['prediction'] == True:

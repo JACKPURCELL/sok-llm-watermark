@@ -22,8 +22,8 @@ from sklearn.metrics import accuracy_score
 
 # load arguments
 parser = argparse.ArgumentParser()
-parser.add_argument('--train_path', type=str, default="/home/jkl6486/sok-llm-watermark/runs/token_200/john23/c4/llama/dipper_l40_o0/gen_table_w_metrics.jsonl")
-parser.add_argument('--output_path', type=str, default="/home/jkl6486/sok-llm-watermark/runs/token_200/john23/c4/llama/dipper_l40_o0/roberta_finetuned2")
+parser.add_argument('--train_path', type=str, default="~/sok-llm-watermark/runs/token_200/john23/c4/llama/dipper_l40_o0/gen_table_w_metrics.jsonl")
+parser.add_argument('--output_path', type=str, default="~/sok-llm-watermark/runs/token_200/john23/c4/llama/dipper_l40_o0/roberta_finetuned2")
 parser.add_argument('--num_epochs', type=int, default=25)
 parser.add_argument('--lr', type=float, default=1e-5)
 parser.add_argument('--batch_size', type=int, default=32)

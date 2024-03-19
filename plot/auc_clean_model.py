@@ -22,8 +22,8 @@ alphas = [1.0, 0.7]  # 定义透明度列表，你可以根据需要调整这个
 linestyles = ['-', '--', '-.']
 for i, watermark_type in enumerate(watermark_types):
     file_paths = [
-        f'/home/jkl6486/sok-llm-watermark/runs/token_200/{watermark_type}/c4/opt/gen_table_w_metrics.jsonl',
-        # f'/home/jkl6486/sok-llm-watermark/runs/token_200/{watermark_type}/c4/llama/gen_table_w_metrics.jsonl'
+        f'~/sok-llm-watermark/runs/token_200/{watermark_type}/c4/opt/gen_table_w_metrics.jsonl',
+        # f'~/sok-llm-watermark/runs/token_200/{watermark_type}/c4/llama/gen_table_w_metrics.jsonl'
     ]
 
     for k,file_path in enumerate(file_paths):

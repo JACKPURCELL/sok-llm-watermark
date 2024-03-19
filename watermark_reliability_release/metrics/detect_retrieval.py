@@ -41,8 +41,8 @@ def detect_retrieval(data, args=None):
 
     # load SIM model
     download_url = "http://www.cs.cmu.edu/~jwieting/paraphrase-at-scale-english.zip"
-    download_dir = "/home/jkl6486/sok-llm-watermark/watermark_reliability_release/metrics/detect_retrieval_utils/"
-    load_file = "/home/jkl6486/sok-llm-watermark/watermark_reliability_release/metrics/detect_retrieval_utils/model.para.lc.100.pt"
+    download_dir = "~/sok-llm-watermark/watermark_reliability_release/metrics/detect_retrieval_utils/"
+    load_file = "~/sok-llm-watermark/watermark_reliability_release/metrics/detect_retrieval_utils/model.para.lc.100.pt"
     # Check if the required files exist
     if not os.path.exists(load_file):
         # make a box around the print statement

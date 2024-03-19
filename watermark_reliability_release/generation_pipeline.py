@@ -192,8 +192,8 @@ def main(args):
                                                                         top_k=args.lean23_top_k,
                                                                         repeat_penalty=args.repeat_penalty
                                                                         )
-            dill.dump(watermark_processor.watermark_processor, open("/home/jkl6486/sok-llm-watermark/watermark_reliability_release/watermarks/lean23/processor/lean23_"+str(args.model_name_or_path).replace("/","")+".pkl", "wb"))
-            '''filename = "/home/jkl6486/codable-watermarking-for-llm/gen_table.jsonl"
+            dill.dump(watermark_processor.watermark_processor, open("~/sok-llm-watermark/watermark_reliability_release/watermarks/lean23/processor/lean23_"+str(args.model_name_or_path).replace("/","")+".pkl", "wb"))
+            '''filename = "~/codable-watermarking-for-llm/gen_table.jsonl"
             with open(filename, "r", encoding="utf-8") as f:
                 c4_sliced_and_filted = [json.loads(line) for line in f.read().strip().split("\n")]
                 decoded_message_list = []
@@ -236,8 +236,8 @@ def main(args):
                          args.message, 
                          args.lean23_top_k, 
                          args.repeat_penalty]
-            dill.dump(args_list, open("/home/jkl6486/sok-llm-watermark/watermark_reliability_release/watermarks/lean23/processor/lean23_args.pkl", "wb"))
-            dill.dump(watermark_processor, open("/home/jkl6486/sok-llm-watermark/watermark_reliability_release/watermarks/lean23/processor/lean23.pkl", "wb"))'''
+            dill.dump(args_list, open("~/sok-llm-watermark/watermark_reliability_release/watermarks/lean23/processor/lean23_args.pkl", "wb"))
+            dill.dump(watermark_processor, open("~/sok-llm-watermark/watermark_reliability_release/watermarks/lean23/processor/lean23.pkl", "wb"))'''
 
 
         case 'aiwei23':
@@ -820,9 +820,9 @@ if __name__ == "__main__":
             #parser.add_argument("--llm_name", type=str, default="facebook/opt-1.3b")
             parser.add_argument("--gamma", type=float, default=0.5)
             parser.add_argument("--delta", type=float, default= 2.0)
-            parser.add_argument("--model_dir", type=str, default="/home/jkl6486/sok-llm-watermark/watermark_reliability_release/watermarks/aiwei23/model/")
+            parser.add_argument("--model_dir", type=str, default="~/sok-llm-watermark/watermark_reliability_release/watermarks/aiwei23/model/")
             # parser.add_argument("--beam_size", type=int, default=0)
-            parser.add_argument("--data_dir", type=str, default="/home/jkl6486/sok-llm-watermark/watermark_reliability_release/watermarks/aiwei23/data/")
+            parser.add_argument("--data_dir", type=str, default="~/sok-llm-watermark/watermark_reliability_release/watermarks/aiwei23/data/")
             parser.add_argument("--z_value", type=int, default=1)
             parser.add_argument("--sample_number", type=int, default=2000, help="Number of samples for training generator.")
             parser.add_argument("--num_samples", type=int, default=10000, help="Number of samples for training detector.")
@@ -854,22 +854,22 @@ if __name__ == "__main__":
             parser.add_argument("--private_key", type=str, default="private key")
             parser.add_argument("--n", type=int, default=5)
         case 'aiwei23b':
-            parser.add_argument("--embedding_input_path", type=str, default="/home/jkl6486/sok-llm-watermark/watermark_reliability_release/watermarks/aiwei23b/data/sts/train.jsonl")
-            parser.add_argument("--embedding_output_path", type=str, default="/home/jkl6486/sok-llm-watermark/watermark_reliability_release/watermarks/aiwei23b/data/embeddings/train_embeddings.txt")
-            parser.add_argument("--aiwei23b_model_path", type=str, default="/home/jkl6486/sok-llm-watermark/watermark_reliability_release/watermarks/aiwei23b/model/compositional-bert-large-uncased")
+            parser.add_argument("--embedding_input_path", type=str, default="~/sok-llm-watermark/watermark_reliability_release/watermarks/aiwei23b/data/sts/train.jsonl")
+            parser.add_argument("--embedding_output_path", type=str, default="~/sok-llm-watermark/watermark_reliability_release/watermarks/aiwei23b/data/embeddings/train_embeddings.txt")
+            parser.add_argument("--aiwei23b_model_path", type=str, default="~/sok-llm-watermark/watermark_reliability_release/watermarks/aiwei23b/model/compositional-bert-large-uncased")
             parser.add_argument("--aiwei23b_size", type=int, default=2000)
-            parser.add_argument("--aiwei23b_output_model", type=str, default="/home/jkl6486/sok-llm-watermark/watermark_reliability_release/watermarks/aiwei23b/model/transform_model_cbert.pth")
+            parser.add_argument("--aiwei23b_output_model", type=str, default="~/sok-llm-watermark/watermark_reliability_release/watermarks/aiwei23b/model/transform_model_cbert.pth")
             parser.add_argument("--watermark_model_epochs", type=int, default=2000)
             parser.add_argument("--watermark_model_lr", type=float, default=0.006)
             parser.add_argument("--aiwei23b_input_dim", type=int, default=1024)
             parser.add_argument("--mapping_length", type=int, default=50257)
-            parser.add_argument("--mapping_output_dir", type=str, default="/home/jkl6486/sok-llm-watermark/watermark_reliability_release/watermarks/aiwei23b/data/mappings/")
+            parser.add_argument("--mapping_output_dir", type=str, default="~/sok-llm-watermark/watermark_reliability_release/watermarks/aiwei23b/data/mappings/")
             parser.add_argument("--aiwei23b_watermark_type", type=str, default="context")
             parser.add_argument("--aiwei23b_window_size", type=int, default=0)
             parser.add_argument("--aiwei23b_chunk_size", type=int, default=10)
             parser.add_argument("--aiwei23b_delta", type=int, default=1)
-            parser.add_argument("--transform_model", type=str, default="/home/jkl6486/sok-llm-watermark/watermark_reliability_release/watermarks/aiwei23b/model/transform_model_cbert.pth")
-            parser.add_argument("--embedding_model", type=str, default="/home/jkl6486/sok-llm-watermark/watermark_reliability_release/watermarks/aiwei23b/model/compositional-bert-large-uncased")
+            parser.add_argument("--transform_model", type=str, default="~/sok-llm-watermark/watermark_reliability_release/watermarks/aiwei23b/model/transform_model_cbert.pth")
+            parser.add_argument("--embedding_model", type=str, default="~/sok-llm-watermark/watermark_reliability_release/watermarks/aiwei23b/model/compositional-bert-large-uncased")
             parser.add_argument("--aiwei23b_trained", type=str2bool, default=True)
             
             

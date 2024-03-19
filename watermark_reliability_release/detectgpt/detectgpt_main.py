@@ -29,7 +29,7 @@ sys.path.insert(0, "..")
 
 from datasets import Dataset
 import sys
-sys.path.insert(0, "/home/jkl6486/sok-llm-watermark")
+sys.path.insert(0, "~/sok-llm-watermark")
 from watermark_reliability_release.utils.io import read_jsonlines, load_jsonlines
 
 import transformers
@@ -37,8 +37,8 @@ import transformers
 # some file i/o helpers
 from watermark_reliability_release.utils.io import write_jsonlines, write_json
 
-INPUT_DIR = "/home/jkl6486/sok-llm-watermark"
-OUTPUT_DIR = "/home/jkl6486/sok-llm-watermark"
+INPUT_DIR = "~/sok-llm-watermark"
+OUTPUT_DIR = "~/sok-llm-watermark"
 
 
 # 15 colorblind-friendly colors

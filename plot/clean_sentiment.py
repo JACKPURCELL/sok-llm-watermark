@@ -18,7 +18,7 @@ fig, axs = plt.subplots(2, 4, figsize=(28, 14))
 keys_to_include = ["w_wm_output_repetition_2", "w_wm_output_repetition_3", "w_wm_output_repetition_4", "w_wm_output_diversity",  "w_wm_output_coherence"]
 # "w_wm_output_log_diversity",
 for i, watermark_type in enumerate(watermark_types):
-    file_path = f'/home/jkl6486/sok-llm-watermark/runs/token_200/{watermark_type}/c4/llama/gen_table_w_metrics.jsonl'
+    file_path = f'~/sok-llm-watermark/runs/token_200/{watermark_type}/c4/llama/gen_table_w_metrics.jsonl'
     data_list = []
     with open(file_path, 'r') as f:
         for line in f:
