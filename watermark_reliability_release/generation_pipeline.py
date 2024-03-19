@@ -376,7 +376,7 @@ def main(args):
         generate_with_watermark = partial(
             watermarks.generate_with_watermark_xiaoniu23, model_str=args.model_name_or_path,
             wp=[watermark_processor], 
-            **gen_kwargs
+            **gen_kwargs,
         )
         generate_without_watermark = partial(model.generate, **gen_kwargs)
     else:

@@ -32,28 +32,15 @@ def get_prompt_length(tokenizer, prompt):
 def get_threshold(n, alpha):
     return -1*log(alpha)+log(n)
 
-def load_model(model_str, num_beams, temps, top_p):
+def load_model(model_str, **gen_kwargs):
     if model_str == cache["model_str"]:
         return cache
     else:
-        if temps is None:
-            generator = pipeline(
+        generator = pipeline(
                 "text-generation",
-                model=model_str,
-                do_sample=True,
-                num_beams=num_beams,
-                device_map='auto',
-            )
-        else:
-            generator = pipeline(
-                "text-generation",
-                model=model_str,
-                do_sample=True,
-                num_beams=num_beams,
-                device_map='auto',
-                temperature=temps,
-                top_p=top_p,
-            )
+                model=model_str,**gen_kwargs)
+                
+        
 
         cache["model_str"] = model_str
         cache["generator"] = generator
@@ -191,7 +178,7 @@ def generate_with_watermark(model_str, input_ids, wp, **kwargs):
         kwargs["num_beams"] = 1
     if "temperature" not in kwargs:
         kwargs["temperature"] = None
-    cache = load_model(model_str, kwargs["num_beams"], kwargs["temperature"], kwargs["top_p"])
+    cache = load_model(model_str, **kwargs)
     generator = cache["generator"]
     prompt = [cache["tokenizer"].decode(i) for i in input_ids]
     kwargs = {"max_new_tokens": kwargs["max_new_tokens"]}
