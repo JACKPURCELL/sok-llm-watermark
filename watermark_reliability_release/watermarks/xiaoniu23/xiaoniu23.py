@@ -103,6 +103,7 @@ class xiaoniu23_detector():
         self.temperature = temperature
         self.top_p = top_p
         self.model = model
+        # self.model = self.model.to(dtype=torch.float32)
     
 
 

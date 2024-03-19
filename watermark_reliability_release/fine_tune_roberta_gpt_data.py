@@ -19,6 +19,7 @@ from transformers import TrainingArguments, Trainer
 
 from torch.utils.data import Dataset, DataLoader
 from sklearn.metrics import accuracy_score
+from openai import OpenAI
 
 # load arguments
 parser = argparse.ArgumentParser()
@@ -29,7 +30,9 @@ parser.add_argument('--lr', type=float, default=1e-5)
 parser.add_argument('--batch_size', type=int, default=32)
 parser.add_argument('--gpus', type=str, default="0,1,2,3")
 parser.add_argument('--train', type=bool, default=True)
-parser.add_argument('--eva_attack', type=bool, default=False)
+parser.add_argument('--eva_attack', type=bool, default=True)
+parser.add_argument('--model_name', type=str, default="gpt-3.5-turbo")
+parser.add_argument('--max_tokens', type=int, default=200)
 args = parser.parse_args()
 
 num_gpus = args.gpus.count(",") + 1
@@ -52,18 +55,47 @@ labels = []
 no_wm_outputs = []
 original_detector_predictions = []
 w_wm_output_atatcked = []
+client = OpenAI(api_key="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")
+
+i = 0
 with open(args.train_path, "r") as f:
 	for line in f:
 		data = json.loads(line)
 		#generations.append(data["truncated_input"]+data["baseline_completion"])
-		generations.append(data["truncated_input"]+data["no_wm_output"])
+		prompt = data["truncated_input"]
+		completion = client.chat.completions.create(model=args.model_name,
+                                                    messages=[{"role": "system", "content": "You are a helpful assistant."},
+                                                              {"role": "user", "content": prompt}],
+                                                    max_tokens=args.max_tokens)
+		# set message
+		if completion.choices[0].finish_reason != "stop":
+			msg = "UNABLE TO COMPLETE REQUEST BECAUSE: %s" % completion.choices[0].finish_reason
+		else:
+			msg = completion.choices[0].message.content
+		generations.append(data["truncated_input"]+" "+msg)
 		labels.append(0)
 		generations.append(data["truncated_input"]+data["w_wm_output"])
 		labels.append(1)
 		### Other variables 
-		#original_detector_predictions.append(1 if data["w_wm_output_attacked_prediction"] else 0)
-		#no_wm_outputs.append(data["truncated_input"]+data["no_wm_output"])
-		#w_wm_output_atatcked.append(data["w_wm_output_attacked"])
+		original_detector_predictions.append(1 if data["w_wm_output_attacked_prediction"] else 0)
+		no_wm_outputs.append(data["truncated_input"]+data["no_wm_output"])
+		w_wm_output_atatcked.append(data["w_wm_output_attacked"])
+		print(i)
+		i += 1
+
+with open('/home/jkl6486/sok-llm-watermark/runs/token_200/john23/c4/llama/dipper_l40_o0/roberta_finetuned2/gpt_saved.jsonl', 'w') as file:
+	for idx in range(len(generations)):
+		item = {"output": generations[idx], "label": labels[idx]}
+		file.write(json.dumps(item) + '\n')
+
+# with open('/home/jkl6486/sok-llm-watermark/runs/token_200/john23/c4/llama/dipper_l40_o0/roberta_finetuned2/gpt_saved.jsonl', 'r') as file:
+# 	for line in file:
+# 		data = json.loads(line)
+# 		generations.append(data["output"])
+# 		labels.append(data["label"])
+
+
+
 amount = int(len(generations))
 train_generations = generations[:int(amount*0.8)]
 train_labels = labels[:int(amount*0.8)]
