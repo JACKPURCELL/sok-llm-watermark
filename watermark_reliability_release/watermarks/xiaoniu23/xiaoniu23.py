@@ -38,7 +38,9 @@ def load_model(model_str, **gen_kwargs):
     else:
         generator = pipeline(
                 "text-generation",
-                model=model_str,**gen_kwargs)
+                model=model_str,
+                device="cuda",
+                **gen_kwargs)
                 
         
 

@@ -238,7 +238,7 @@
             "console": "integratedTerminal",
             "justMyCode": true,
             "env": {
-                "CUDA_VISIBLE_DEVICES": "0,1,2,3"
+                "CUDA_VISIBLE_DEVICES": "3"
             },
             "args": [
                 "--watermark",
@@ -297,18 +297,16 @@
                 "xiaoniu23",
                 "--run_name",
                 "xiaoniu_opt_test",
+                "--wandb_project",
+                "temporary",
+                "--overwrite_output_file",
+                "True",
                 "--input_dir",
                 "/home/jkl6486/sok-llm-watermark/runs/token_200/xiaoniu23/c4/opt/fix",
                 "--output_dir",
                 "/home/jkl6486/sok-llm-watermark/runs/token_200/xiaoniu23/c4/opt/fix",
                 "--overwrite_args",
                 "True",
-                "--load_fp16",
-                "False"
-
-            
-                         
-
             ]
         },
         {
