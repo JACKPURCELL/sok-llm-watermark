@@ -19,7 +19,7 @@ keys_to_include = ["w_wm_output_repetition_2", "w_wm_output_repetition_3", "w_wm
 # "w_wm_output_log_diversity",
 wm_avg_var_dict_list = []
 for i, watermark_type in enumerate(watermark_types):
-    file_path = f'~/sok-llm-watermark/runs/token_200/{watermark_type}/c4/opt/gen_table_w_metrics.jsonl'
+    file_path = f'/home/ljc/sok-llm-watermark/runs/token_200/{watermark_type}/c4/opt/gen_table_w_metrics.jsonl'
     data_list = []
     with open(file_path, 'r') as f:
         for line in f:

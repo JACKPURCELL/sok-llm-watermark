@@ -464,10 +464,10 @@ class aiwei23_WatermarkDetector:
         # load dataset
         print("loading dataset...")
         if dataset_name == "c4":
-            with open("~/sok-llm-watermark/watermark_reliability_release/watermarks/aiwei23/original_data/c4_validation.json", encoding="utf-8") as f1:
+            with open("/home/ljc/sok-llm-watermark/watermark_reliability_release/watermarks/aiwei23/original_data/c4_validation.json", encoding="utf-8") as f1:
                 lines = f1.readlines()
         elif dataset_name == "dbpedia":
-            with open("~/sok-llm-watermark/watermark_reliability_release/watermarks/aiwei23/original_data/dbpedia_validation.json", encoding="utf-8") as f1:
+            with open("/home/ljc/sok-llm-watermark/watermark_reliability_release/watermarks/aiwei23/original_data/dbpedia_validation.json", encoding="utf-8") as f1:
                 lines = f1.readlines()
 
         idx = 1

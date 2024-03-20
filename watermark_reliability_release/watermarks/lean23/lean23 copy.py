@@ -173,7 +173,7 @@ if __name__ == '__main__':
                                                   encode_ratio=encode_ratio,
                                                   tokenizer=tokenizer,
                                                   message=message)
-    filename = "~/sok-llm-watermark/runs/runs_test/lean23_30/gen_table.jsonl"
+    filename = "/home/ljc/sok-llm-watermark/runs/runs_test/lean23_30/gen_table.jsonl"
     with open(filename, "r", encoding="utf-8") as f:
         c4_sliced_and_filted = [json.loads(line) for line in f.read().strip().split("\n")]
         decoded_message_list = []
@@ -247,7 +247,7 @@ if __name__ == '__main__':
                                                   message=message,
                                                   )
 
-    filename = "~/sok-llm-watermark/runs/runs_test/lean23_30/gen_table.jsonl"
+    filename = "/home/ljc/sok-llm-watermark/runs/runs_test/lean23_30/gen_table.jsonl"
     with open(filename, "r", encoding="utf-8") as f:
         c4_sliced_and_filted = [json.loads(line) for line in f.read().strip().split("\n")]
         decoded_message_list = []
