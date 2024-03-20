@@ -7,7 +7,7 @@ watermark_types=("xiaoniu23")
 #"john23" "lean23" "rohith23" "xiaoniu23" "xuandong23b" "aiwei23" "aiwei23b"
 
 models=("opt")
-gpus=("1, 2, 3")
+gpus=("0, 1, 2, 3")
 temps=("1.0")
 
 for watermark_type in "${watermark_types[@]}"; do

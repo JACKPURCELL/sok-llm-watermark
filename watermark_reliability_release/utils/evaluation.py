@@ -297,7 +297,7 @@ def compute_z_score(
     # if args.normalizers != []:
         # return_green_token_mask = None
 
-    input_text = example[text_column_name]
+    input_text = example[text_column_name][:args.max_new_tokens]
     try:
         prompt = example['question']
     except:

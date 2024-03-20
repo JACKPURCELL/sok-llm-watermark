@@ -1,7 +1,7 @@
 import argparse
 import numpy as np
 from sacremoses import MosesTokenizer
-from metrics.detect_retrieval_utils.models_gpu import load_model
+from metrics.detect_retrieval_utils.models import load_model
 from metrics.detect_retrieval_utils.utils import Example
 import torch
 from argparse import Namespace

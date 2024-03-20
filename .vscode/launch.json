@@ -290,7 +290,7 @@
             "console": "integratedTerminal",
             "justMyCode": true,
             "env": {
-                "CUDA_VISIBLE_DEVICES": ""
+                "CUDA_VISIBLE_DEVICES": "2"
             },
             "args": [
                 "--watermark",
@@ -302,11 +302,13 @@
                 "--overwrite_output_file",
                 "True",
                 "--input_dir",
-                "/home/jkl6486/sok-llm-watermark/runs/token_200/xiaoniu23/c4/opt/fix",
+                "/home/ljc/sok-llm-watermark/runs/token_200/xiaoniu23/c4/opt",
                 "--output_dir",
-                "/home/jkl6486/sok-llm-watermark/runs/token_200/xiaoniu23/c4/opt/fix",
+                "/home/ljc/sok-llm-watermark/runs/token_200/xiaoniu23/c4/opt",
                 "--overwrite_args",
                 "True",
+                "--limit_rows",
+                "10"
             ]
         },
         {

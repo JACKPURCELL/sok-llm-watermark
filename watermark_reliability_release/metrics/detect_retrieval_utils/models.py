@@ -12,11 +12,11 @@ from torch.nn.utils.rnn import pack_padded_sequence as pack
 from metrics.detect_retrieval_utils.evaluate_sts import evaluate_sts
 from torch import optim
 
-def load_model(path, gpu=1, sp_model="~/sok-llm-watermark/watermark_reliability_release/metrics/detect_retrieval_utils/paranmt.model"):
+def load_model(path, gpu=1, sp_model="/home/ljc/sok-llm-watermark/watermark_reliability_release/metrics/detect_retrieval_utils/paranmt.model"):
     if not gpu:
         model = torch.load(path, map_location=torch.device('cpu'))
     else:
-        model = torch.load(path, map_location=torch.device('cpu'))
+        model = torch.load(path)
 
     state_dict = model['state_dict']
     model_args = model['args']
@@ -207,8 +207,8 @@ class Averaging(ParaModel):
         self.parameters = self.parameters()
         self.optimizer = optim.Adam(self.parameters, lr=self.args.lr)
 
-#        if args.gpu:
-#           self.cuda()
+        if args.gpu:
+           self.cuda()
 
         print(self)
 

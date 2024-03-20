@@ -1,7 +1,7 @@
 import argparse
 import numpy as np
 from sacremoses import MosesTokenizer
-from watermark_reliability_release.metrics.detect_retrieval_utils.models_gpu import load_model
+from watermark_reliability_release.metrics.detect_retrieval_utils.models import load_model
 from utils import Example
 
 def cosine(u, v):

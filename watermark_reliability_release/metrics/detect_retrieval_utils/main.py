@@ -3,7 +3,7 @@ import numpy as np
 import sys
 import argparse
 import torch
-from watermark_reliability_release.metrics.detect_retrieval_utils.models_gpu import Averaging, LSTM, load_model
+from watermark_reliability_release.metrics.detect_retrieval_utils.models import Averaging, LSTM, load_model
 from utils import unk_string
 import h5py
 

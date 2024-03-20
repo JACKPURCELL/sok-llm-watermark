@@ -105,10 +105,19 @@ class xiaoniu23_detector():
 
 
         model = self.model
-        input_ids = inputs["input_ids"][..., :-1].to(model.device)
-        attention_mask = inputs["attention_mask"][..., :-1].to(model.device)
-        labels = inputs["input_ids"][..., 1:].to(model.device)
-        labels_mask = inputs["attention_mask"][..., 1:].to(model.device)
+        # input_ids = inputs["input_ids"][..., :-1].to(model.device)
+        # attention_mask = inputs["attention_mask"][..., :-1].to(model.device)
+        # labels = inputs["input_ids"][..., 1:].to(model.device)
+        # labels_mask = inputs["attention_mask"][..., 1:].to(model.device)
+        # generation_config = GenerationConfig.from_model_config(model.config)
+        if inputs["input_ids"].size(-1) > 1 and inputs["attention_mask"].size(-1) > 1:
+            input_ids = inputs["input_ids"].clone().detach()[..., :-1].to(model.device)
+            attention_mask = inputs["attention_mask"].clone().detach()[..., :-1].to(model.device)
+            labels = inputs["input_ids"].clone().detach()[..., 1:].to(model.device)
+            labels_mask = inputs["attention_mask"].clone().detach()[..., 1:].to(model.device)
+        else:
+            raise ValueError("Input tensors must have more than one element in the last dimension.")
+
         generation_config = GenerationConfig.from_model_config(model.config)
         logits_processor = model._get_logits_processor(
             generation_config,
@@ -166,8 +175,8 @@ class xiaoniu23_detector():
             watermarked = True
         else:
             watermarked = False
-        return {"z_score": best_sum_score, 
-                "best_dist_q": best_dist_q, 
+        return {"z_score": float(best_sum_score), 
+                "best_dist_q": float(best_dist_q), 
                 "prediction": watermarked}
     def dummy_detect(self, **kwargs):
         result = {

@@ -322,11 +322,11 @@ def tokenize_and_truncate(
 
     # truncate
     # NEED TO RECOVER
-    try:
-        inputs_ids = inputs_ids[:, : 30]
-    except:
-        inputs_ids = inputs_ids[:, : ]
-    # inputs_ids = inputs_ids[:, : inputs_ids.shape[1] - slice_length]
+    # try:
+    #     inputs_ids = inputs_ids[:, : 30]
+    # except:
+    #     inputs_ids = inputs_ids[:, : ]
+    inputs_ids = inputs_ids[:, : inputs_ids.shape[1] - slice_length]
         
     # logic depending on special tokens for the model
     if "t5" in hf_model_name or "T0" in hf_model_name:
