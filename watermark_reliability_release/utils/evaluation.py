@@ -269,7 +269,7 @@ def load_detector(args):
         case 'xiaoniu23':
             model, tokenizer, device = load_model(args)
             watermark_detector = watermarks.xiaoniu23_detector(args.model_name_or_path, args.n, 
-                                                               args.alpha, args.private_key, args.watermark_type, args.num_beams, tokenizer, args.sampling_temp, args.top_p, model)
+                                                               args.alpha, args.private_key, args.watermark_type, args.num_beams, tokenizer, args.sampling_temp, args.top_p)
             
         case 'aiwei23b':
             model, tokenizer, device = load_model(args)

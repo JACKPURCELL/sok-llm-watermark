@@ -1,4 +1,4 @@
-import json
+1import json
 import torch
 import tqdm
 from watermark_processor import RepetitionPenaltyLogitsProcessor
@@ -18,7 +18,7 @@ from transformers import AutoTokenizer, AutoModelForCausalLM
 #}
 
 
-class lean23_BalanceMarkingWatermarkLogitsProcessor(LogitsProcessor):
+class lean23_BalanceMarkingWaterma1rkLogitsProcessor(LogitsProcessor):
     """
         Class for detecting watermarks in a sequence of tokens.
 

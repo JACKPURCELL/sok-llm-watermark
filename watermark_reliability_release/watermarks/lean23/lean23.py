@@ -110,85 +110,85 @@ class lean23_WatermarkDetector:
 
         return result
 
-if __name__ == '__main__':
-    temperature = 1.0
-    model_name='facebook/opt-1.3b'
-    sample_num=100
-    sample_seed=42
-    seed=42
-    num_beams=4
-    delta=1.5
-    repeat_penalty=1.5
-    message=[52,12,564,65,67,233]
-    prompt_length=300
-    generated_length=200
-    message_code_len=20
-    encode_ratio=10.0
-    device='cuda:0'
-    root_path='~/codable-watermarking-for-llm/my_watermark_result'
-    wm_strategy='lm_new_7_10'
-    lm_prefix_len=10
-    lm_top_k=-1
-    lm_model_name='gpt2'
-    message_model_strategy='vanilla'
-    random_permutation_num=100
-    max_confidence_lbd=0.5
-    top_k=1000
-    tokenizer = AutoTokenizer.from_pretrained(model_name)
-    model = AutoModelForCausalLM.from_pretrained(model_name)
-    watermark_processor = lean23_BalanceMarkingWatermarkLogitsProcessor(tokenizer=tokenizer,
-                                                                        lm_tokenizer=tokenizer,
-                                                                        lm_model=model,
-                                                                        delta=delta,
-                                                                        lm_prefix_len=lm_prefix_len,
-                                                                        lm_top_k=lm_top_k,
-                                                                        message_code_len=message_code_len,
-                                                                        random_permutation_num=random_permutation_num,
-                                                                        encode_ratio=encode_ratio,
-                                                                        max_confidence_lbd=max_confidence_lbd,
-                                                                        message_model_strategy=message_model_strategy,
-                                                                        message=message,
-                                                                        top_k=top_k,
-                                                                        repeat_penalty=repeat_penalty
-                                                                        )
-    watermark_detector = lean23_WatermarkDetector(watermark_processor=watermark_processor,
-                                                  generated_length=generated_length,
-                                                  message_code_len=message_code_len,
-                                                  encode_ratio=encode_ratio,
-                                                  tokenizer=tokenizer,
-                                                  prompt_length=prompt_length,
-                                                  message=message,
-                                                  min_prefix_len=10)
-    filename = "~/codable-watermarking-for-llm/gen_table.jsonl"
-    with open(filename, "r", encoding="utf-8") as f:
-        c4_sliced_and_filted = [json.loads(line) for line in f.read().strip().split("\n")]
-        decoded_message_list = []
-        other_information_list = []
-        for text in c4_sliced_and_filted:
-            tokenized_input = tokenizer(text['truncated_input'], return_tensors='pt').to(model.device)
-            #tokenized_input = truncate(tokenized_input, max_length=args.prompt_length)
+# if __name__ == '__main__':
+#     temperature = 1.0
+#     model_name='facebook/opt-1.3b'
+#     sample_num=100
+#     sample_seed=42
+#     seed=42
+#     num_beams=4
+#     delta=1.5
+#     repeat_penalty=1.5
+#     message=[52,12,564,65,67,233]
+#     prompt_length=300
+#     generated_length=200
+#     message_code_len=20
+#     encode_ratio=10.0
+#     device='cuda:0'
+#     root_path='~/codable-watermarking-for-llm/my_watermark_result'
+#     wm_strategy='lm_new_7_10'
+#     lm_prefix_len=10
+#     lm_top_k=-1
+#     lm_model_name='gpt2'
+#     message_model_strategy='vanilla'
+#     random_permutation_num=100
+#     max_confidence_lbd=0.5
+#     top_k=1000
+#     tokenizer = AutoTokenizer.from_pretrained(model_name)
+#     model = AutoModelForCausalLM.from_pretrained(model_name)
+#     watermark_processor = lean23_BalanceMarkingWatermarkLogitsProcessor(tokenizer=tokenizer,
+#                                                                         lm_tokenizer=tokenizer,
+#                                                                         lm_model=model,
+#                                                                         delta=delta,
+#                                                                         lm_prefix_len=lm_prefix_len,
+#                                                                         lm_top_k=lm_top_k,
+#                                                                         message_code_len=message_code_len,
+#                                                                         random_permutation_num=random_permutation_num,
+#                                                                         encode_ratio=encode_ratio,
+#                                                                         max_confidence_lbd=max_confidence_lbd,
+#                                                                         message_model_strategy=message_model_strategy,
+#                                                                         message=message,
+#                                                                         top_k=top_k,
+#                                                                         repeat_penalty=repeat_penalty
+#                                                                         )
+#     watermark_detector = lean23_WatermarkDetector(watermark_processor=watermark_processor,
+#                                                   generated_length=generated_length,
+#                                                   message_code_len=message_code_len,
+#                                                   encode_ratio=encode_ratio,
+#                                                   tokenizer=tokenizer,
+#                                                   prompt_length=prompt_length,
+#                                                   message=message,
+#                                                   min_prefix_len=10)
+#     filename = "~/codable-watermarking-for-llm/gen_table.jsonl"
+#     with open(filename, "r", encoding="utf-8") as f:
+#         c4_sliced_and_filted = [json.loads(line) for line in f.read().strip().split("\n")]
+#         decoded_message_list = []
+#         other_information_list = []
+#         for text in c4_sliced_and_filted:
+#             tokenized_input = tokenizer(text['truncated_input'], return_tensors='pt').to(model.device)
+#             #tokenized_input = truncate(tokenized_input, max_length=args.prompt_length)
 
-            watermark_processor.logit_processor[2].start_length = tokenized_input['input_ids'].shape[-1]
-            output_tokens = model.generate(**tokenized_input,
-                                           temperature=temperature,
-                                           max_new_tokens=generated_length,
-                                           num_beams=num_beams,
-                                           logits_processor=[watermark_processor])
+#             watermark_processor.logit_processor[2].start_length = tokenized_input['input_ids'].shape[-1]
+#             output_tokens = model.generate(**tokenized_input,
+#                                            temperature=temperature,
+#                                            max_new_tokens=generated_length,
+#                                            num_beams=num_beams,
+#                                            logits_processor=[watermark_processor])
 
-            output_text = \
-                tokenizer.batch_decode(
-                    output_tokens[:, tokenized_input["input_ids"].shape[-1]:],
-                    skip_special_tokens=True)[0]
+#             output_text = \
+#                 tokenizer.batch_decode(
+#                     output_tokens[:, tokenized_input["input_ids"].shape[-1]:],
+#                     skip_special_tokens=True)[0]
 
-            prefix_and_output_text = tokenizer.batch_decode(output_tokens,
-                                                            skip_special_tokens=True)[0]
+#             prefix_and_output_text = tokenizer.batch_decode(output_tokens,
+#                                                             skip_special_tokens=True)[0]
 
-            decoded_message, other_information = watermark_processor.logit_processor[2].decode(output_text, disable_tqdm=True)
-            decoded_message_list.append(decoded_message)
-            other_information_list.append(other_information)
-            print()
+#             decoded_message, other_information = watermark_processor.logit_processor[2].decode(output_text, disable_tqdm=True)
+#             decoded_message_list.append(decoded_message)
+#             other_information_list.append(other_information)
+#             print()
     
-    print()
+#     print()
 
 
 

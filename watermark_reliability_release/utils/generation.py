@@ -14,6 +14,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import time
 import torch
 
 # HF classes
@@ -488,7 +489,13 @@ def generate(
     with torch.no_grad():
         if args.generation_seed is not None:
             torch.manual_seed(args.generation_seed)
+            
+        start_time = time.time()    
         output_without_watermark = generate_without_watermark(input_ids=input_ids)
+        end_time = time.time()
+        execution_time = end_time - start_time
+        print(f"Execution time generate_without_watermark: {execution_time} seconds")
+        
         if args.watermark == 'lean23':
             if args.generation_seed is not None:
                 torch.manual_seed(args.generation_seed)
@@ -497,7 +504,13 @@ def generate(
         elif args.watermark != 'kiyoon23':
             if args.generation_seed is not None:
                 torch.manual_seed(args.generation_seed)
+            start_time = time.time()    
             output_with_watermark = generate_with_watermark(input_ids=input_ids)
+            end_time = time.time()
+            execution_time = end_time - start_time
+
+            print(f"Execution time generate_with_watermark: {execution_time} seconds")
+
             print()
 
     if args.is_decoder_only_model:

@@ -32,17 +32,32 @@ def get_prompt_length(tokenizer, prompt):
 def get_threshold(n, alpha):
     return -1*log(alpha)+log(n)
 
-def load_model(model_str, **gen_kwargs):
+def load_model(model_str, num_beams, temps):
     if model_str == cache["model_str"]:
         return cache
     else:
-        generator = pipeline(
+        if temps is None:
+            print("Using 1")
+            
+            generator = pipeline(
                 "text-generation",
                 model=model_str,
-                device="cuda",
-                **gen_kwargs)
+                do_sample=True,
+                num_beams=num_beams,
+                device_map='auto',
                 
-        
+            )
+        else:
+            print("Using 2")
+            generator = pipeline(
+                "text-generation",
+                model=model_str,
+                do_sample=False,
+                num_beams=num_beams,
+                device_map='auto',
+                temperature=temps,
+                
+            )
 
         cache["model_str"] = model_str
         cache["generator"] = generator
@@ -80,7 +95,7 @@ def set_seed(seed: int):
 
 
 class xiaoniu23_detector():
-    def __init__(self, model_name, n, alpha, private_key, watermark_type, num_beams, tokenizer, temperature, top_p,model):
+    def __init__(self, model_name, n, alpha, private_key, watermark_type, num_beams, tokenizer, temperature, top_p):
         self.model_name = model_name
         self.n = n
         self.alpha = alpha
@@ -91,8 +106,6 @@ class xiaoniu23_detector():
         self.num_beams = num_beams
         self.temperature = temperature
         self.top_p = top_p
-        self.model = model
-        # self.model = self.model.to(dtype=torch.float32)
     
 
 
@@ -100,24 +113,15 @@ class xiaoniu23_detector():
         score = RobustLLR_Score_Batch_v2.from_grid([0.0], dist_qs)
         wp = get_wp(watermark_type, key)
         wp.ignore_history = True
-        # cache = load_model(model_str, num_beams=self.num_beams, temps=self.temperature, top_p=self.top_p)
-        inputs = self.tokenizer(texts, return_tensors="pt", padding=True)
+        cache = load_model(model_str, num_beams=self.num_beams, temps=self.temperature)
+        inputs = cache["tokenizer"](texts, return_tensors="pt", padding=True)
 
 
-        model = self.model
-        # input_ids = inputs["input_ids"][..., :-1].to(model.device)
-        # attention_mask = inputs["attention_mask"][..., :-1].to(model.device)
-        # labels = inputs["input_ids"][..., 1:].to(model.device)
-        # labels_mask = inputs["attention_mask"][..., 1:].to(model.device)
-        # generation_config = GenerationConfig.from_model_config(model.config)
-        if inputs["input_ids"].size(-1) > 1 and inputs["attention_mask"].size(-1) > 1:
-            input_ids = inputs["input_ids"].clone().detach()[..., :-1].to(model.device)
-            attention_mask = inputs["attention_mask"].clone().detach()[..., :-1].to(model.device)
-            labels = inputs["input_ids"].clone().detach()[..., 1:].to(model.device)
-            labels_mask = inputs["attention_mask"].clone().detach()[..., 1:].to(model.device)
-        else:
-            raise ValueError("Input tensors must have more than one element in the last dimension.")
-
+        model = cache["generator"].model
+        input_ids = inputs["input_ids"][..., :-1].to(model.device)
+        attention_mask = inputs["attention_mask"][..., :-1].to(model.device)
+        labels = inputs["input_ids"][..., 1:].to(model.device)
+        labels_mask = inputs["attention_mask"][..., 1:].to(model.device)
         generation_config = GenerationConfig.from_model_config(model.config)
         logits_processor = model._get_logits_processor(
             generation_config,
@@ -189,7 +193,7 @@ def generate_with_watermark(model_str, input_ids, wp, **kwargs):
         kwargs["num_beams"] = 1
     if "temperature" not in kwargs:
         kwargs["temperature"] = None
-    cache = load_model(model_str, **kwargs)
+    cache = load_model(model_str, kwargs["num_beams"], kwargs["temperature"])
     generator = cache["generator"]
     prompt = [cache["tokenizer"].decode(i) for i in input_ids]
     kwargs = {"max_new_tokens": kwargs["max_new_tokens"]}
@@ -237,10 +241,3 @@ if __name__ == "__main__":
     
     
     print()
-
-
-
-
-
-
-

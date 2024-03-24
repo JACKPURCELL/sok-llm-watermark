@@ -12,7 +12,6 @@ from textattack.transformations import WordInsertionMaskedLM, WordSwapMaskedLM, 
 from textattack.transformations.word_swaps.word_swap_neighboring_character_swap import WordSwapNeighboringCharacterSwap
 # from textattack.constraints.semantics.sentence_encoders.sentence_encoder import SentenceEncoder
 
-import tensorflow as tf
 import transformers
 from tqdm.auto import tqdm
 

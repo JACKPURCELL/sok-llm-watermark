@@ -192,7 +192,7 @@ def main(args):
                                                                         top_k=args.lean23_top_k,
                                                                         repeat_penalty=args.repeat_penalty
                                                                         )
-            dill.dump(watermark_processor.watermark_processor, open("/home/ljc/sok-llm-watermark/watermark_reliability_release/watermarks/lean23/processor/lean23_"+str(args.model_name_or_path).replace("/","")+".pkl", "wb"))
+            # dill.dump(watermark_processor.watermark_processor, open("/home/ljc/sok-llm-watermark/watermark_reliability_release/watermarks/lean23/processor/lean23_"+str(args.model_name_or_path).replace("/","")+".pkl", "wb"))
             '''filename = "~/codable-watermarking-for-llm/gen_table.jsonl"
             with open(filename, "r", encoding="utf-8") as f:
                 c4_sliced_and_filted = [json.loads(line) for line in f.read().strip().split("\n")]
@@ -376,7 +376,7 @@ def main(args):
         generate_with_watermark = partial(
             watermarks.generate_with_watermark_xiaoniu23, model_str=args.model_name_or_path,
             wp=[watermark_processor], 
-            **gen_kwargs,
+            **gen_kwargs
         )
         generate_without_watermark = partial(model.generate, **gen_kwargs)
     else:
@@ -829,7 +829,7 @@ if __name__ == "__main__":
             parser.add_argument("--train_dataset_name", type=str, default="c4", help="The dataset used for training detector.")
             # parser.add_argument("--sampling_temp", type=float, default=0.7)
             # parser.add_argument("--max_new_token", type=int, default=100)
-            parser.add_argument("--aiwei_trained", type=str2bool, default="True")
+            parser.add_argument("--aiwei_trained", type=str2bool, default="False")
         case 'kiyoon23':
             parser.add_argument("--exp_name_generic", type=str, default="tmp")
             parser.add_argument("--embed", type=str2bool, default=False)
@@ -859,7 +859,7 @@ if __name__ == "__main__":
             parser.add_argument("--aiwei23b_model_path", type=str, default="/home/ljc/sok-llm-watermark/watermark_reliability_release/watermarks/aiwei23b/model/compositional-bert-large-uncased")
             parser.add_argument("--aiwei23b_size", type=int, default=2000)
             parser.add_argument("--aiwei23b_output_model", type=str, default="/home/ljc/sok-llm-watermark/watermark_reliability_release/watermarks/aiwei23b/model/transform_model_cbert.pth")
-            parser.add_argument("--watermark_model_epochs", type=int, default=2000)
+            parser.add_argument("--watermark_model_epochs", type=int, default=100)
             parser.add_argument("--watermark_model_lr", type=float, default=0.006)
             parser.add_argument("--aiwei23b_input_dim", type=int, default=1024)
             parser.add_argument("--mapping_length", type=int, default=50257)
@@ -870,7 +870,7 @@ if __name__ == "__main__":
             parser.add_argument("--aiwei23b_delta", type=int, default=1)
             parser.add_argument("--transform_model", type=str, default="/home/ljc/sok-llm-watermark/watermark_reliability_release/watermarks/aiwei23b/model/transform_model_cbert.pth")
             parser.add_argument("--embedding_model", type=str, default="/home/ljc/sok-llm-watermark/watermark_reliability_release/watermarks/aiwei23b/model/compositional-bert-large-uncased")
-            parser.add_argument("--aiwei23b_trained", type=str2bool, default=True)
+            parser.add_argument("--aiwei23b_trained", type=str2bool, default=False)
             
             
 
