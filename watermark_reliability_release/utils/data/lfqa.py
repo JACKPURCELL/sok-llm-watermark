@@ -8,7 +8,7 @@ prompts = {
 }
 
 
-def load_lfqa(args=None, path="/home/jkl6486/sok-llm-watermark/watermark_reliability_release/utils/data/lfqa.jsonl"):
+def load_lfqa(args=None, path="/home/ljc/sok-llm-watermark/watermark_reliability_release/utils/data/lfqa.jsonl"):
     cols_to_load = ["prefix", "gold_completion", "title", "selftext", "q_id"]
 
     args.dataset_config_name = None

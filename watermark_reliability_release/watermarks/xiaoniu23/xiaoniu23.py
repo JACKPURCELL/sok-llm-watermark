@@ -32,7 +32,7 @@ def get_prompt_length(tokenizer, prompt):
 def get_threshold(n, alpha):
     return -1*log(alpha)+log(n)
 
-def load_model(model_str, num_beams, temps):
+def load_model(model_str, num_beams, temps=0.7):
     if model_str == cache["model_str"]:
         return cache
     else:
@@ -52,7 +52,7 @@ def load_model(model_str, num_beams, temps):
             generator = pipeline(
                 "text-generation",
                 model=model_str,
-                do_sample=False,
+                do_sample=True,
                 num_beams=num_beams,
                 device_map='auto',
                 temperature=temps,
@@ -113,7 +113,7 @@ class xiaoniu23_detector():
         score = RobustLLR_Score_Batch_v2.from_grid([0.0], dist_qs)
         wp = get_wp(watermark_type, key)
         wp.ignore_history = True
-        cache = load_model(model_str, num_beams=self.num_beams, temps=self.temperature)
+        cache = load_model(model_str, num_beams=self.num_beams)
         inputs = cache["tokenizer"](texts, return_tensors="pt", padding=True)
 
 
@@ -152,6 +152,18 @@ class xiaoniu23_detector():
 
 
     def detect(self, text, prompt, **kwargs):
+        
+         # 将text转换为tokens
+        tokens = self.tokenizer(text, return_tensors="pt", add_special_tokens=False)["input_ids"][0]
+
+
+        # 保留前200个tokens
+        tokens = tokens[:200]
+
+        # 将tokens转换回text
+        text = self.tokenizer.decode(tokens)
+
+
         model_str = self.model_name
         prompt_len = get_prompt_length(self.tokenizer, prompt)
         compute_range = (prompt_len, None)
@@ -193,7 +205,7 @@ def generate_with_watermark(model_str, input_ids, wp, **kwargs):
         kwargs["num_beams"] = 1
     if "temperature" not in kwargs:
         kwargs["temperature"] = None
-    cache = load_model(model_str, kwargs["num_beams"], kwargs["temperature"])
+    cache = load_model(model_str, kwargs["num_beams"])
     generator = cache["generator"]
     prompt = [cache["tokenizer"].decode(i) for i in input_ids]
     kwargs = {"max_new_tokens": kwargs["max_new_tokens"]}

@@ -7,8 +7,8 @@ from sklearn.metrics import roc_curve, auc
 from transformers import AutoTokenizer
 import matplotlib.cm as cm
 plt.rcParams['font.size'] = 14  # 设置全局字体大小为14
-# watermark_types = ["john23","xuandong23b","aiwei23","lean23","rohith23","aiwei23b"]
 watermark_types = ["john23","xuandong23b","aiwei23","rohith23","aiwei23b","xiaoniu23"]
+# watermark_types = ["john23","aiwei23","rohith23","aiwei23b"]
 
 
 tokenizer = AutoTokenizer.from_pretrained("facebook/opt-1.3b")

@@ -148,6 +148,7 @@ class rohith23_WatermarkDetector:
                 generator.manual_seed(int(seed))'''
                 xi = np.random.rand(self.n, self.vocab_size).astype(np.float32)
                 null_result = self._detect(tokenized_text, k, xi)
+                null_result = null_result/k
                 null_results.append(null_result)
                 run += 1
                 pbar.update(1)
@@ -207,7 +208,7 @@ class rohith23_WatermarkDetector:
         output_dict["num_tokens_scored"] = k
         
         test_result = self._detect(tokenized_text,  k, self.xi)
-
+        test_result = test_result/k
         p_val = torch.searchsorted(self.null_results, test_result, right=True) 
         '''p_val = 0
         for i in range(n_runs):

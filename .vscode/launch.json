@@ -209,7 +209,7 @@
             "console": "integratedTerminal",
             "justMyCode": true,
             "env": {
-                "CUDA_VISIBLE_DEVICES": "0,1,2,3"
+                "CUDA_VISIBLE_DEVICES": "3"
             },
             "args": [
                 "--watermark",
@@ -224,8 +224,7 @@
                 "c4",
                 "--max_new_tokens",
                 "200",
-                "--output_dir",
-                "/home/jkl6486/sok-llm-watermark/runs/runs_test/lean23_30",
+               
                 "--sampling_temp",
                 "1.0",
             ]
@@ -322,7 +321,7 @@
             "console": "integratedTerminal",
             "justMyCode": true,
             "env": {
-                "CUDA_VISIBLE_DEVICES": "0,1,2",
+                "CUDA_VISIBLE_DEVICES": "3",
                 "PYTHONPATH": "${workspaceRoot}"
             },
             "envFile": "${workspaceFolder}/.env",
@@ -330,13 +329,17 @@
                 "--watermark",
                 "lean23",
                 "--run_name",
-                "lean_llama",
+                "opt",
                 "--input_dir",
-                "/home/jkl6486/sok-llm-watermark/runs/token_200/lean23/c4/llama",
+                "/home/ljc/sok-llm-watermark/runs/token_200/lean23/c4/opt",
                 "--wandb_project",
                 "gen-c4-v2.0-500-llama",
                 "--limit_rows",
                 "50",
+                "--overwrite_args",
+                "True",
+                "--overwrite_output_file",
+                "True",
             ]
         },
         {
@@ -378,9 +381,13 @@
                 "--run_name",
                 "eva-rohith23-fast-c4",
                 "--input_dir",
-                "/home/jkl6486/sok-llm-watermark/runs/rohith23/c4/opt",
+                "/home/ljc/sok-llm-watermark/runs/token_200/rohith23/hc3/opt",
                 "--evaluation_metrics",
-                "z-score",                 
+                "z-score",     
+                "--overwrite_output_file",
+                "True",
+                "--overwrite_args",
+                "True"
 
             ]
         },
@@ -448,7 +455,7 @@
                 "--watermark",
                 "lean23",
                 "--dataset_name",
-                "c4",
+                "hc3",
                 "--run_name",
                 "test-gen-lean23",
                 "--model_name_or_path",

@@ -288,6 +288,7 @@ def tokenize_and_truncate(
     tokenizer=None,
     truncate_left=False,
     model_max_length=None,
+    watermark=None,
 ):
     """take hf dataset entry and preprocess it for completion by a model"""
     assert hf_model_name is not None, "need model name to know whether to adjust wrt special tokens"
@@ -323,10 +324,16 @@ def tokenize_and_truncate(
 
     # truncate
     # NEED TO RECOVER
-    # try:
-    #     inputs_ids = inputs_ids[:, : 30]
-    # except:
-    #     inputs_ids = inputs_ids[:, : ]
+    # print("hfuasehfidsahfioshoifdjsoifjndsoi=====")
+    
+    # print("watermark",watermark)
+    # if watermark == 'lean23':
+    #     print("===========lean23 1========")
+    #     try:
+    #         inputs_ids = inputs_ids[:, : 30]
+    #     except:
+    #         inputs_ids = inputs_ids[:, : ]
+    # else:
     inputs_ids = inputs_ids[:, : inputs_ids.shape[1] - slice_length]
         
     # logic depending on special tokens for the model
@@ -345,6 +352,7 @@ def tokenize_only(
     hf_model_name: str = None,
     tokenizer=None,
     model_max_length=None,
+    watermark=None,
 ):
     """take hf dataset entry and preprocess it for completion by a model
     (but don't truncate) where the dataset optionally has a secondary column
@@ -360,6 +368,12 @@ def tokenize_only(
     input_ids = tokenizer(
         example[input_col_name], return_tensors="pt", truncation=True, max_length=model_max_length
     )["input_ids"]
+    if watermark == 'lean23':
+        print("===========lean23========")
+
+        input_ids = input_ids[:, -400: ]
+        example[input_col_name] = tokenizer.batch_decode(input_ids, skip_special_tokens=True)[0]
+      
 
     example.update({"input_ids": input_ids})
 
@@ -417,6 +431,7 @@ def tokenize_for_generation(
             tokenizer=tokenizer,
             model_max_length=args.model_max_length,
             tokenize_ref_output=tokenize_ref_output,
+            watermark=args.watermark
         )
         # Parse the results of tokenization. Simple, since
         # the prompt and baseline completion are from the raw text
@@ -435,6 +450,7 @@ def tokenize_for_generation(
             prompt_length=min_prompt_tokens,
             hf_model_name=hf_model_name,
             tokenizer=tokenizer,
+            watermark=args.watermark
         )
         # Logic to parse the results of tokenzation and splitting to
         # construct string versions of the prompt and baseline completion
@@ -494,7 +510,7 @@ def generate(
         output_without_watermark = generate_without_watermark(input_ids=input_ids)
         end_time = time.time()
         execution_time = end_time - start_time
-        print(f"Execution time generate_without_watermark: {execution_time} seconds")
+        # print(f"Execution time generate_without_watermark: {execution_time} seconds")
         
         if args.watermark == 'lean23':
             if args.generation_seed is not None:
@@ -509,7 +525,7 @@ def generate(
             end_time = time.time()
             execution_time = end_time - start_time
 
-            print(f"Execution time generate_with_watermark: {execution_time} seconds")
+            # print(f"Execution time generate_with_watermark: {execution_time} seconds")
 
             print()
 
