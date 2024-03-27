@@ -1368,6 +1368,11 @@ if __name__ == "__main__":
             parser.add_argument("--transform_model", type=str, default="/home/ljc/sok-llm-watermark/watermark_reliability_release/watermarks/aiwei23b/model/transform_model_cbert.pth")
 
             parser.add_argument("--embedding_model", type=str, default="/home/ljc/sok-llm-watermark/watermark_reliability_release/watermarks/aiwei23b/model/compositional-bert-large-uncased")
+            
+        case 'scott22':
+            parser.add_argument("--scott22_key", type=int, default=123)
+            parser.add_argument("--scott22_window_size", type=int, default=3)
+            parser.add_argument("--scott22_threshold", type=float, default=0.3)
             ######################################################################
             # Add your code here
             ######################################################################

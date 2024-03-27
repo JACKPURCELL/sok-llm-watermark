@@ -369,9 +369,9 @@ def tokenize_only(
         example[input_col_name], return_tensors="pt", truncation=True, max_length=model_max_length
     )["input_ids"]
     if watermark == 'lean23':
-        print("===========lean23========")
+        # print("===========lean23========")
 
-        input_ids = input_ids[:, -400: ]
+        input_ids = input_ids[:, -300: ]
         example[input_col_name] = tokenizer.batch_decode(input_ids, skip_special_tokens=True)[0]
       
 

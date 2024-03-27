@@ -335,7 +335,8 @@ def main(args):
             elif args.aiwei23b_watermark_type == "context":
                 watermark_model = watermarks.aiwei23b_watermark.WatermarkContext(device, args.aiwei23b_chunk_size, tokenizer, delta = args.aiwei23b_delta,transform_model_path=args.transform_model, embedding_model=args.embedding_model)
                 watermark_processor = watermarks.aiwei23b_WatermarkLogitsProcessor(watermark_model)
-
+        case 'scott22':
+            watermark_processor = watermarks.scott22_WatermarkLogitsProcessor(key = args.scott22_key, window_size = args.scott22_window_size)
         # case "christ23":
                                                     
         #     watermark_processor = watermarks.christ23_WatermarkLogitsProcessor(tokenizer=tokenizer,vocab_size=model.config.vocab_size, temp=args.sampling_temp,  device=device)
@@ -872,7 +873,9 @@ if __name__ == "__main__":
             parser.add_argument("--embedding_model", type=str, default="/home/ljc/sok-llm-watermark/watermark_reliability_release/watermarks/aiwei23b/model/compositional-bert-large-uncased")
             parser.add_argument("--aiwei23b_trained", type=str2bool, default=False)
             
-            
+        case "scott22":
+            parser.add_argument("--scott22_key", type=int, default=123)
+            parser.add_argument("--scott22_window_size", type=int, default=3)
 
             ######################################################################
             # Add your code here

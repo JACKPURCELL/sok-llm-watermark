@@ -228,12 +228,12 @@ class WatermarkLogitsProcessor(LogitsProcessor):
     def __call__(self, input_ids: torch.LongTensor, scores: torch.FloatTensor) -> torch.FloatTensor:
         if len(input_ids.shape) == 1:
             if self.watermark_base.target_tokenizer.decode(input_ids.tolist(), skip_special_tokens=True) == "":
-                input_ids = torch.tensor([2, 31414, 6, 32, 47, 15983, 116])
+                input_ids = torch.tensor([322]*input_ids[idx].shape[0])
                 print("!!!!!!!!!!!!!!!!!!!! Prompt is empty, using default prompt !!!!!!!!!!!!!!!!!!!!")
         elif len(input_ids.shape) == 2:
             for idx in range(input_ids.shape[0]):
                 if self.watermark_base.target_tokenizer.decode(input_ids[idx].tolist(), skip_special_tokens=True) == "":
-                    input_ids[idx] = torch.tensor([32]*input_ids[idx].shape[0])
+                    input_ids[idx] = torch.tensor([322]*input_ids[idx].shape[0])
                     print("!!!!!!!!!!!!!!!!!!!! Prompt is empty, using default prompt !!!!!!!!!!!!!!!!!!!!")
         batched_bias = [None for _ in range(input_ids.shape[0])]
 

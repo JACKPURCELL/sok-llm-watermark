@@ -20,7 +20,7 @@ import numpy as np
 from tqdm import tqdm
 from .generation import load_model
 
-from transformers import AutoTokenizer, AutoModelForCausalLM, LlamaTokenizer
+from transformers import AutoTokenizer, AutoModelForCausalLM, LlamaTokenizer, AutoConfig
 from utils.generation import tokenize_and_truncate, collate_batch
 from metrics.repetition_diversity import (
     measure_repetition_and_diversity,
@@ -274,9 +274,13 @@ def load_detector(args):
         case 'aiwei23b':
             model, tokenizer, device = load_model(args)
             watermark_detector = watermarks.aiwei23b_WatermarkDetector(watermark_type=args.aiwei23b_watermark_type, window_size=args.aiwei23b_window_size, tokenizer=tokenizer, chunk_size=args.aiwei23b_chunk_size, delta=args.aiwei23b_delta, transform_model=args.transform_model, embedding_model=args.embedding_model)
-
-        case 'christ23':
-            watermark_detector = watermarks.christ23_WatermarkDetector()
+        case 'scott22':
+            # model, tokenizer, device = load_model(args)
+            config = AutoConfig.from_pretrained(args.model_name_or_path)
+            watermark_detector = watermarks.scott22_WatermarkDetector(key=args.scott22_key, window_size=args.scott22_window_size, tokenizer=tokenizer, vocab_size=config.vocab_size, device = "cuda", threshold=args.scott22_threshold)
+            
+        # case 'christ23':
+        #     watermark_detector = watermarks.christ23_WatermarkDetector()
         case _:
             raise ValueError(f"Unknown watermark type: {args.watermark}")
             

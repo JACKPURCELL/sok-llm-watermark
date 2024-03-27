@@ -32,7 +32,8 @@ def get_prompt_length(tokenizer, prompt):
 def get_threshold(n, alpha):
     return -1*log(alpha)+log(n)
 
-def load_model(model_str, num_beams, temps=0.7):
+# def load_model(model_str, num_beams, temps=0.7): 03262114
+def load_model(model_str, num_beams, temps=1.0):
     if model_str == cache["model_str"]:
         return cache
     else:
