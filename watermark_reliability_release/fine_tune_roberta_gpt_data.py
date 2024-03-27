@@ -23,8 +23,8 @@ from openai import OpenAI
 
 # load arguments
 parser = argparse.ArgumentParser()
-parser.add_argument('--train_path', type=str, default="/home/jkl6486/sok-llm-watermark/runs/token_200/john23/c4/llama/dipper_l40_o0/gen_table_w_metrics.jsonl")
-parser.add_argument('--output_path', type=str, default="/home/jkl6486/sok-llm-watermark/runs/token_200/john23/c4/llama/dipper_l40_o0/roberta_finetuned2")
+parser.add_argument('--train_path', type=str, default="/home/jkl6486/sok-llm-watermark/runs/token_200/john23/c4/opt/back/dipper_l40_o0/gen_table_w_metrics.jsonl")
+parser.add_argument('--output_path', type=str, default="/home/jkl6486/sok-llm-watermark/runs/token_200/john23/c4/opt/back/dipper_l40_o0/roberta_finetuned2")
 parser.add_argument('--num_epochs', type=int, default=25)
 parser.add_argument('--lr', type=float, default=1e-5)
 parser.add_argument('--batch_size', type=int, default=32)
@@ -62,37 +62,37 @@ with open(args.train_path, "r") as f:
 	for line in f:
 		data = json.loads(line)
 		#generations.append(data["truncated_input"]+data["baseline_completion"])
-		prompt = data["truncated_input"]
-		completion = client.chat.completions.create(model=args.model_name,
-                                                    messages=[{"role": "system", "content": "You are a helpful assistant."},
-                                                              {"role": "user", "content": prompt}],
-                                                    max_tokens=args.max_tokens)
-		# set message
-		if completion.choices[0].finish_reason != "stop":
-			msg = "UNABLE TO COMPLETE REQUEST BECAUSE: %s" % completion.choices[0].finish_reason
-		else:
-			msg = completion.choices[0].message.content
-		generations.append(data["truncated_input"]+" "+msg)
-		labels.append(0)
-		generations.append(data["truncated_input"]+data["w_wm_output"])
-		labels.append(1)
+		# prompt = data["truncated_input"]
+		# completion = client.chat.completions.create(model=args.model_name,
+        #                                             messages=[{"role": "system", "content": "You are a helpful assistant."},
+        #                                                       {"role": "user", "content": prompt}],
+        #                                             max_tokens=args.max_tokens)
+		# # set message
+		# if completion.choices[0].finish_reason != "stop":
+		# 	msg = "UNABLE TO COMPLETE REQUEST BECAUSE: %s" % completion.choices[0].finish_reason
+		# else:
+		# 	msg = completion.choices[0].message.content
+		# generations.append(data["truncated_input"]+" "+msg)
+		# labels.append(0)
+		# generations.append(data["truncated_input"]+data["w_wm_output"])
+		# labels.append(1)
+
 		### Other variables 
 		original_detector_predictions.append(1 if data["w_wm_output_attacked_prediction"] else 0)
 		no_wm_outputs.append(data["truncated_input"]+data["no_wm_output"])
 		w_wm_output_atatcked.append(data["w_wm_output_attacked"])
-		print(i)
 		i += 1
 
-with open('/home/jkl6486/sok-llm-watermark/runs/token_200/john23/c4/llama/dipper_l40_o0/roberta_finetuned2/gpt_saved.jsonl', 'w') as file:
-	for idx in range(len(generations)):
-		item = {"output": generations[idx], "label": labels[idx]}
-		file.write(json.dumps(item) + '\n')
+# with open('/home/jkl6486/sok-llm-watermark/runs/token_200/john23/c4/opt/back/dipper_l40_o0/roberta_finetuned2/gpt_saved.jsonl', 'w') as file:
+# 	for idx in range(len(generations)):
+# 		item = {"output": generations[idx], "label": labels[idx]}
+# 		file.write(json.dumps(item) + '\n')
 
-# with open('/home/jkl6486/sok-llm-watermark/runs/token_200/john23/c4/llama/dipper_l40_o0/roberta_finetuned2/gpt_saved.jsonl', 'r') as file:
-# 	for line in file:
-# 		data = json.loads(line)
-# 		generations.append(data["output"])
-# 		labels.append(data["label"])
+with open('/home/jkl6486/sok-llm-watermark/runs/token_200/john23/c4/opt/back/dipper_l40_o0/roberta_finetuned2/gpt_saved.jsonl', 'r') as file:
+	for line in file:
+		data = json.loads(line)
+		generations.append(data["output"])
+		labels.append(data["label"])
 
 
 
@@ -147,9 +147,12 @@ train_args = TrainingArguments(output_dir=args.output_path,
 								logging_steps=1,
 								evaluation_strategy="no")
 
+train_dataset=dataset(train_generations, train_labels)
+eval_dataset=dataset(test_generations, test_labels)
+
 trainer = Trainer(model=clf, args=train_args,
-				  train_dataset=dataset(train_generations, train_labels),
-				  eval_dataset=dataset(test_generations, test_labels),
+				  train_dataset=train_dataset,
+				  eval_dataset=eval_dataset,
 				  tokenizer=tokenizer,
 				  compute_metrics=compute_metrics)
 
@@ -167,7 +170,25 @@ if args.eva_attack:
 	acc = sum(res_labels == 1)/len(res_labels)
 	print("Accuracy on attacked watermarked samples:")
 	print(acc)
-	print("Number of 0 presictions:")
+	g_0_s_0 = 0
+	g_1_s_0 = 0
+	g_0_s_1 = 0
+	g_1_s_1 = 0
+	for t in range(len(res_labels)):
+		if (res_labels[t] == 1) and (original_detector_predictions[t] == 1):
+			g_1_s_1 += 1
+		elif(res_labels[t] == 0) and (original_detector_predictions[t] == 1):
+			g_0_s_1 += 1
+		elif(res_labels[t] == 1) and (original_detector_predictions[t] == 0):
+			g_1_s_0 += 1
+		else:
+			g_0_s_0 += 1
+	print("g_0_s_0: ", g_0_s_0)
+	print("g_1_s_0: ", g_1_s_0)
+	print("g_0_s_1: ", g_0_s_1)
+	print("g_1_s_1: ", g_1_s_1)
+
+	print("Number of 0 predictions:")
 	print(sum(res_labels == 0))
 	print("Number of 1 predictions:")
 	print(sum(res_labels == 1))
