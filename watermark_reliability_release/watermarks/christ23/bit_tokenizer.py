@@ -10,7 +10,7 @@ from transformers import AutoTokenizer
 from tqdm import tqdm
 
 class Binarization:
-    def __init__(self, tokenizer, devices="cpu", use_huffman_coding=False, huffman_coding_path='/home/ljc/sok-llm-watermark/watermark_reliability_release/watermarks/christ23/static_data/encoding.tsv', corpus=None, save_path="/home/ljc/sok-llm-watermark/watermark_reliability_release/watermarks/christ23/static_data/huffman_coding.tsv"):
+    def __init__(self, tokenizer, devices="cpu", use_huffman_coding=False, huffman_coding_path='/home/jkl6486/sok-llm-watermark/watermark_reliability_release/watermarks/christ23/static_data/encoding.tsv', corpus=None, save_path="/home/jkl6486/sok-llm-watermark/watermark_reliability_release/watermarks/christ23/static_data/huffman_coding.tsv"):
 
         # Check consistency of arguments
         if use_huffman_coding and (huffman_coding_path is None and corpus is None):

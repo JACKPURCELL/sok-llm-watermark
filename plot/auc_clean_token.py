@@ -16,9 +16,9 @@ tokens = ['token_200','token_100', 'token_50']
 linestyles = ['-', '--', '-.']
 for i, watermark_type in enumerate(watermark_types):
     file_paths = [
-        f'/home/ljc/sok-llm-watermark/runs/token_200/{watermark_type}/c4/opt/gen_table_w_metrics.jsonl',
-        f'/home/ljc/sok-llm-watermark/runs/token_100/{watermark_type}/c4/opt/gen_table_w_metrics.jsonl',
-        f'/home/ljc/sok-llm-watermark/runs/token_50/{watermark_type}/c4/opt/gen_table_w_metrics.jsonl'
+        f'/home/jkl6486/sok-llm-watermark/runs/token_200/{watermark_type}/c4/opt/gen_table_w_metrics.jsonl',
+        f'/home/jkl6486/sok-llm-watermark/runs/token_100/{watermark_type}/c4/opt/gen_table_w_metrics.jsonl',
+        f'/home/jkl6486/sok-llm-watermark/runs/token_50/{watermark_type}/c4/opt/gen_table_w_metrics.jsonl'
     ]
 
     for k,file_path in enumerate(file_paths):

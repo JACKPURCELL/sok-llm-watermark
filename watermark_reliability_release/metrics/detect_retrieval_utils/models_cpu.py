@@ -12,7 +12,7 @@ from torch.nn.utils.rnn import pack_padded_sequence as pack
 from metrics.detect_retrieval_utils.evaluate_sts import evaluate_sts
 from torch import optim
 
-def load_model(path, gpu=1, sp_model="/home/ljc/sok-llm-watermark/watermark_reliability_release/metrics/detect_retrieval_utils/paranmt.model"):
+def load_model(path, gpu=1, sp_model="/home/jkl6486/sok-llm-watermark/watermark_reliability_release/metrics/detect_retrieval_utils/paranmt.model"):
     if not gpu:
         model = torch.load(path, map_location=torch.device('cpu'))
     else:

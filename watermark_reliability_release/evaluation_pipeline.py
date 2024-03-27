@@ -1344,9 +1344,9 @@ if __name__ == "__main__":
             #parser.add_argument("--llm_name", type=str, default="llama-7b")
             parser.add_argument("--gamma", type=float, default=0.5)
             parser.add_argument("--delta", type=float, default= 2.0)
-            parser.add_argument("--model_dir", type=str, default="/home/ljc/sok-llm-watermark/watermark_reliability_release/watermarks/aiwei23/model/")
+            parser.add_argument("--model_dir", type=str, default="/home/jkl6486/sok-llm-watermark/watermark_reliability_release/watermarks/aiwei23/model/")
             parser.add_argument("--beam_size", type=int, default=0)
-            parser.add_argument("--data_dir", type=str, default="/home/ljc/sok-llm-watermark/watermark_reliability_release/watermarks/aiwei23/data/")
+            parser.add_argument("--data_dir", type=str, default="/home/jkl6486/sok-llm-watermark/watermark_reliability_release/watermarks/aiwei23/data/")
             parser.add_argument("--z_value", type=int, default=1)
             parser.add_argument("--sample_number", type=int, default=2000, help="Number of samples for training generator.")
             parser.add_argument("--num_samples", type=int, default=10000, help="Number of samples for training detector.")
@@ -1365,9 +1365,9 @@ if __name__ == "__main__":
             parser.add_argument("--aiwei23b_window_size", type=int, default=0)
             parser.add_argument("--aiwei23b_chunk_size", type=int, default=10)
             parser.add_argument("--aiwei23b_delta", type=int, default=1)
-            parser.add_argument("--transform_model", type=str, default="/home/ljc/sok-llm-watermark/watermark_reliability_release/watermarks/aiwei23b/model/transform_model_cbert.pth")
+            parser.add_argument("--transform_model", type=str, default="/home/jkl6486/sok-llm-watermark/watermark_reliability_release/watermarks/aiwei23b/model/transform_model_cbert.pth")
 
-            parser.add_argument("--embedding_model", type=str, default="/home/ljc/sok-llm-watermark/watermark_reliability_release/watermarks/aiwei23b/model/compositional-bert-large-uncased")
+            parser.add_argument("--embedding_model", type=str, default="/home/jkl6486/sok-llm-watermark/watermark_reliability_release/watermarks/aiwei23b/model/compositional-bert-large-uncased")
             
         case 'scott22':
             parser.add_argument("--scott22_key", type=int, default=123)

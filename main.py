@@ -183,7 +183,7 @@ def parse_args():
     parser.add_argument(
         "--prompt_file",
         type=str,
-        default='/home/ljc/sok-llm-watermark/dataset/sample.jsonl'
+        default='/home/jkl6486/sok-llm-watermark/dataset/sample.jsonl'
     )
     parser.add_argument(
         "--skip_inject",

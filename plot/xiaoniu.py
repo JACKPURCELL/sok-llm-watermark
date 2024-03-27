@@ -20,7 +20,7 @@ plt.figure()
 
 for watermark_type in watermark_types:
     print(f"Processing {watermark_type}...")
-    file = f'/home/ljc/sok-llm-watermark/runs/{watermark_type}/c4/opt/gen_table_w_metrics.jsonl'
+    file = f'/home/jkl6486/sok-llm-watermark/runs/{watermark_type}/c4/opt/gen_table_w_metrics.jsonl'
     data_list = []
     with open(file, 'r') as f:
         for line in f:
@@ -73,7 +73,7 @@ for watermark_type in watermark_types:
 
 # for watermark_type in watermark_types:
 #     print(f"Processing {watermark_type}...")
-#     file = f'/home/ljc/sok-llm-watermark/runs/{watermark_type}/c4/opt/gen_table_w_metrics.jsonl'
+#     file = f'/home/jkl6486/sok-llm-watermark/runs/{watermark_type}/c4/opt/gen_table_w_metrics.jsonl'
 #     data_list = []
 #     with open(file, 'r') as f:
 #         for line in f:

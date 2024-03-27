@@ -48,7 +48,7 @@ for i, watermark_type in enumerate(watermark_types):
     tpr_scores = []
     fpr_scores = []  # 新增 FPR 列表
     
-    clean_data_list = read_file(f'/home/ljc/sok-llm-watermark/runs/token_200/{watermark_type}/c4/opt/gen_table_w_metrics.jsonl')
+    clean_data_list = read_file(f'/home/jkl6486/sok-llm-watermark/runs/token_200/{watermark_type}/c4/opt/gen_table_w_metrics.jsonl')
     if "baseline_completion_z_score" in clean_data_list[0]:
         clean_baseline_completion_z_score = [data["baseline_completion_z_score"] for data in clean_data_list]
         clean_baseline_completion_z_score = [score if not math.isinf(score) and not math.isnan(score) else 0 for score in clean_baseline_completion_z_score]
@@ -92,7 +92,7 @@ for i, watermark_type in enumerate(watermark_types):
     for j, attack in enumerate(attacks):
         # print(f"Processing {watermark_type} with {attack}...")
         try:
-            data_list = read_file(f'/home/ljc/sok-llm-watermark/runs/token_200/{watermark_type}/c4/opt/{attack}/gen_table_w_metrics.jsonl')
+            data_list = read_file(f'/home/jkl6486/sok-llm-watermark/runs/token_200/{watermark_type}/c4/opt/{attack}/gen_table_w_metrics.jsonl')
         except:
             print(f"Missing {watermark_type} with {attack}...")
             continue

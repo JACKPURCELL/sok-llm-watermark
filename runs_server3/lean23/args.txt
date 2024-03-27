@@ -20,7 +20,7 @@
   "skip_model_load": false,
   "seed_separately": true,
   "load_fp16": false,
-  "prompt_file": "/home/ljc/sok-llm-watermark/dataset/sample.jsonl",
+  "prompt_file": "/home/jkl6486/sok-llm-watermark/dataset/sample.jsonl",
   "skip_inject": false,
   "fraction": 0.5,
   "strength": 2.0,

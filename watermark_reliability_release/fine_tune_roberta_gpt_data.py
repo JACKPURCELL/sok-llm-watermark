@@ -23,8 +23,8 @@ from openai import OpenAI
 
 # load arguments
 parser = argparse.ArgumentParser()
-parser.add_argument('--train_path', type=str, default="/home/ljc/sok-llm-watermark/runs/token_200/john23/c4/llama/dipper_l40_o0/gen_table_w_metrics.jsonl")
-parser.add_argument('--output_path', type=str, default="/home/ljc/sok-llm-watermark/runs/token_200/john23/c4/llama/dipper_l40_o0/roberta_finetuned2")
+parser.add_argument('--train_path', type=str, default="/home/jkl6486/sok-llm-watermark/runs/token_200/john23/c4/llama/dipper_l40_o0/gen_table_w_metrics.jsonl")
+parser.add_argument('--output_path', type=str, default="/home/jkl6486/sok-llm-watermark/runs/token_200/john23/c4/llama/dipper_l40_o0/roberta_finetuned2")
 parser.add_argument('--num_epochs', type=int, default=25)
 parser.add_argument('--lr', type=float, default=1e-5)
 parser.add_argument('--batch_size', type=int, default=32)
@@ -83,12 +83,12 @@ with open(args.train_path, "r") as f:
 		print(i)
 		i += 1
 
-with open('/home/ljc/sok-llm-watermark/runs/token_200/john23/c4/llama/dipper_l40_o0/roberta_finetuned2/gpt_saved.jsonl', 'w') as file:
+with open('/home/jkl6486/sok-llm-watermark/runs/token_200/john23/c4/llama/dipper_l40_o0/roberta_finetuned2/gpt_saved.jsonl', 'w') as file:
 	for idx in range(len(generations)):
 		item = {"output": generations[idx], "label": labels[idx]}
 		file.write(json.dumps(item) + '\n')
 
-# with open('/home/ljc/sok-llm-watermark/runs/token_200/john23/c4/llama/dipper_l40_o0/roberta_finetuned2/gpt_saved.jsonl', 'r') as file:
+# with open('/home/jkl6486/sok-llm-watermark/runs/token_200/john23/c4/llama/dipper_l40_o0/roberta_finetuned2/gpt_saved.jsonl', 'r') as file:
 # 	for line in file:
 # 		data = json.loads(line)
 # 		generations.append(data["output"])

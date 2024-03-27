@@ -11,11 +11,11 @@ To enable the following instructions: AVX2 AVX512F AVX512_VNNI FMA, in other ope
 2024-03-08 14:23:50.641825: W tensorflow/compiler/tf2tensorrt/utils/py_utils.cc:38] TF-TRT Warning: Could not find TensorRT
 [nltk_data] Downloading package punkt to ~/nltk_data...
 [nltk_data]   Package punkt is already up-to-date!
-Output dir for this run: /home/ljc/sok-llm-watermark/runs/token_200/xuandong23b/c4/llama/copypaste-1-25
+Output dir for this run: /home/jkl6486/sok-llm-watermark/runs/token_200/xuandong23b/c4/llama/copypaste-1-25
 Output dir for this run already exists!
 Contents: ['gen_table_attacked.jsonl', 'gen_table_attacked_meta.json']
 Evaluation metrics to compute: ['z-score', 'windowed-z-score', 'run-len-chisqrd', 'diversity', 'repetition', 'sentiment', 'p-sp', 'coherence', 'mauve', 'detect-retrieval']
-Input dir for this run: /home/ljc/sok-llm-watermark/runs/token_200/xuandong23b/c4/llama/copypaste-1-25
+Input dir for this run: /home/jkl6486/sok-llm-watermark/runs/token_200/xuandong23b/c4/llama/copypaste-1-25
 Loading previously generated outputs for evaluation via oracle model and metrics...
 cmdline arg load_fp16 is None, leaving it as the value found in the input metadata: True
 cmdline arg verbose is None, leaving it as the value found in the input metadata: False
