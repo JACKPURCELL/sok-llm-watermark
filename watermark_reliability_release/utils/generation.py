@@ -236,6 +236,7 @@ def load_hf_dataset(args):
 
 def check_input_lengths(
     example,
+    watermark=None,
     min_sample_len=0,
     min_prompt_len=0,
     min_completion_len=0,
@@ -250,7 +251,8 @@ def check_input_lengths(
         assert (
             max_new_tokens is not None
         ), "need to specify max_new_tokens if max_input_length is specified"
-
+    if watermark == 'lean23': 
+        max_input_len = 400
     conds = all(
         [
             orig_sample_length >= min_sample_len,
@@ -368,11 +370,11 @@ def tokenize_only(
     input_ids = tokenizer(
         example[input_col_name], return_tensors="pt", truncation=True, max_length=model_max_length
     )["input_ids"]
-    if watermark == 'lean23':
-        # print("===========lean23========")
+    # if watermark == 'lean23':
+    #     # print("===========lean23========")
 
-        input_ids = input_ids[:, -300: ]
-        example[input_col_name] = tokenizer.batch_decode(input_ids, skip_special_tokens=True)[0]
+    #     input_ids = input_ids[:, -150: ]
+    #     example[input_col_name] = tokenizer.batch_decode(input_ids, skip_special_tokens=True)[0]
       
 
     example.update({"input_ids": input_ids})
@@ -511,12 +513,24 @@ def generate(
         end_time = time.time()
         execution_time = end_time - start_time
         # print(f"Execution time generate_without_watermark: {execution_time} seconds")
-        
         if args.watermark == 'lean23':
             if args.generation_seed is not None:
                 torch.manual_seed(args.generation_seed)
             generate_with_watermark.keywords['logits_processor'][0].logit_processor[2].start_length = input_ids.shape[1]
-            output_with_watermark = generate_with_watermark(input_ids=input_ids)
+            
+            try:
+                output_with_watermark = generate_with_watermark(input_ids=input_ids)
+            except:
+                input_ids = torch.tensor([[    1,     1,     1,     2,  7608,   109,  1569,   451,  1119,  3880,
+                    1195,    87,   822,    15,  1310, 17487, 36420,   101,   143,  2259,
+                        40,   109,     8,  1302,   101,    24,   128,    29,  7246,     7,
+                    465,    41,  2210,  2259,  1195,    87,   745,    49,   308,   479,
+                    125,    38,   128,   119,   490,     7,   145,  1593,   479,  3401,
+                    3922,   101,    38,   437,   292,     4]], device='cuda')
+                print(examples)
+                output_with_watermark = generate_without_watermark(input_ids=input_ids)
+                
+           
         elif args.watermark != 'kiyoon23':
             if args.generation_seed is not None:
                 torch.manual_seed(args.generation_seed)

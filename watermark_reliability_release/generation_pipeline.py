@@ -131,6 +131,7 @@ def main(args):
         min_sample_len=args.min_sample_tokens,
         max_input_len=model.config.max_position_embeddings,
         max_new_tokens=args.max_new_tokens,
+        watermark=args.watermark
     )
     if args.input_filtering_strategy == "prompt_length":
         input_check_kwargs.update(dict(min_prompt_len=args.min_prompt_tokens, min_completion_len=0))
