@@ -91,6 +91,7 @@ class scott22_WatermarkLogitsProcessor(LogitsProcessor):
         # r_list = self._get_r_value(input_ids_append[:, -self.window_size:])
         # r_list = torch.Tensor(r_list).to(input_ids.device)
         # scores = torch.pow(r_list, 1/scores[0])
+        scores = torch.unsqueeze(scores, 0)
         return scores
     
 
