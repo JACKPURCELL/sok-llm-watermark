@@ -20,10 +20,13 @@ class WatermarkBase:
         target_tokenizer,
     ):
         self.target_tokenizer =  target_tokenizer
-        if target_tokenizer.name_or_path == "facebook/opt-1.3b":
+        ### Hard coded here, need to change
+        if "facebook/opt" in target_tokenizer.name_or_path:
             self.vocab_size = 50272
+            print(target_tokenizer.name_or_path)
         else:
-            self.vocab_size = len(self.target_tokenizer)
+            print(target_tokenizer.name_or_path)
+            self.vocab_size = 32000
         self.gamma = gamma
         self.delta = delta
 
