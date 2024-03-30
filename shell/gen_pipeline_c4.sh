@@ -1,14 +1,14 @@
 # !/bin/bash
 # ===============================================================================
-# usecommand nohup bash shell/gen_pipeline_c4.sh > shell/gen_pipeline_c4_xiaoniu.log 2>&1 &
+# usecommand nohup bash shell/gen_pipeline_c4.sh > shell/0328_gen_pipeline_c4_lean23.log 2>&1 &
 # ===============================================================================
 echo "Current date and time: $(date)"
 
-watermark_types=("xiaoniu23" )
+watermark_types=("lean23" )
 # watermark_types=("john23" "lean23" "rohith23" "xiaoniu23" "xuandong23b" "aiwei23" "aiwei23b")
 
 models=("opt")
-gpus=("3,2")
+gpus=("3")
 
 for watermark_type in "${watermark_types[@]}"; do
 echo "start $watermark_type"
@@ -26,10 +26,10 @@ done
 echo "Current date and time: $(date)"
 
 
-watermark_types=("xiaoniu23" )
+watermark_types=("lean23" )
 
 models=("llama")
-gpus=("3,2")
+gpus=("3")
 
 for watermark_type in "${watermark_types[@]}"; do
 echo "start $watermark_type"

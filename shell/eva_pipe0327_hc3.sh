@@ -1,11 +1,12 @@
 #!/bin/bash
 #===============================================================================
-# usecommand  nohup bash shell/eva_pipe0131_hc3.sh > shell/eva_pipe0131_hc3.log 2>&1 &
+# usecommand  nohup bash shell/eva_pipe0327_hc3.sh > shell/0327gpu1-eva_pipe0327_hc3.log 2>&1 &
 #===============================================================================
 
 # 定义一个包含不同watermark类型的数组
 # SUPPORTED_ATTACK_METHODS = [ "dipper"  "copy-paste"  "scramble" "helm" "oracle" "swap" "synonym"]
-watermark_types=("john23"	"xuandong23b"	"rohith23" ) 
+# watermark_types=("john23"	"xuandong23b"	"rohith23" )  #0327
+watermark_types=("lean23"	"aiwei23"		"xiaoniu23" "aiwei23b")  #0327gpu1
 # watermark_types=("john23"	"xuandong23b"	"rohith23"	"lean23"	"aiwei23"		"xiaoniu23")
 #gpu1
 # watermark_types=(	"xuandong23b"	"kiyoon23"	"xiaoniu23")
@@ -21,7 +22,7 @@ helm_attack_methods=("MisspellingAttack" "TypoAttack" "ContractionAttack" "Lower
 dipper_lexs=("20" "40")
 cp_attack_insertion_lens=("10" "25")
 
-gpus=("2, 3")
+gpus=("1")
 tokens=("token_200")
 # cp_attack_types=("single-single" "triple-single")
 # 遍历数组中的每个元素
@@ -56,9 +57,9 @@ echo "start $watermark_type"
         done
 
         # # dipper need 48gb memory
-        # for dipper_lex in "${dipper_lexs[@]}"; do
-        #     CUDA_VISIBLE_DEVICES="$gpus" python watermark_reliability_release/evaluation_pipeline.py --only_attack_zscore True   --overwrite_output_file True --watermark "$watermark_type" --run_name dipper-neweva-"$watermark_type"-hc3-"$model"-dipper_l"$dipper_lex"_o0   --input_dir /home/jkl6486/sok-llm-watermark/runs/"$token"/"$watermark_type"/hc3/"$model"/dipper_l"$dipper_lex"_o0   --wandb_project eva-rohith23-attack --overwrite_args True 
-        # done
+        for dipper_lex in "${dipper_lexs[@]}"; do
+            CUDA_VISIBLE_DEVICES="$gpus" python watermark_reliability_release/evaluation_pipeline.py --only_attack_zscore True   --overwrite_output_file True --watermark "$watermark_type" --run_name dipper-neweva-"$watermark_type"-hc3-"$model"-dipper_l"$dipper_lex"_o0   --input_dir /home/jkl6486/sok-llm-watermark/runs/"$token"/"$watermark_type"/hc3/"$model"/dipper_l"$dipper_lex"_o0   --wandb_project hc3-eva-attack --overwrite_args True 
+        done
         # CUDA_VISIBLE_DEVICES="$gpus" python watermark_reliability_release/evaluation_pipeline.py --only_attack_zscore True   --overwrite_output_file True --watermark "$watermark_type" --run_name dipper-neweva-"$watermark_type"-hc3-"$model"-dipper_l60_o20   --input_dir /home/jkl6486/sok-llm-watermark/runs/"$token"/"$watermark_type"/hc3/"$model"/dipper_l60_o20  --wandb_project hc3-eva-attack --overwrite_args True
     done
     done

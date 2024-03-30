@@ -4,12 +4,11 @@ import numpy as np
 import math
 import json
 from sklearn.metrics import roc_curve, auc
-from matplotlib.patches import Rectangle
 from transformers import AutoTokenizer
-plt.rcParams['font.size'] = 14
-tpr_dict = defaultdict(dict)
-dataset = "hc3"
-watermark_types = ["john23", "xuandong23b", "aiwei23", "rohith23", "xiaoniu23", "lean23", "scott22", "aiwei23b"]
+import matplotlib.cm as cm
+plt.rcParams['font.size'] = 14  # 设置全局字体大小为14
+watermark_types = ["john23","xuandong23b","aiwei23","rohith23","xiaoniu23","lean23","scott22","aiwei23b"]
+# watermark_types = ["john23","aiwei23","rohith23","aiwei23b"]
 replace_dict = {
     "john23": "TGRL",
     "xuandong23b": "UG",
@@ -19,34 +18,40 @@ replace_dict = {
     "lean23": "CTWL",
     "scott22": "GO",
     "aiwei23b": "SIR",
+
 }
 
 tokenizer = AutoTokenizer.from_pretrained("facebook/opt-1.3b")
 fig, axs = plt.subplots(1, 2, figsize=(14, 7))  # 创建两个子图
 
+# fig, ax = plt.subplots(figsize=(7, 7))
+tpr_dict = defaultdict(dict)
 colors = [
-    'darkorange',
-    'deepskyblue',
-    'limegreen',
-    'violet',
-    'goldenrod',
-    'lightpink',
-    'slategray',
-    'teal'
+    'darkorange',  # Vibrant and distinct
+    'deepskyblue',  # Bright and clear
+    'limegreen',  # Vivid and lively
+    'violet',  # Distinct and slightly deeper for variety
+    'goldenrod',  # Warm, earthy tone
+    'lightpink',  # Soft and offers gentle contrast
+    'slategray',  # A nuanced and interesting gray
+    'teal'  # Adds a cool, balanced contrast to both warm and cool tones
 ]
 
-models = ['OPT', 'LLAMA2']
-linestyles = ['-', '-']
 
+
+# colors = cm.rainbow(np.linspace(0, 1, len(watermark_types)))  # 生成一个颜色映射
+models = ['OPT','LLAMA2']
+alphas = [1.0, 0.7]  # 定义透明度列表，你可以根据需要调整这个列表
+
+linestyles = ['-', '--', '-.']
 for i, watermark_type in enumerate(watermark_types):
     file_paths = [
-        f'/home/jkl6486/sok-llm-watermark/runs/token_200/{watermark_type}/{dataset}/opt/gen_table_w_metrics.jsonl',
-        f'/home/jkl6486/sok-llm-watermark/runs/token_200/{watermark_type}/{dataset}/llama/gen_table_w_metrics.jsonl'
+        f'/home/jkl6486/sok-llm-watermark/runs/token_200/{watermark_type}/hc3/opt/gen_table_w_metrics.jsonl',
+        f'/home/jkl6486/sok-llm-watermark/runs/token_200/{watermark_type}/hc3/llama/gen_table_w_metrics.jsonl'
     ]
 
-    for k, file_path in enumerate(file_paths):
-        # Your existing code for processing data and generating ROC curves remains unchanged
-    
+    for k,file_path in enumerate(file_paths):
+        
         data_list = []
         with open(file_path, 'r') as f:
             for line in f:
@@ -99,28 +104,25 @@ for i, watermark_type in enumerate(watermark_types):
             tpr_at_fpr_0_01= 1.0  # 你可以根据需要选择一个合适的小值
         # 将TPR值添加到字典中
         tpr_dict[watermark_type][models[k]] = tpr_at_fpr_0_01
+        
         label = f'{replace_dict[watermark_type]} (AUC = {roc_auc:.3f})'
-        axs[k].plot(new_fpr, new_tpr, lw=2, color=colors[i % len(colors)], linestyle=linestyles[k], label=label)
+        print(f"{models[k]}_{replace_dict[watermark_type]} : {tpr_at_fpr_0_01:.3f}")
+        
+        linestyle = linestyles[k] 
+        axs[k].plot(new_fpr, new_tpr, lw=2, color=colors[i % len(colors)], linestyle=linestyle, label=label)
+        
+        # # 画出 ROC 曲线
+        # label = f'{models[k]}_{watermark_type} (AUC = {roc_auc:.3f})'
+        # # print(f"{label} ")
+        # print(f"{models[k]}_{watermark_type} : {tpr_at_fpr_0_01:.3f}")
+        
+        # linestyle = linestyles[k] 
+        # # label = f'token_50_{watermark_type} (AUC = {roc_auc:.2f})' if 'token_50' in file_path else f'token200_{watermark_type} (AUC = {roc_auc:.2f})'
+        # # linestyle = '--' if 'token_50' in file_path else '-'
+        # ax.plot(new_fpr, new_tpr, lw=2, color=colors[i % len(colors)], linestyle=linestyle, label=label)
 
-# 在每个主图上添加放大的子图
-zoomed_inset_coords = [0.0, 0.2, 0.8, 1.0]  # [x1, x2, y1, y2] of the zoomed area
+
 for ax in axs:
-    # Add the inset showing the zoomed area [0.8, 1.0] for both FPR and TPR
-    axins = ax.inset_axes([0.55, 0.45, 0.4, 0.4])
-    axins.set_xlim(zoomed_inset_coords[0], zoomed_inset_coords[1])
-    axins.set_ylim(zoomed_inset_coords[2], zoomed_inset_coords[3])
-
-    # Iterate over all lines in the main axes to plot them on the inset
-    for line in ax.get_lines():
-        axins.plot(line.get_xdata(), line.get_ydata(), color=line.get_color(), linestyle=line.get_linestyle())
-
-    # Optionally, add a rectangle in the main plot to show the zoomed area
-    rect = Rectangle((zoomed_inset_coords[0], zoomed_inset_coords[2]), zoomed_inset_coords[1]-zoomed_inset_coords[0], zoomed_inset_coords[3]-zoomed_inset_coords[2], linewidth=1, edgecolor='k', facecolor='none')
-    ax.add_patch(rect)
-
-    axins.xaxis.set_visible(False)  # Optionally hide x-axis labels
-    axins.yaxis.set_visible(False)  # Optionally hide y-axis labels
-
     ax.plot([0, 1], [0, 1], color='navy', lw=2, linestyle='--')
     ax.set_xlim([0.0, 1.0])
     ax.set_ylim([0.0, 1.05])
@@ -129,7 +131,8 @@ for ax in axs:
     ax.legend(loc="lower right")
 
 plt.tight_layout()
-plt.savefig(f'./plot/auc_clean_model_{dataset}.pdf')
+plt.savefig(f'./plot/auc_clean_model_hc3.pdf')
+
 
 
 
@@ -158,4 +161,4 @@ ax.legend(loc="lower right")
 plt.tight_layout()
 
 
-plt.savefig(f'./plot/auc_clean_model_fpr001_{dataset}.pdf')
+plt.savefig(f'./plot/auc_clean_model_fpr001_hc3.pdf')

@@ -209,24 +209,34 @@
             "console": "integratedTerminal",
             "justMyCode": true,
             "env": {
-                "CUDA_VISIBLE_DEVICES": "3"
+                "CUDA_VISIBLE_DEVICES": "0,1"
             },
             "args": [
                 "--watermark",
                 "lean23",
+                "--overwrite",
+                "True",
+                "--wandb_project",
+                "hc3",
+                "--dataset_name",
+                "hc3",
                 "--run_name",
-                "gen-c4-lean23-opt",
+                "lean23_opt",
+                "--output_dir",
+                "token_200/lean23/hc3/opt",
                 "--model_name_or_path",
                 "facebook/opt-1.3b",
                 "--min_generations",
-                "10",
-                "--dataset_name",
-                "c4",
+                "700",
                 "--max_new_tokens",
                 "200",
-               
-                "--sampling_temp",
-                "1.0",
+                "--generation_batch_size",
+                "1",
+                "--num_beams",
+                "1",
+                "--use_sampling",
+                "False",
+
             ]
         },
         {
