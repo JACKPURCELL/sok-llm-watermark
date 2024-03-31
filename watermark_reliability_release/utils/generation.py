@@ -336,7 +336,13 @@ def tokenize_and_truncate(
     #     except:
     #         inputs_ids = inputs_ids[:, : ]
     # else:
-    inputs_ids = inputs_ids[:, : inputs_ids.shape[1] - slice_length]
+    if watermark == "aiwei23b":
+        try:
+            inputs_ids = inputs_ids[:, : 30]
+        except:
+            inputs_ids = inputs_ids[:, : ]
+    else:
+        inputs_ids = inputs_ids[:, : inputs_ids.shape[1] - slice_length]
         
     # logic depending on special tokens for the model
     if "t5" in hf_model_name or "T0" in hf_model_name:
@@ -370,11 +376,11 @@ def tokenize_only(
     input_ids = tokenizer(
         example[input_col_name], return_tensors="pt", truncation=True, max_length=model_max_length
     )["input_ids"]
-    # if watermark == 'lean23':
-    #     # print("===========lean23========")
+    if watermark == 'aiwei23b':
+        # print("===========lean23========")
 
-    #     input_ids = input_ids[:, -150: ]
-    #     example[input_col_name] = tokenizer.batch_decode(input_ids, skip_special_tokens=True)[0]
+        input_ids = input_ids[:, :30 ]
+        example[input_col_name] = tokenizer.batch_decode(input_ids, skip_special_tokens=True)[0]
       
 
     example.update({"input_ids": input_ids})
