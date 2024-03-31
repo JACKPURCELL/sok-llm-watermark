@@ -14,6 +14,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import os
 import pickle
 import torch
 import numpy as np
@@ -273,6 +274,25 @@ def load_detector(args):
             
         case 'aiwei23b':
             model, tokenizer, device = load_model(args)
+            
+           
+            # Split the path
+            parts = os.path.split(args.input_dir)
+            print(parts)
+            # Get the part you need
+            if parts[-1] == "llama" or parts[-1] == "opt":
+                needed_part = args.input_dir
+            else:
+                needed_part = parts[-2]
+            print(needed_part)
+            # args.embedding_input_path = os.path.join(needed_part, "data/sts/train.jsonl")
+            args.embedding_output_path = os.path.join(needed_part, "data/embeddings/train_embeddings.txt")
+            # args.aiwei23b_model_path = os.path.join(needed_part, "model/compositional-bert-large-uncased")
+            args.aiwei23b_output_model = os.path.join(needed_part, "model/transform_model_cbert.pth")
+            args.mapping_output_dir = os.path.join(needed_part, "data/mappings/")
+            args.transform_model = os.path.join(needed_part, "model/transform_model_cbert.pth")
+            # args.embedding_model = os.path.join(needed_part, "model/compositional-bert-large-uncased")
+            
             watermark_detector = watermarks.aiwei23b_WatermarkDetector(watermark_type=args.aiwei23b_watermark_type, window_size=args.aiwei23b_window_size, tokenizer=tokenizer, chunk_size=args.aiwei23b_chunk_size, delta=args.aiwei23b_delta, transform_model=args.transform_model, embedding_model=args.embedding_model)
         case 'scott22':
             # model, tokenizer, device = load_model(args)
