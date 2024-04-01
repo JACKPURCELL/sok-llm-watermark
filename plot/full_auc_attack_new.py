@@ -7,9 +7,9 @@ from transformers import AutoTokenizer
 plt.rcParams['font.size'] = 18  # 设置全局字体大小为14
 from collections import defaultdict
 
-watermark_types = ["john23","xuandong23b","aiwei23","lean23","rohith23","xiaoniu23","aiwei23b"]
+watermark_types = ["john23","xuandong23b","aiwei23","lean23","rohith23","xiaoniu23","aiwei23b","scott22"]
 # attacks = ["ContractionAttack", "copypaste-3-10", "ExpansionAttack",  "MisspellingAttack", "synonym-0.4", "copypaste-1-10", "dipper_l20_o0", "LowercaseAttack", "swap", "TypoAttack"]
-attacks = ["swap","synonym-0.4", "copypaste-1-10","copypaste-3-10","copypaste-1-25","copypaste-3-25", "ContractionAttack", "ExpansionAttack",  "MisspellingAttack",   "dipper_l20_o0", "LowercaseAttack", "TypoAttack"]
+attacks = ["swap","translation","synonym-0.4", "copypaste-1-10","copypaste-3-10","copypaste-1-25","copypaste-3-25", "ContractionAttack", "ExpansionAttack",  "MisspellingAttack",   "dipper_l20_o0", "dipper_l40_o0", "LowercaseAttack", "TypoAttack"]
 # attacks = ["ContractionAttack",  "ExpansionAttack",  "MisspellingAttack", "synonym-0.4",  "LowercaseAttack", "swap", "TypoAttack"]
 # 常用颜色
 colors = ['b', 'g',  'c', 'm', 'y', 'k']
