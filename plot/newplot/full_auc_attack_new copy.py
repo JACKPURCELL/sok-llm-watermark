@@ -38,7 +38,7 @@ attacks = ["swap","translation","synonym-0.4", "copypaste-1-10","copypaste-3-10"
 # 常用颜色
 # colors = ['b', 'g',  'c', 'm', 'y', 'k']
 tpr_dict = defaultdict(dict)
-dataset = 'c4'
+dataset = 'hc3'
 # 创建一个空字典来存储roc_auc值
 roc_auc_dict = {}
 
@@ -211,12 +211,13 @@ for i, watermark in enumerate(watermark_types):
     # 为 'clean' 条目画虚线作为基线
     axs2[i].axhline(y=clean_roc_auc, color='r', linestyle='--', label='Baseline (clean)', linewidth=2)
     
-    print(f'{watermark},CLEAN : {clean_roc_auc}')
-    # 获取这个 watermark 下的所有 roc_auc
-    
-    roc_aucs = [roc_auc_dict[(watermark, attack)] for attack in attacks]
-    for attack in attacks:
-        print(f'{watermark},{attack}: {roc_auc_dict[(watermark, attack)]}')
+    with open('./plot/newplot/output/output.txt', 'w') as f:
+        f.write(f'{watermark},CLEAN : {clean_roc_auc}\n')
+        # 获取这个 watermark 下的所有 roc_auc
+
+        roc_aucs = [roc_auc_dict[(watermark, attack)] for attack in attacks]
+        for attack in attacks:
+            f.write(f'{watermark},{attack}: {roc_auc_dict[(watermark, attack)]}\n')
     
     # 创建柱状图，每个 attack 使用不同颜色
     for j, roc_auc in enumerate(roc_aucs):
