@@ -204,33 +204,33 @@ plt.savefig(f'./plot/newplot/output/full_roc_token_200_{dataset}.pdf')
 # 创建子图
 fig2, axs2 = plt.subplots(2, 4, figsize=(40, 20))
 axs2 = axs2.flatten()
+with open(f'./plot/newplot/output/output_{dataset}.txt', 'w') as f:
 
-for i, watermark in enumerate(watermark_types):
-    # 对于 'clean' 条目，我们需要特殊处理
-    clean_roc_auc = roc_auc_dict[(watermark, 'CLEAN')]
-    # 为 'clean' 条目画虚线作为基线
-    axs2[i].axhline(y=clean_roc_auc, color='r', linestyle='--', label='Baseline (clean)', linewidth=2)
-    
-    with open('./plot/newplot/output/output.txt', 'w') as f:
+    for i, watermark in enumerate(watermark_types):
+        # 对于 'clean' 条目，我们需要特殊处理
+        clean_roc_auc = roc_auc_dict[(watermark, 'CLEAN')]
+        # 为 'clean' 条目画虚线作为基线
+        axs2[i].axhline(y=clean_roc_auc, color='r', linestyle='--', label='Baseline (clean)', linewidth=2)
+        
         f.write(f'{watermark},CLEAN : {clean_roc_auc}\n')
         # 获取这个 watermark 下的所有 roc_auc
 
         roc_aucs = [roc_auc_dict[(watermark, attack)] for attack in attacks]
         for attack in attacks:
             f.write(f'{watermark},{attack}: {roc_auc_dict[(watermark, attack)]}\n')
-    
-    # 创建柱状图，每个 attack 使用不同颜色
-    for j, roc_auc in enumerate(roc_aucs):
-        axs2[i].bar(attacks[j], roc_auc, width=0.8, color=colors[j % len(colors)])
-    
-    # 设置标题
-    axs2[i].set_title(f'ROC AUC for {watermark}')
-    
-    # 设置y轴标签
-    axs2[i].set_ylabel('ROC AUC')
-    axs2[i].set_ylim([0, 1])
-    # 旋转 x 轴标签 45 度
-    axs2[i].set_xticklabels(attacks, rotation=45, ha="right")
+        
+        # 创建柱状图，每个 attack 使用不同颜色
+        for j, roc_auc in enumerate(roc_aucs):
+            axs2[i].bar(attacks[j], roc_auc, width=0.8, color=colors[j % len(colors)])
+        
+        # 设置标题
+        axs2[i].set_title(f'ROC AUC for {watermark}')
+        
+        # 设置y轴标签
+        axs2[i].set_ylabel('ROC AUC')
+        axs2[i].set_ylim([0, 1])
+        # 旋转 x 轴标签 45 度
+        axs2[i].set_xticklabels(attacks, rotation=45, ha="right")
 
 # 调整布局
 plt.tight_layout()
