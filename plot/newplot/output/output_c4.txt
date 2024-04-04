@@ -12,7 +12,7 @@ john23,dipper_l20_o0,0.952
 john23,dipper_l40_o0,0.858
 john23,LowercaseAttack,0.984
 john23,TypoAttack,0.788
-john23,TypoAttack,0.992
+john23,CLEAN,0.992
 xuandong23b,swap,0.9558823529411765
 xuandong23b,translation,1.0
 xuandong23b,synonym-0.4,0.9645833333333333
@@ -27,7 +27,7 @@ xuandong23b,dipper_l20_o0,0.94
 xuandong23b,dipper_l40_o0,0.916
 xuandong23b,LowercaseAttack,0.8791666666666667
 xuandong23b,TypoAttack,0.8838174273858921
-xuandong23b,TypoAttack,0.964
+xuandong23b,CLEAN,0.964
 aiwei23,swap,0.6666666666666666
 aiwei23,translation,0.0
 aiwei23,synonym-0.4,0.7635270541082164
@@ -42,7 +42,7 @@ aiwei23,dipper_l20_o0,0.296
 aiwei23,dipper_l40_o0,0.057432432432432436
 aiwei23,LowercaseAttack,0.685370741482966
 aiwei23,TypoAttack,0.35470941883767537
-aiwei23,TypoAttack,0.776
+aiwei23,CLEAN,0.776
 rohith23,swap,0.9509803921568627
 rohith23,translation,0.0
 rohith23,synonym-0.4,0.9903614457831326
@@ -57,7 +57,7 @@ rohith23,dipper_l20_o0,0.988
 rohith23,dipper_l40_o0,0.962
 rohith23,LowercaseAttack,0.983132530120482
 rohith23,TypoAttack,0.9612756264236902
-rohith23,TypoAttack,0.996
+rohith23,CLEAN,0.996
 xiaoniu23,swap,0.03
 xiaoniu23,translation,1.0
 xiaoniu23,synonym-0.4,0.992
@@ -72,7 +72,7 @@ xiaoniu23,dipper_l20_o0,0.4607645875251509
 xiaoniu23,dipper_l40_o0,0.14867617107942974
 xiaoniu23,LowercaseAttack,0.946
 xiaoniu23,TypoAttack,0.088
-xiaoniu23,TypoAttack,1.0
+xiaoniu23,CLEAN,1.0
 aiwei23b,swap,0.932
 aiwei23b,translation,0.0
 aiwei23b,synonym-0.4,0.936
@@ -87,7 +87,7 @@ aiwei23b,dipper_l20_o0,0.9021164021164021
 aiwei23b,dipper_l40_o0,0.8143712574850299
 aiwei23b,LowercaseAttack,0.886
 aiwei23b,TypoAttack,0.566
-aiwei23b,TypoAttack,0.954
+aiwei23b,CLEAN,0.954
 scott22,swap,0.92
 scott22,translation,0.0
 scott22,synonym-0.4,0.996
@@ -102,4 +102,4 @@ scott22,dipper_l20_o0,0.9708939708939709
 scott22,dipper_l40_o0,0.8473118279569892
 scott22,LowercaseAttack,0.988
 scott22,TypoAttack,0.852
-scott22,TypoAttack,0.998
+scott22,CLEAN,0.998
