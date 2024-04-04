@@ -1,0 +1,87 @@
+john23,llama-attacked-dipper40,llama-attack-dipper20,opt-attacked-dipper40,opt-attack-dipper20
+train_loss,0.3039,0.3049,0.4063,0.3805
+eval_loss,0.7084,0.7881,1.728,1.8063
+eval_acc,0.815,0.8125,0.56,0.55
+attacked acc,0.8758,0.8571,0.358,0.401
+g0s0,83,100,406,189
+g1s0,581,599,251,164
+g0s1,4,0,236,410
+g1s1,32,1,107,237
+0-0 acc,0.954,1,0.6323,0.3155
+,,,,
+lean23,llama-attacked-dipper40,llama-attack-dipper20,opt-attacked-dipper40,opt-attack-dipper20
+train_loss,0.3049,0.3039,0.2623,0.2631
+eval_loss,0.7881,0.7617,2.9743,2.9692
+eval_acc,0.8125,0.8075,0.547,0.497
+attacked acc,0.8571,0.8571,0.3185,0.2814
+g0s0,100,100,459,412
+g1s0,599,597,216,174
+g0s1,0,0,18,91
+g1s1,1,3,8,23
+0-0 acc,1,1,0.9622,0.819
+,,,,
+rohith23,llama-attacked-dipper40,llama-attack-dipper20,opt-attacked-dipper40,opt-attack-dipper20
+train_loss,0.3032,0.3108,0.39,0.3784
+eval_loss,0.6748,0.6201,1.6813,1.6319
+eval_acc,0.815,0.805,0.5727,0.5775
+attacked acc,0.5242,0.7985,0.387,0.444
+g0s0,302,125,32,10
+g1s0,323,463,34,17
+g0s1,31,16,581,546
+g1s1,44,96,353,427
+0-0 acc,0.9069,0.8865,0.0522,0.0179
+,,,,
+xiaoniu23,llama-attacked-dipper40,llama-attack-dipper20,opt-attacked-dipper40,opt-attack-dipper20
+train_loss,0.3055,0.2994,0.4042,0.3647
+eval_loss,0.6919,0.5834,1.8191,1.8954
+eval_acc,0.8175,0.815,0.55,0.55
+attacked acc,0.7757,0.5614,0.1114,0.1928
+g0s0,156,281,598,447
+g1s0,536,361,75,113
+g0s1,1,26,24,118
+g1s1,7,32,3,22
+0-0 acc,0.9936,0.9153,0.9614,0.7911
+,,,,
+xuandong23b,llama-attacked-dipper40,llama-attack-dipper20,opt-attacked-dipper40,opt-attack-dipper20
+train_loss,0.3067,0.309,0.3385,0.347
+eval_loss,0.7829,0.8545,1.9088,1.8143
+eval_acc,0.8125,0.81,0.5475,0.53
+attacked acc,0.5142,0.7685,0.551,0.416
+g0s0,330,149,138,114
+g1s0,297,416,156,70
+g0s1,10,13,311,470
+g1s1,63,122,395,346
+0-0 acc,0.9705,0.9197,0.3073,0.1952
+,,,,
+aiwei23,llama-attacked-dipper40,llama-attack-dipper20,opt-attacked-dipper40,opt-attack-dipper20
+train_loss,0.3066,0.3093,0.3287,0.3649
+eval_loss,0.7103,0.6092,2.4113,1.7842
+eval_acc,0.81,0.815,0.547,0.56
+attacked acc,0.5885,0.6328,0.2828,0.448
+g0s0,52,36,487,424
+g1s0,134,94,192,337
+g0s1,236,221,15,128
+g1s1,278,349,6,111
+0-0 acc,0.1805,0.14,0.9701,0.7681
+,,,,
+aiwei23b,llama-attacked-dipper40,llama-attack-dipper20,opt-attacked-dipper40,opt-attack-dipper20
+train_loss,,,0.327,0.2676
+eval_loss,,,2.4179,2.9475
+eval_acc,,,0.5617,0.547
+attacked acc,,,0.1442,0.3214
+g0s0,,,138,70
+g1s0,,,21,38
+g0s1,,,461,405
+g1s1,,,80,187
+0-0 acc,,,0.2303,0.1473
+,,,,
+scott22,llama-attacked-dipper40,llama-attack-dipper20,opt-attacked-dipper40,opt-attack-dipper20
+train_loss,,,0.349,0.3652
+eval_loss,,,1.9219,1.8751
+eval_acc,,,0.5411,0.5647
+attacked acc,,,0.2657,0.25
+g0s0,,,162,44
+g1s0,,,49,18
+g0s1,,,352,481
+g1s1,,,137,157
+0-0 acc,,,0.3151,0.0838

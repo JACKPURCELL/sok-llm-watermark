@@ -33,9 +33,27 @@ def read_file(file):
                     length = data["w_wm_output_length"]
                 except:
                     length = len(tokenizer(data["w_wm_output"])['input_ids'])
+
             if length>150:
                 data_list.append(json.loads(line))
-            data_list = data_list[:500]
+    if len(data_list) ==0:  
+        with open(file, 'r') as f:
+            for line in f:
+                data = json.loads(line)
+                if 'w_wm_output_attacked' in data:
+                    try:
+                        length = data["w_wm_output_attacked_length"]
+                    except:
+                        length = len(tokenizer(data["w_wm_output_attacked"])['input_ids'])
+                elif 'w_wm_output' in data:
+                    try:
+                        length = data["w_wm_output_length"]
+                    except:
+                        length = len(tokenizer(data["w_wm_output"])['input_ids'])
+
+                if length>80:
+                    data_list.append(json.loads(line))      
+    data_list = data_list[:500]
     return data_list
 fig, axs = plt.subplots(2, 4, figsize=(40, 20))
 # 将 axs 转换为一维数组，以便我们可以迭代它
@@ -48,7 +66,7 @@ for i, watermark_type in enumerate(watermark_types):
     tpr_scores = []
     fpr_scores = []  # 新增 FPR 列表
     
-    clean_data_list = read_file(f'/home/jkl6486/sok-llm-watermark/runs/token_200/{watermark_type}/c4/opt/gen_table_w_metrics.jsonl')
+    clean_data_list = read_file(f'/home/jkl6486/sok-llm-watermark/runs/token_200/{watermark_type}/hc3/opt/gen_table_w_metrics.jsonl')
     if "baseline_completion_z_score" in clean_data_list[0]:
         clean_baseline_completion_z_score = [data["baseline_completion_z_score"] for data in clean_data_list]
         clean_baseline_completion_z_score = [score if not math.isinf(score) and not math.isnan(score) else 0 for score in clean_baseline_completion_z_score]
@@ -92,7 +110,7 @@ for i, watermark_type in enumerate(watermark_types):
     for j, attack in enumerate(attacks):
         # print(f"Processing {watermark_type} with {attack}...")
         try:
-            data_list = read_file(f'/home/jkl6486/sok-llm-watermark/runs/token_200/{watermark_type}/c4/opt/{attack}/gen_table_w_metrics.jsonl')
+            data_list = read_file(f'/home/jkl6486/sok-llm-watermark/runs/token_200/{watermark_type}/hc3/opt/{attack}/gen_table_w_metrics.jsonl')
         except:
             print(f"Missing {watermark_type} with {attack}...")
             continue
@@ -149,7 +167,7 @@ for ax in axs:
     ax.set_ylabel('True Positive Rate')
     
 plt.tight_layout()
-plt.savefig(f'./plot/full_roc_token_200.pdf')
+plt.savefig(f'./plot/full_roc_token_200hc3.pdf')
 
 
 
@@ -192,7 +210,7 @@ for i, watermark in enumerate(watermark_types):
 plt.tight_layout()
 
 # 保存图形
-plt.savefig(f'./plot/full_roc_value_token_200.pdf')
+plt.savefig(f'./plot/full_roc_value_token_200hc3.pdf')
 
 
 print("=======TPR===========")
@@ -229,7 +247,7 @@ for i, attack in enumerate(attacks):
 plt.tight_layout()
 
 # 保存图形
-plt.savefig(f'./plot/full_roc_value_token_200_tpr001111.pdf')
+plt.savefig(f'./plot/full_roc_value_token_200_tpr001111hc3.pdf')
 
 
 # methods = list(tpr_dict.keys())

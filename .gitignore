@@ -47,3 +47,4 @@ eva_pipe.log
 *.jsonl
 watermark_reliability_release/watermarks/christ23/static_data/encoding.tsv.tar.gz
 watermark_reliability_release/watermarks/christ23/static_data/encoding.tsv
+runs_server3/
