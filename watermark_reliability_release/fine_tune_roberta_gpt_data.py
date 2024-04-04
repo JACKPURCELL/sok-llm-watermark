@@ -20,6 +20,7 @@ from transformers import TrainingArguments, Trainer
 from torch.utils.data import Dataset, DataLoader
 from sklearn.metrics import accuracy_score
 from openai import OpenAI
+import random
 
 # load arguments
 parser = argparse.ArgumentParser()
@@ -33,6 +34,7 @@ parser.add_argument('--train', type=bool, default=True)
 parser.add_argument('--eva_attack', type=bool, default=True)
 parser.add_argument('--model_name', type=str, default="gpt-3.5-turbo")
 parser.add_argument('--max_tokens', type=int, default=200)
+parser.add_argument('--method_name', type=str)
 args = parser.parse_args()
 
 num_gpus = args.gpus.count(",") + 1
@@ -52,16 +54,30 @@ device = torch.device("cuda")
 # load training dataset
 generations = []
 labels = []
-no_wm_outputs = []
 original_detector_predictions = []
-w_wm_output_atatcked = []
+w_wm_output_attacked = []
 client = OpenAI(api_key="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")
+
+
+# Load threshold
+thresholds = {
+    "john23": 2.358025378986253,
+    "xuandong23b": 2.545584412271571,
+    "aiwei23": 24.998546600341797,
+    "rohith23": 1.8526251316070557,
+    "xiaoniu23": 0.00,
+    "lean23": 0.984638512134552,
+    "scott22": 0.17697394677108003,
+    "aiwei23b": 0.2496753585975497
+}
+threshold = thresholds[args.method_name]
+
+
 
 i = 0
 with open(args.train_path, "r") as f:
 	for line in f:
 		data = json.loads(line)
-		#generations.append(data["truncated_input"]+data["baseline_completion"])
 		# prompt = data["truncated_input"]
 		# completion = client.chat.completions.create(model=args.model_name,
         #                                             messages=[{"role": "system", "content": "You are a helpful assistant."},
@@ -74,35 +90,41 @@ with open(args.train_path, "r") as f:
 		# 	msg = completion.choices[0].message.content
 		# generations.append(data["truncated_input"]+" "+msg)
 		# labels.append(0)
-		# generations.append(data["truncated_input"]+data["w_wm_output"])
-		# labels.append(1)
+		generations.append(data["truncated_input"]+data["w_wm_output"])
+		labels.append(1)
 
 		### Other variables 
-		original_detector_predictions.append(1 if data["w_wm_output_attacked_prediction"] else 0)
-		no_wm_outputs.append(data["truncated_input"]+data["no_wm_output"])
-		w_wm_output_atatcked.append(data["w_wm_output_attacked"])
+		original_detector_predictions.append(1 if data["w_wm_output_attacked_z_score"] > threshold else 0)
+		w_wm_output_attacked.append(data["w_wm_output_attacked"])
 		i += 1
 
-# with open('/home/jkl6486/sok-llm-watermark/runs/token_200/john23/c4/opt/back/dipper_l40_o0/roberta_finetuned2/gpt_saved.jsonl', 'w') as file:
+# with open('/home/jkl6486/sok-llm-watermark/runs/token_200/roberta_data/gpt_saved_llama.jsonl', 'w') as file:
 # 	for idx in range(len(generations)):
 # 		item = {"output": generations[idx], "label": labels[idx]}
 # 		file.write(json.dumps(item) + '\n')
 
-with open('/home/jkl6486/sok-llm-watermark/runs/token_200/john23/c4/opt/back/dipper_l40_o0/roberta_finetuned2/gpt_saved.jsonl', 'r') as file:
+with open('/home/jkl6486/sok-llm-watermark/runs/token_200/roberta_data/gpt_saved.jsonl', 'r') as file:
 	for line in file:
 		data = json.loads(line)
 		generations.append(data["output"])
 		labels.append(data["label"])
 
 
+### Shuffle data
+random.seed(123)
+data_list = list(zip(generations, labels))
+random.shuffle(data_list)
+generations, labels = zip(*data_list)
+generations = list(generations)
+labels = list(labels)
 
+### Split data
 amount = int(len(generations))
 train_generations = generations[:int(amount*0.8)]
 train_labels = labels[:int(amount*0.8)]
 test_generations = generations[int(amount*0.8):]
 test_labels = labels[int(amount*0.8):]
-test_original_detector_predictions = original_detector_predictions[int(amount*0.8):]
-test_w_wm_output_atatcked = w_wm_output_atatcked[int(amount*0.8):]
+print("Start training!!!!!!!!!!!!!!!!!!!!")
 
 
 class dataset(Dataset):
@@ -145,7 +167,8 @@ train_args = TrainingArguments(output_dir=args.output_path,
 								warmup_ratio=0.06,
 								save_strategy="no",
 								logging_steps=1,
-								evaluation_strategy="no")
+								evaluation_strategy="no",
+								disable_tqdm=True)
 
 train_dataset=dataset(train_generations, train_labels)
 eval_dataset=dataset(test_generations, test_labels)
@@ -165,7 +188,7 @@ if args.train:
 	print(metrics)
 
 if args.eva_attack:
-	res = trainer.predict(dataset(w_wm_output_atatcked, [1]*len(w_wm_output_atatcked)))
+	res = trainer.predict(dataset(w_wm_output_attacked, [1]*len(w_wm_output_attacked)))
 	res_labels = res.predictions.argmax(axis=-1)
 	acc = sum(res_labels == 1)/len(res_labels)
 	print("Accuracy on attacked watermarked samples:")
