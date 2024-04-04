@@ -38,7 +38,7 @@ attacks = ["swap","translation","synonym-0.4", "copypaste-1-10","copypaste-3-10"
 # 常用颜色
 # colors = ['b', 'g',  'c', 'm', 'y', 'k']
 tpr_dict = defaultdict(dict)
-dataset = 'c4'
+dataset = 'hc3'
 # 创建一个空字典来存储roc_auc值
 roc_auc_dict = {}
 
@@ -248,17 +248,10 @@ with open(f'./plot/newplot/output/output_{dataset}.txt', 'w') as f:
     for watermark in watermark_types:
         for attack in attacks:
             f.write(f'{watermark},{attack},{tpr_dict[watermark][attack]}\n')
-        f.write(f'{watermark},{attack},{tpr_dict[watermark]["CLEAN"]}\n')
+        f.write(f'{watermark},{"CLEAN"},{tpr_dict[watermark]["CLEAN"]}\n')
     
 for i, attack in enumerate(attacks):
-    # 对于 'clean' 条目，我们需要特殊处理
- 
-    # 为 'clean' 条目画虚线作为基线
-    # axs3[i].axhline(y=clean_roc_auc, color='r', linestyle='--', label='Baseline (clean)', linewidth=2)
-   
-    # print(f'{watermark},CLEAN : {clean_roc_auc}')
-    # 获取这个 watermark 下的所有 roc_auc
-    
+
     roc_aucs = [tpr_dict[watermark][attack] for watermark in watermark_types]
 
     # 创建柱状图，每个 attack 使用不同颜色f
