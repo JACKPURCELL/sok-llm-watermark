@@ -7,7 +7,7 @@ from transformers import AutoTokenizer
 plt.rcParams['font.size'] = 18  # 设置全局字体大小为14
 from collections import defaultdict
 
-watermark_types = ["john23","xuandong23b","aiwei23","lean23","rohith23","xiaoniu23","aiwei23b","scott22"]
+watermark_types = ["john23","xuandong23b","aiwei23","rohith23","xiaoniu23","aiwei23b","scott22"]
 replace_dict = {
     "john23": "TGRL",
     "xuandong23b": "UG",
@@ -27,7 +27,7 @@ colors = [
     'violet',
     'goldenrod',
     'lightpink',
-    'slategray',
+
     'teal'
 ]
 
@@ -38,7 +38,7 @@ attacks = ["swap","translation","synonym-0.4", "copypaste-1-10","copypaste-3-10"
 # 常用颜色
 # colors = ['b', 'g',  'c', 'm', 'y', 'k']
 tpr_dict = defaultdict(dict)
-dataset = 'hc3'
+dataset = 'c4'
 # 创建一个空字典来存储roc_auc值
 roc_auc_dict = {}
 
@@ -204,33 +204,32 @@ plt.savefig(f'./plot/newplot/output/full_roc_token_200_{dataset}.pdf')
 # 创建子图
 fig2, axs2 = plt.subplots(2, 4, figsize=(40, 20))
 axs2 = axs2.flatten()
-with open(f'./plot/newplot/output/output_{dataset}.txt', 'w') as f:
 
-    for i, watermark in enumerate(watermark_types):
-        # 对于 'clean' 条目，我们需要特殊处理
-        clean_roc_auc = roc_auc_dict[(watermark, 'CLEAN')]
-        # 为 'clean' 条目画虚线作为基线
-        axs2[i].axhline(y=clean_roc_auc, color='r', linestyle='--', label='Baseline (clean)', linewidth=2)
-        
-        f.write(f'{watermark},CLEAN : {clean_roc_auc}\n')
-        # 获取这个 watermark 下的所有 roc_auc
+for i, watermark in enumerate(watermark_types):
+    # 对于 'clean' 条目，我们需要特殊处理
+    clean_roc_auc = roc_auc_dict[(watermark, 'CLEAN')]
+    # 为 'clean' 条目画虚线作为基线
+    axs2[i].axhline(y=clean_roc_auc, color='r', linestyle='--', label='Baseline (clean)', linewidth=2)
+    
+    # f.write(f'{watermark},CLEAN : {clean_roc_auc}\n')
+    # 获取这个 watermark 下的所有 roc_auc
 
-        roc_aucs = [roc_auc_dict[(watermark, attack)] for attack in attacks]
-        for attack in attacks:
-            f.write(f'{watermark},{attack}: {roc_auc_dict[(watermark, attack)]}\n')
-        
-        # 创建柱状图，每个 attack 使用不同颜色
-        for j, roc_auc in enumerate(roc_aucs):
-            axs2[i].bar(attacks[j], roc_auc, width=0.8, color=colors[j % len(colors)])
-        
-        # 设置标题
-        axs2[i].set_title(f'ROC AUC for {watermark}')
-        
-        # 设置y轴标签
-        axs2[i].set_ylabel('ROC AUC')
-        axs2[i].set_ylim([0, 1])
-        # 旋转 x 轴标签 45 度
-        axs2[i].set_xticklabels(attacks, rotation=45, ha="right")
+    roc_aucs = [roc_auc_dict[(watermark, attack)] for attack in attacks]
+    # for attack in attacks:
+    #     f.write(f'{watermark},{attack}: {roc_auc_dict[(watermark, attack)]}\n')
+    
+    # 创建柱状图，每个 attack 使用不同颜色
+    for j, roc_auc in enumerate(roc_aucs):
+        axs2[i].bar(attacks[j], roc_auc, width=0.8, color=colors[j % len(colors)])
+    
+    # 设置标题
+    axs2[i].set_title(f'ROC AUC for {watermark}')
+    
+    # 设置y轴标签
+    axs2[i].set_ylabel('ROC AUC')
+    axs2[i].set_ylim([0, 1])
+    # 旋转 x 轴标签 45 度
+    axs2[i].set_xticklabels(attacks, rotation=45, ha="right")
 
 # 调整布局
 plt.tight_layout()
@@ -244,19 +243,24 @@ print("=======TPR===========")
 fig3, axs3 = plt.subplots(4, 4, figsize=(40, 40))
 axs3 = axs3.flatten()
 
+with open(f'./plot/newplot/output/output_{dataset}.txt', 'w') as f:
+
+    for watermark in watermark_types:
+        for attack in attacks:
+            f.write(f'{watermark},{attack},{tpr_dict[watermark][attack]}\n')
+        f.write(f'{watermark},{attack},{tpr_dict[watermark]["CLEAN"]}\n')
+    
 for i, attack in enumerate(attacks):
     # 对于 'clean' 条目，我们需要特殊处理
-    # clean_roc_auc = tpr_dict[watermark]['CLEAN'] 
+ 
     # 为 'clean' 条目画虚线作为基线
     # axs3[i].axhline(y=clean_roc_auc, color='r', linestyle='--', label='Baseline (clean)', linewidth=2)
-    
+   
     # print(f'{watermark},CLEAN : {clean_roc_auc}')
     # 获取这个 watermark 下的所有 roc_auc
     
     roc_aucs = [tpr_dict[watermark][attack] for watermark in watermark_types]
-    # for attack in attacks:
-    #     print(f'{watermark},{attack}: {tpr_dict[watermark][attack]}')
-    
+
     # 创建柱状图，每个 attack 使用不同颜色f
     for j, roc_auc in enumerate(roc_aucs):
         axs3[i].bar(watermark_types[j], roc_auc, width=0.8, color=colors[j % len(colors)])

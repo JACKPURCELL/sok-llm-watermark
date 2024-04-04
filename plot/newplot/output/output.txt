@@ -1,0 +1,15 @@
+scott22,CLEAN : 0.999964
+scott22,swap: 0.996932
+scott22,translation: 0.0
+scott22,synonym-0.4: 0.999872
+scott22,copypaste-1-10: 0.6961097432895439
+scott22,copypaste-3-10: 0.9303687953031111
+scott22,copypaste-1-25: 0.9300761006181023
+scott22,copypaste-3-25: 0.9978564418656704
+scott22,ContractionAttack: 0.999964
+scott22,ExpansionAttack: 0.999964
+scott22,MisspellingAttack: 0.9997199999999999
+scott22,dipper_l20_o0: 0.9919433266626614
+scott22,dipper_l40_o0: 0.9793733379581456
+scott22,LowercaseAttack: 0.99942
+scott22,TypoAttack: 0.987744
