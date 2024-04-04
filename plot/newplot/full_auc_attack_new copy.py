@@ -8,13 +8,37 @@ plt.rcParams['font.size'] = 18  # 设置全局字体大小为14
 from collections import defaultdict
 
 watermark_types = ["john23","xuandong23b","aiwei23","lean23","rohith23","xiaoniu23","aiwei23b","scott22"]
+replace_dict = {
+    "john23": "TGRL",
+    "xuandong23b": "UG",
+    "aiwei23": "UPV",
+    "rohith23": "RDF",
+    "xiaoniu23": "UB",
+    "lean23": "CTWL",
+    "scott22": "GO",
+    "aiwei23b": "SIR",
+}
+
+
+colors = [
+    'darkorange',
+    'deepskyblue',
+    'limegreen',
+    'violet',
+    'goldenrod',
+    'lightpink',
+    'slategray',
+    'teal'
+]
+
+
 # attacks = ["ContractionAttack", "copypaste-3-10", "ExpansionAttack",  "MisspellingAttack", "synonym-0.4", "copypaste-1-10", "dipper_l20_o0", "LowercaseAttack", "swap", "TypoAttack"]
 attacks = ["swap","translation","synonym-0.4", "copypaste-1-10","copypaste-3-10","copypaste-1-25","copypaste-3-25", "ContractionAttack", "ExpansionAttack",  "MisspellingAttack",   "dipper_l20_o0", "dipper_l40_o0", "LowercaseAttack", "TypoAttack"]
 # attacks = ["ContractionAttack",  "ExpansionAttack",  "MisspellingAttack", "synonym-0.4",  "LowercaseAttack", "swap", "TypoAttack"]
 # 常用颜色
-colors = ['b', 'g',  'c', 'm', 'y', 'k']
+# colors = ['b', 'g',  'c', 'm', 'y', 'k']
 tpr_dict = defaultdict(dict)
-
+dataset = 'c4'
 # 创建一个空字典来存储roc_auc值
 roc_auc_dict = {}
 
@@ -67,7 +91,7 @@ for i, watermark_type in enumerate(watermark_types):
     tpr_scores = []
     fpr_scores = []  # 新增 FPR 列表
     
-    clean_data_list = read_file(f'/home/jkl6486/sok-llm-watermark/runs/token_200/{watermark_type}/hc3/opt/gen_table_w_metrics.jsonl')
+    clean_data_list = read_file(f'/home/jkl6486/sok-llm-watermark/runs/token_200/{watermark_type}/{dataset}/opt/gen_table_w_metrics.jsonl')
     if "baseline_completion_z_score" in clean_data_list[0]:
         clean_baseline_completion_z_score = [data["baseline_completion_z_score"] for data in clean_data_list]
         clean_baseline_completion_z_score = [score if not math.isinf(score) and not math.isnan(score) else 0 for score in clean_baseline_completion_z_score]
@@ -111,7 +135,7 @@ for i, watermark_type in enumerate(watermark_types):
     for j, attack in enumerate(attacks):
         # print(f"Processing {watermark_type} with {attack}...")
         try:
-            data_list = read_file(f'/home/jkl6486/sok-llm-watermark/runs/token_200/{watermark_type}/hc3/opt/{attack}/gen_table_w_metrics.jsonl')
+            data_list = read_file(f'/home/jkl6486/sok-llm-watermark/runs/token_200/{watermark_type}/{dataset}/opt/{attack}/gen_table_w_metrics.jsonl')
         except:
             print(f"Missing {watermark_type} with {attack}...")
             continue
@@ -168,7 +192,7 @@ for ax in axs:
     ax.set_ylabel('True Positive Rate')
     
 plt.tight_layout()
-plt.savefig(f'./plot/full_roc_token_200hc3.pdf')
+plt.savefig(f'./plot/newplot/output/full_roc_token_200_{dataset}.pdf')
 
 
 
@@ -211,7 +235,7 @@ for i, watermark in enumerate(watermark_types):
 plt.tight_layout()
 
 # 保存图形
-plt.savefig(f'./plot/full_roc_value_token_200hc3.pdf')
+plt.savefig(f'./plot/newplot/output/full_roc_value_token_200_{dataset}.pdf')
 
 
 print("=======TPR===========")
@@ -248,7 +272,7 @@ for i, attack in enumerate(attacks):
 plt.tight_layout()
 
 # 保存图形
-plt.savefig(f'./plot/full_roc_value_token_200_tpr001111hc3.pdf')
+plt.savefig(f'./plot/newplot/output/full_roc_value_token_200_tpr001111_{dataset}.pdf')
 
 
 # methods = list(tpr_dict.keys())
