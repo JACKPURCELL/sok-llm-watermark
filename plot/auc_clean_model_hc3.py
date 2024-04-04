@@ -8,7 +8,7 @@ from matplotlib.patches import Rectangle
 from transformers import AutoTokenizer
 plt.rcParams['font.size'] = 14
 tpr_dict = defaultdict(dict)
-dataset = "hc3"
+dataset = "c4"
 watermark_types = ["john23", "xuandong23b", "aiwei23", "rohith23", "xiaoniu23", "lean23", "scott22", "aiwei23b"]
 replace_dict = {
     "john23": "TGRL",
@@ -80,7 +80,7 @@ for i, watermark_type in enumerate(watermark_types):
         y_score = baseline_completion_z_score + w_wm_output_z_score
 
         # 计算 ROC 曲线
-        new_fpr, new_tpr, _ = roc_curve(y_true, y_score)
+        new_fpr, new_tpr, thresholds = roc_curve(y_true, y_score)
 
 
         
@@ -92,7 +92,7 @@ for i, watermark_type in enumerate(watermark_types):
         # 找到最接近0.01的FPR值对应的TPR值
         idx = np.abs(new_fpr-0.01).argmin()
         tpr_at_fpr_0_01 = new_tpr[idx]
-
+        print('threshold_',models[k],watermark_type, ": ",thresholds[idx])
         # 检查FPR是否等于0
         if tpr_at_fpr_0_01 == 0:
             # print("Warning: FPR is 0. Replacing with a small value.")

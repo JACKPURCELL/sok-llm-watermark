@@ -41,11 +41,14 @@ class aiwei23b_WatermarkDetector():
         z_score = self.watermark_model.detect(kwargs["prompt"]+text)
         output_dict = {}
         output_dict["z_score"] = z_score
+        output_dict["prediction"] = z_score > 0.2496753585975497
+        
         return output_dict
     
     def dummy_detect(self, text: str = None, **kwargs):
         output_dict = {}
         output_dict["z_score"] = 0
+        output_dict["prediction"] = False
         return output_dict
     
     

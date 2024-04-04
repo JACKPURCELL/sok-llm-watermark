@@ -6,7 +6,7 @@
 watermark_types=("aiwei23b")
 
 models=("opt")
-gpus=("0,1")
+gpus=("3,0")
 
 for watermark_type in "${watermark_types[@]}"; do
 echo "start $watermark_type"
@@ -25,7 +25,7 @@ done
 
 
 watermark_types=("aiwei23b")
-gpus=("0,1")
+gpus=("3,0")
 
 models=("llama")
 
