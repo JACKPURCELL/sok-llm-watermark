@@ -426,6 +426,32 @@
             ]
         },
         {
+            "name": "attack_gpt_pipeline",
+            
+              "type": "python",
+              "request": "launch",
+              "program": "watermark_reliability_release/attack_pipeline.py",
+              "console": "integratedTerminal",
+              "justMyCode": true,
+              "env": {
+                  "CUDA_VISIBLE_DEVICES": "2"
+              },
+              "args": [
+                  
+                  "--run_name",
+                  "test-john23",
+                  "--input_dir",
+                  "/home/jkl6486/sok-llm-watermark/runs_server3/token_200/john23/c4/llama/gptattack_base_0",
+                  "--output_dir",
+                  "/home/jkl6486/sok-llm-watermark/runs_server3/token_200/john23/c4/llama/gptattack_1",
+                  "--attack_method",
+                  "gpt",
+                  "--overwrite_args",
+                  "True",
+                 
+              ]
+          },
+        {
             "name": "attack_translation_pipeline",
             
               "type": "python",

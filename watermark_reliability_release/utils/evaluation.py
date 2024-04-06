@@ -240,7 +240,7 @@ def load_detector(args):
         case 'aiwei23':
             model, tokenizer, device = load_model(args)
             data_dir = args.data_dir+str(args.model_name_or_path)+"/"
-            model_dir = args.model_dir+str(args.model_name_or_path)+"/"
+            model_dir = args.model_dir+str(args.model_name_or_path)+"/"+str(args.dataset_name)+"/"
             if args.use_sampling:
                 data_dir += str(args.sampling_temp) + "/"
                 model_dir += str(args.sampling_temp) + "/"

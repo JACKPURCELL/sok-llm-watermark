@@ -158,10 +158,10 @@ def main(args):
 
     if args.attack_method == "gpt":
         print("Running GPT attack")
-        import openai
+        # import openai
 
-        openai.api_key = os.environ["OPENAI_API_KEY"]
-        prompt_pool = read_json("utils/prompts.json")["prompt_pool"]
+        # openai.api_key = os.environ["OPENAI_API_KEY"]
+        prompt_pool = read_json("./watermark_reliability_release/utils/prompts.json")["prompt_pool"]
         prompt_pool = {int(k): v for k, v in prompt_pool.items()}
 
         if args.attack_prompt is None:
@@ -408,7 +408,7 @@ if __name__ == "__main__":
     parser.add_argument(
         "--attack_model_name",
         type=str,
-        default="gpt-3.5-turbo",
+        default="gpt-3.5-turbo-0125",
     )
     parser.add_argument(
         "--attack_temperature",
@@ -423,7 +423,7 @@ if __name__ == "__main__":
     parser.add_argument(
         "--attack_prompt_id",
         type=int,
-        default=4,
+        default=2,
     )
     parser.add_argument(
         "--attack_prompt",

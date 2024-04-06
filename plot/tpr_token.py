@@ -24,7 +24,7 @@ fig, ax = plt.subplots(figsize=(12, 7))
 colors = ['b', 'g', 'r', 'c', 'm', 'y', 'k']  # 添加这一行来定义颜色列表
 
 for i, watermark_type in enumerate(watermark_types):
-    file_path = f"/home/jkl6486/sok-llm-watermark/runs/token_200/{watermark_type}/c4/opt/truncated/gen_table_w_metrics.jsonl"
+    file_path = f"/home/jkl6486/sok-llm-watermark/runs_server3/token_200/{watermark_type}/c4/opt/truncated/gen_table_w_metrics.jsonl"
     data_list = []
     with open(file_path, 'r') as f:
         for line in f:
@@ -45,14 +45,14 @@ for i, watermark_type in enumerate(watermark_types):
         # Determine the index for the token_lengths based on the output length
         index = min(max((data["w_wm_output_length"] - 1) // 10, 0), 19)
         # Update the counts
-        true_positives[index] += 1 if data["w_wm_output_z_score"] > thresholds[watermark_type] else 0
+        true_positives[index] += 1 if data["w_wm_output_z_score"] > thresholds[watermark_type] or  data["w_wm_output_prediction"] else 0
         total_counts[index] += 1
 
     # Calculate the TPR for each token length range
     tprs = [tp / total if total else 0 for tp, total in zip(true_positives, total_counts)]
 
     # Plotting
-    ax.plot(token_lengths, tprs, color=colors[i % len(colors)], linestyle='-', marker='o', markersize=5, label=f'TPR vs. Token Length ({watermark_type})')
+    ax.plot(token_lengths, tprs, color=colors[i % len(colors)], linestyle='-', marker='o', markersize=5, label=f'{watermark_type}')
 
 ax.set_xlabel('Token Length')
 ax.set_ylabel('True Positive Rate (TPR)')

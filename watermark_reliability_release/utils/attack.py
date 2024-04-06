@@ -31,7 +31,7 @@ from utils.swap_attack import SwapAttack
 import utils.oracle_attack.attack as oracle_att
 from utils.synonym import SynonymAttack
 # SUPPORTED_ATTACK_METHODS = ["gpt", "dipper", "copy-paste", "scramble"]
-SUPPORTED_ATTACK_METHODS = [ "dipper", "copy-paste", "scramble","helm","oracle","swap","synonym","translation"]
+SUPPORTED_ATTACK_METHODS = ["gpt",  "dipper", "copy-paste", "scramble","helm","oracle","swap","synonym","translation"]
 
 
 def scramble_attack(example, tokenizer=None, args=None):
@@ -65,21 +65,48 @@ def gpt_attack(example, attack_prompt=None, args=None):
     attacker_query = attack_prompt + original_text
     query_msg = {"role": "user", "content": attacker_query}
 
-    from tenacity import retry, stop_after_attempt, wait_random_exponential
 
-    # https://github.com/openai/openai-cookbook/blob/main/examples/How_to_handle_rate_limits.ipynb
-    @retry(wait=wait_random_exponential(min=1, max=60), stop=stop_after_attempt(25))
-    def completion_with_backoff(model, messages, temperature, max_tokens):
-        return openai.ChatCompletion.create(
-            model=model, messages=messages, temperature=temperature, max_tokens=max_tokens
-        )
+    from openai import OpenAI
+    client = OpenAI()
 
-    outputs = completion_with_backoff(
-        model=args.attack_model_name,
-        messages=[query_msg],
-        temperature=args.attack_temperature,
-        max_tokens=args.attack_max_tokens,
-    )
+    # response = client.chat.completions.create(
+    # model="gpt-3.5-turbo-0125",
+    # response_format={ "type": "json_object" },
+    # messages=[
+    #     {"role": "system", "content": "You are a helpful assistant designed to output JSON."},
+    #     {"role": "user", "content": "Who won the world series in 2020?"}
+    # ]
+    # )
+    # print(response.choices[0].message.content)
+
+    # from tenacity import retry, stop_after_attempt, wait_random_exponential
+
+    # # https://github.com/openai/openai-cookbook/blob/main/examples/How_to_handle_rate_limits.ipynb
+    # @retry(wait=wait_random_exponential(min=1, max=60), stop=stop_after_attempt(6))
+    # def completion_with_backoff(model, messages, temperature, max_tokens):
+    #     return openai.ChatCompletion.create(
+    #         model=model, messages=messages, temperature=temperature, max_tokens=max_tokens
+    #     )
+
+    from tenacity import (
+        retry,
+        stop_after_attempt,
+        wait_random_exponential,
+    )  # for exponential backoff
+
+    @retry(wait=wait_random_exponential(min=1, max=60), stop=stop_after_attempt(6))
+    def completion_with_backoff(**kwargs):
+        return client.chat.completions.create(**kwargs)
+
+
+    outputs = completion_with_backoff(model="gpt-3.5-turbo", messages=[query_msg])
+
+    # outputs = completion_with_backoff(
+    #     model=args.attack_model_name,
+    #     messages=[query_msg],
+    #     temperature=args.attack_temperature,
+    #     max_tokens=args.attack_max_tokens,
+    # )
 
     attacked_text = outputs.choices[0].message.content
     assert (
