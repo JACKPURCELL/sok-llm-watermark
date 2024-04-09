@@ -2,6 +2,8 @@ import matplotlib.pyplot as plt
 import numpy as np
 import math
 import json
+from matplotlib.ticker import FuncFormatter
+
 from sklearn.metrics import f1_score, confusion_matrix, roc_curve, auc
 from transformers import AutoTokenizer
 plt.rcParams['font.size'] = 18  # 设置全局字体大小为14
@@ -118,8 +120,10 @@ with open('./plot/newplot/output/attack_sentiment——output.txt', 'w') as f:
 
 for i, metric in enumerate(metrics):
     averages = {attack: np.mean([data[metric] for data in read_file(f'/home/jkl6486/sok-llm-watermark/runs/token_200/{watermark_type}/{dataset}/opt/{attack}/gen_table_w_metrics.jsonl')]) for attack in attacks}
-    # axs[i].bar(range(len(attacks)), [averages[attack] for attack in attacks], bar_width, alpha=opacity)
-    axs[i].bar(range(len(attacks)), [averages[attack] for attack in attacks], bar_width, alpha=opacity, color=[colors[j % len(colors)] for j in range(len(attacks))])  # 修改这一行来设置颜色
+    bars = axs[i].bar(range(len(attacks)), [averages[attack] for attack in attacks], bar_width, alpha=opacity, color=[colors[j % len(colors)] for j in range(len(attacks))])  # 修改这一行来设置颜色
+    for j, rect in enumerate(bars):
+        height = rect.get_height()
+        axs[i].text(rect.get_x() + rect.get_width() / 2, height, '{:.2f}'.format(height), ha='center', va='bottom')
     axs[i].set_xlabel('Attacks')
     axs[i].set_ylabel('Average Value')
     axs[i].set_title(f'Average {metric.replace("w_wm_output_vs_w_wm_output_attacked_", "")} for Different Attacks')

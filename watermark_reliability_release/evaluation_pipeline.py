@@ -131,6 +131,8 @@ def main(args):
         os.path.exists(gen_table_meta_path),
         os.path.exists(gen_table_path),
     ]
+    print(gen_table_meta_path)
+    print(gen_table_path)
     if not all(attack_variants_exist):
         loaded_attacked = False
         gen_table_meta_path = f"{args.input_dir}/gen_table_meta.json"
@@ -1314,7 +1316,7 @@ if __name__ == "__main__":
             )
         case 'xuandong23b':    
             parser.add_argument("--xd_threshold", type=float, default=4.0)
-            parser.add_argument("--fraction", type=float, default=0.5)
+            parser.add_argument("--fraction", type=float, default=None)
             parser.add_argument("--strength", type=float, default=2.0)
             parser.add_argument("--wm_key", type=int, default=0)
         case 'lean23':    

@@ -35,8 +35,9 @@ dataset = 'c4'
 #                     length = len(tokenizer(data["w_wm_output"])['input_ids'])
 
 #             if length>180 and (data["w_wm_output_z_score"]>thresholds[watermark_type] or data["w_wm_output_prediction"]):
+#             # if length>180 and data["w_wm_output_z_score"]>thresholds[watermark_type] :
 #                 data_list.append(json.loads(line))
-#     data_list = data_list[:100]
+#     data_list = data_list[100:200]
 #     return data_list
 
 
@@ -44,20 +45,20 @@ dataset = 'c4'
 #     clean_data_list = read_file(f'/home/jkl6486/sok-llm-watermark/runs_server3/token_200/{watermark_type}/{dataset}/llama/gen_table_w_metrics.jsonl',watermark_type)
     
 #     # Define the directory path
-#     dir_path = f'/home/jkl6486/sok-llm-watermark/runs_server3/token_200/{watermark_type}/{dataset}/llama/gptattack_base_0'
+#     dir_path = f'/home/jkl6486/sok-llm-watermark/runs_server3/token_200/{watermark_type}/{dataset}/llama/exp_2_gptattack_base_0'
 
 #     # Create the directory
 #     os.makedirs(dir_path, exist_ok=True)
 
 #         # Open the file in write mode
-#     with open(f'/home/jkl6486/sok-llm-watermark/runs_server3/token_200/{watermark_type}/{dataset}/llama/gptattack_base_0/gen_table.jsonl', 'w') as f:
+#     with open(f'/home/jkl6486/sok-llm-watermark/runs_server3/token_200/{watermark_type}/{dataset}/llama/exp_2_gptattack_base_0/gen_table.jsonl', 'w') as f:
 #         # Write each item on a new line
 #         for item in clean_data_list:
 #             f.write(json.dumps(item) + "\n")
             
     
 #     src_file = f'/home/jkl6486/sok-llm-watermark/runs_server3/token_200/{watermark_type}/{dataset}/llama/gen_table_meta.json'
-#     dst_file = f'/home/jkl6486/sok-llm-watermark/runs_server3/token_200/{watermark_type}/{dataset}/llama/gptattack_base_0/gen_table_meta.json'
+#     dst_file = f'/home/jkl6486/sok-llm-watermark/runs_server3/token_200/{watermark_type}/{dataset}/llama/exp_2_gptattack_base_0/gen_table_meta.json'
 
 #     # Copy the file
 #     shutil.copy(src_file, dst_file)
@@ -76,24 +77,37 @@ def read_file(file,watermark_type):
             data_list.append(data)
     return data_list
 
+import argparse
+
+# Create a parser
+parser = argparse.ArgumentParser(description='Process some integers.')
+
+# Add an argument
+parser.add_argument('--exp', type=str, help='The experiment to run')
+# {args.exp}
+# Parse the arguments
+args = parser.parse_args()
+
 for watermark_type in watermark_types:
-    clean_data_list = read_file(f'/home/jkl6486/sok-llm-watermark/runs_server3/token_200/{watermark_type}/{dataset}/llama/gptattack_4/gen_table_attacked.jsonl',watermark_type)
+    clean_data_list = read_file(f'/home/jkl6486/sok-llm-watermark/runs_server3/token_200/{watermark_type}/{dataset}/llama/{args.exp}/gen_table_attacked.jsonl',watermark_type)
     
     # # Define the directory path
-    # dir_path = f'/home/jkl6486/sok-llm-watermark/runs_server3/token_200/{watermark_type}/{dataset}/llama/gptattack_4'
+    # dir_path = f'/home/jkl6486/sok-llm-watermark/runs_server3/token_200/{watermark_type}/{dataset}/llama/{args.exp}'
 
     # # Create the directory
     # os.makedirs(dir_path, exist_ok=True)
 
         # Open the file in write mode
-    with open(f'/home/jkl6486/sok-llm-watermark/runs_server3/token_200/{watermark_type}/{dataset}/llama/gptattack_4/gen_table.jsonl', 'w') as f:
+    with open(f'/home/jkl6486/sok-llm-watermark/runs_server3/token_200/{watermark_type}/{dataset}/llama/{args.exp}/gen_table.jsonl', 'w') as f:
         # Write each item on a new line
         for item in clean_data_list:
             f.write(json.dumps(item) + "\n")
             
-    
+
     src_file = f'/home/jkl6486/sok-llm-watermark/runs_server3/token_200/{watermark_type}/{dataset}/llama/gen_table_meta.json'
-    dst_file = f'/home/jkl6486/sok-llm-watermark/runs_server3/token_200/{watermark_type}/{dataset}/llama/gptattack_4/gen_table_meta.json'
+    dst_file = f'/home/jkl6486/sok-llm-watermark/runs_server3/token_200/{watermark_type}/{dataset}/llama/{args.exp}/gen_table_meta.json'
 
     # Copy the file
     shutil.copy(src_file, dst_file)
+print(f"finish writing {args.exp}")
+    

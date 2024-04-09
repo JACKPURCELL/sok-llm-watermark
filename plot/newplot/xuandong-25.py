@@ -7,7 +7,7 @@ from transformers import AutoTokenizer
 plt.rcParams['font.size'] = 18  # 设置全局字体大小为14
 from collections import defaultdict
 
-watermark_types = ["john23","xuandong23b","aiwei23","rohith23","xiaoniu23","aiwei23b","scott22"]
+watermark_types = ["xuandong23b"]
 replace_dict = {
     "john23": "TGRL",
     "xuandong23b": "UG",
@@ -33,12 +33,13 @@ colors = [
 
 
 # attacks = ["ContractionAttack", "copypaste-3-10", "ExpansionAttack",  "MisspellingAttack", "synonym-0.4", "copypaste-1-10", "dipper_l20_o0", "LowercaseAttack", "swap", "TypoAttack"]
-attacks = ["swap","translation","synonym-0.4", "copypaste-1-10","copypaste-3-10","copypaste-1-25","copypaste-3-25", "ContractionAttack", "ExpansionAttack",  "MisspellingAttack",   "dipper_l20_o0", "dipper_l40_o0", "LowercaseAttack", "TypoAttack"]
+attacks = ["copypaste-1-10","copypaste-3-10","copypaste-1-25","copypaste-3-25"]
 # attacks = ["ContractionAttack",  "ExpansionAttack",  "MisspellingAttack", "synonym-0.4",  "LowercaseAttack", "swap", "TypoAttack"]
 # 常用颜色
 # colors = ['b', 'g',  'c', 'm', 'y', 'k']
 tpr_dict = defaultdict(dict)
-dataset = 'hc3'
+dataset = 'c4'
+model = 'opt'
 # 创建一个空字典来存储roc_auc值
 roc_auc_dict = {}
 
@@ -91,7 +92,7 @@ for i, watermark_type in enumerate(watermark_types):
     tpr_scores = []
     fpr_scores = []  # 新增 FPR 列表
     
-    clean_data_list = read_file(f'/home/jkl6486/sok-llm-watermark/runs/token_200/{watermark_type}/{dataset}/opt/gen_table_w_metrics.jsonl')
+    clean_data_list = read_file(f'/home/jkl6486/sok-llm-watermark/runs/token_200/{watermark_type}/{dataset}/opt-25/gen_table_w_metrics.jsonl')
     if "baseline_completion_z_score" in clean_data_list[0]:
         clean_baseline_completion_z_score = [data["baseline_completion_z_score"] for data in clean_data_list]
         clean_baseline_completion_z_score = [score if not math.isinf(score) and not math.isnan(score) else 0 for score in clean_baseline_completion_z_score]
@@ -135,7 +136,7 @@ for i, watermark_type in enumerate(watermark_types):
     for j, attack in enumerate(attacks):
         # print(f"Processing {watermark_type} with {attack}...")
         try:
-            data_list = read_file(f'/home/jkl6486/sok-llm-watermark/runs/token_200/{watermark_type}/{dataset}/opt/{attack}/gen_table_w_metrics.jsonl')
+            data_list = read_file(f'/home/jkl6486/sok-llm-watermark/runs/token_200/{watermark_type}/{dataset}/opt-25/{attack}/gen_table_w_metrics.jsonl')
         except:
             print(f"Missing {watermark_type} with {attack}...")
             continue
@@ -184,6 +185,7 @@ for i, watermark_type in enumerate(watermark_types):
         #     axs[i].text(rect.get_x() + rect.get_width()/2., 1.05*height, '%.2f' % height, ha='center', va='bottom')
   
 
+
 for ax in axs:
     ax.plot([0, 1], [0, 1], color='navy', lw=2, linestyle='--')
     ax.set_xlim([0.0, 1.0])
@@ -192,7 +194,7 @@ for ax in axs:
     ax.set_ylabel('True Positive Rate')
     
 plt.tight_layout()
-plt.savefig(f'./plot/newplot/output/full_roc_token_200_{dataset}.pdf')
+plt.savefig(f'./plot/newplot/output/full_roc_token_200_{dataset}_{model}.pdf')
 
 
 
@@ -235,7 +237,7 @@ for i, watermark in enumerate(watermark_types):
 plt.tight_layout()
 
 # 保存图形
-plt.savefig(f'./plot/newplot/output/full_roc_value_token_200_{dataset}.pdf')
+plt.savefig(f'./plot/newplot/output/full_roc_value_token_200_{dataset}_{model}.pdf')
 
 
 print("=======TPR===========")
@@ -243,7 +245,7 @@ print("=======TPR===========")
 fig3, axs3 = plt.subplots(4, 4, figsize=(40, 40))
 axs3 = axs3.flatten()
 
-with open(f'./plot/newplot/output/output_{dataset}.txt', 'w') as f:
+with open(f'./plot/newplot/output/output_{dataset}_{model}.txt', 'w') as f:
 
     for watermark in watermark_types:
         for attack in attacks:
@@ -270,12 +272,12 @@ for i, attack in enumerate(attacks):
 plt.tight_layout()
 
 # 保存图形
-plt.savefig(f'./plot/newplot/output/full_roc_value_token_200_tpr001111_{dataset}.pdf')
+plt.savefig(f'./plot/newplot/output/full_roc_value_token_200_tpr001111_{dataset}_{model}.pdf')
 
 
 # methods = list(tpr_dict.keys())
 # opt_scores = [tpr_dict[method]["OPT"] for method in methods]
-# llama2_scores = [tpr_dict[method]["LLAMA2"] for method in methods]
+# opt2_scores = [tpr_dict[method]["opt2"] for method in methods]
 
 # x = list(range(len(methods)))  # 将range对象转换为列表
 
@@ -285,7 +287,7 @@ plt.savefig(f'./plot/newplot/output/full_roc_value_token_200_tpr001111_{dataset}
 # # Plot
 # fig, ax = plt.subplots(figsize=(7, 4))
 # ax.bar([xi - width/2 for xi in x], opt_scores, width=width, label="OPT", align="center")
-# ax.bar([xi + width/2 for xi in x], llama2_scores, width=width, label="LLAMA2", align="center")
+# ax.bar([xi + width/2 for xi in x], opt2_scores, width=width, label="opt2", align="center")
 
 # ax.set_xlabel("Methods")
 # ax.set_ylabel('TPR at FPR=0.01')

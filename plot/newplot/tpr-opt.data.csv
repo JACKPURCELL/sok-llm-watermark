@@ -1,5 +1,4 @@
 john23,swap,0.874,c4
-john23,translation,0,c4
 john23,synonym-0.4,0.996,c4
 john23,copypaste-1-10,0.034,c4
 john23,copypaste-3-10,0.176,c4
@@ -14,7 +13,6 @@ john23,LowercaseAttack,0.984,c4
 john23,TypoAttack,0.788,c4
 john23,CLEAN,0.992,c4
 xuandong23b,swap,0.9558823529,c4
-xuandong23b,translation,1,c4
 xuandong23b,synonym-0.4,0.9645833333,c4
 xuandong23b,copypaste-1-10,0.1305361305,c4
 xuandong23b,copypaste-3-10,0.2191142191,c4
@@ -29,7 +27,6 @@ xuandong23b,LowercaseAttack,0.8791666667,c4
 xuandong23b,TypoAttack,0.8838174274,c4
 xuandong23b,CLEAN,0.964,c4
 aiwei23,swap,0.6666666667,c4
-aiwei23,translation,0,c4
 aiwei23,synonym-0.4,0.7635270541,c4
 aiwei23,copypaste-1-10,0.04988662132,c4
 aiwei23,copypaste-3-10,0.07256235828,c4
@@ -44,7 +41,6 @@ aiwei23,LowercaseAttack,0.6853707415,c4
 aiwei23,TypoAttack,0.3547094188,c4
 aiwei23,CLEAN,0.776,c4
 rohith23,swap,0.9509803922,c4
-rohith23,translation,0,c4
 rohith23,synonym-0.4,0.9903614458,c4
 rohith23,copypaste-1-10,0.09418282548,c4
 rohith23,copypaste-3-10,0.3961218837,c4
@@ -59,7 +55,6 @@ rohith23,LowercaseAttack,0.9831325301,c4
 rohith23,TypoAttack,0.9612756264,c4
 rohith23,CLEAN,0.996,c4
 xiaoniu23,swap,0.03,c4
-xiaoniu23,translation,1,c4
 xiaoniu23,synonym-0.4,0.992,c4
 xiaoniu23,copypaste-1-10,0.002304147465,c4
 xiaoniu23,copypaste-3-10,0.009216589862,c4
@@ -74,7 +69,6 @@ xiaoniu23,LowercaseAttack,0.946,c4
 xiaoniu23,TypoAttack,0.088,c4
 xiaoniu23,CLEAN,1,c4
 aiwei23b,swap,0.932,c4
-aiwei23b,translation,0,c4
 aiwei23b,synonym-0.4,0.936,c4
 aiwei23b,copypaste-1-10,0.138,c4
 aiwei23b,copypaste-3-10,0.21,c4
@@ -89,7 +83,6 @@ aiwei23b,LowercaseAttack,0.886,c4
 aiwei23b,TypoAttack,0.566,c4
 aiwei23b,CLEAN,0.954,c4
 scott22,swap,0.92,c4
-scott22,translation,0,c4
 scott22,synonym-0.4,0.996,c4
 scott22,copypaste-1-10,0.1804979253,c4
 scott22,copypaste-3-10,0.5892116183,c4
@@ -208,3 +201,10 @@ scott22,dipper_l40_o0,0.9344262295,hc3
 scott22,LowercaseAttack,1,hc3
 scott22,TypoAttack,0.9672897196,hc3
 scott22,CLEAN,1,hc3
+john23,translation,0.256,c4
+xuandong23b,translation,0.34591194968553457,c4
+aiwei23,translation,0.044,c4
+rohith23,translation,0.01,c4
+xiaoniu23,translation,0.092,c4
+aiwei23b,translation,0.068,c4
+scott22,translation,0.812,c4

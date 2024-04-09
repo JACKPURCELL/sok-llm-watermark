@@ -4,9 +4,12 @@ import math
 import json
 from sklearn.metrics import roc_curve, auc
 from transformers import AutoTokenizer
-plt.rcParams['font.size'] = 14  # 设置全局字体大小为14
+import matplotlib
+plt.rcParams['font.size'] = 14
+matplotlib.rcParams['font.family'] = 'optima'
+matplotlib.rcParams['font.weight'] = 'medium'
 
-watermark_types = ["john23","xuandong23b","aiwei23","lean23","rohith23","aiwei23b","scott22"]
+watermark_types = ["john23","xuandong23b","aiwei23","xiaoniu23","rohith23","aiwei23b","scott22"]
 thresholds = {
     "john23": 2.358025378986253,
     "xuandong23b": 2.545584412271571,
@@ -17,14 +20,31 @@ thresholds = {
     "scott22": 0.17697394677108003,
     "aiwei23b": 0.2496753585975497
 }
-
+watermark_colors = {
+    "rohith23": "orange",
+    "xuandong23b": "deepskyblue",
+    "john23": "limegreen",
+    "aiwei23": "purple",
+    "xiaoniu23": "magenta",
+    "aiwei23b": "red",
+    "scott22": "royalblue"
+}
+replace_dict = {
+    "john23": "TGRL",
+    "xuandong23b": "UG",
+    "aiwei23": "UPV",
+    "rohith23": "RDF",
+    "xiaoniu23": "UB",
+    "scott22": "GO",
+    "aiwei23b": "SIR",
+}
 tokenizer = AutoTokenizer.from_pretrained("facebook/opt-1.3b")
-fig, ax = plt.subplots(figsize=(12, 7))
+fig, ax = plt.subplots(figsize=(7, 4))
 
 colors = ['b', 'g', 'r', 'c', 'm', 'y', 'k']  # 添加这一行来定义颜色列表
 
 for i, watermark_type in enumerate(watermark_types):
-    file_path = f"/home/jkl6486/sok-llm-watermark/runs_server3/token_200/{watermark_type}/c4/opt/truncated/gen_table_w_metrics.jsonl"
+    file_path = f"/home/jkl6486/sok-llm-watermark/runs/token_200/{watermark_type}/c4/opt/truncated/gen_table_w_metrics.jsonl"
     data_list = []
     with open(file_path, 'r') as f:
         for line in f:
@@ -45,24 +65,35 @@ for i, watermark_type in enumerate(watermark_types):
         # Determine the index for the token_lengths based on the output length
         index = min(max((data["w_wm_output_length"] - 1) // 10, 0), 19)
         # Update the counts
-        true_positives[index] += 1 if data["w_wm_output_z_score"] > thresholds[watermark_type] or  data["w_wm_output_prediction"] else 0
+        true_positives[index] += 1 if data["w_wm_output_z_score"] > thresholds[watermark_type]  else 0
         total_counts[index] += 1
 
     # Calculate the TPR for each token length range
     tprs = [tp / total if total else 0 for tp, total in zip(true_positives, total_counts)]
 
     # Plotting
-    ax.plot(token_lengths, tprs, color=colors[i % len(colors)], linestyle='-', marker='o', markersize=5, label=f'{watermark_type}')
+    ax.plot(token_lengths, tprs, color=watermark_colors[watermark_type], linestyle='-', marker='o', markersize=5, label=f'{replace_dict[watermark_type]}',linewidth=2)
 
 ax.set_xlabel('Token Length')
-ax.set_ylabel('True Positive Rate (TPR)')
-ax.set_title('TPR by Token Length for Watermarked Outputs')
-ax.grid(True)
+ax.set_ylabel('TPR (with FPR = 0.01)')
+# ax.set_title('TPR by Token Length for Watermarked Outputs')
+ax.grid(True, linestyle='--')
 
-ax.legend()
+ax.legend(ncol=2)
 plt.ylim(0, 1.05)
+# for y in np.arange(0, 1.05, 0.2):
+#     ax.axhline(y, color='gray', linewidth=0.5, linestyle='--', zorder=0)
+
 plt.xticks(range(20, 201, 20))
-plt.savefig('plot/tpr_token.pdf')
+ax.spines['top'].set_visible(False)
+ax.spines['right'].set_visible(False)
+ax.spines['left'].set_visible(False)
+ax.tick_params(axis='y', length=0)
+
+plt.tight_layout()
+plt.savefig('./plot/newplot/output/tpr_token.pdf')
+
+print('./plot/newplot/output/tpr_token.pdf')
 
 # import matplotlib.pyplot as plt
 # import numpy as np

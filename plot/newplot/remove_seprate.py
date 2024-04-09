@@ -20,18 +20,15 @@ replace_dict = {
 }
 
 
-colors = [
-    'darkorange',
-    'deepskyblue',
-    'limegreen',
-    'violet',
-    'goldenrod',
-    'lightpink',
-
-    'teal'
-]
-
-color_dict = dict(zip(watermark_types, colors))
+watermark_colors = {
+    "rohith23": "orange",
+    "xuandong23b": "deepskyblue",
+    "john23": "limegreen",
+    "aiwei23": "purple",
+    "xiaoniu23": "magenta",
+    "aiwei23b": "red",
+    "scott22": "royalblue"
+}
 
 attacks = ["swap","translation","synonym-0.4", "copypaste-1-10","copypaste-3-10","copypaste-1-25","copypaste-3-25", "ContractionAttack", "ExpansionAttack",  "MisspellingAttack",   "dipper_l20_o0", "dipper_l40_o0", "LowercaseAttack", "TypoAttack"]
 dataset=["hc3","c4"]
@@ -40,7 +37,7 @@ import matplotlib.pyplot as plt
 
 # Read the data
 data = {}
-with open('/home/ljc/sok-llm-watermark/plot/newplot/tpr.data.csv', 'r') as f:
+with open('/home/ljc/sok-llm-watermark/plot/newplot/tpr-llama.csv', 'r') as f:
     reader = csv.reader(f)
     # next(reader)  # Skip the header
 
@@ -63,10 +60,9 @@ alphas = [1.0,0.5]
 methods = list(data[attacks[0]][datasets[0]].keys())  # Get the methods from the data
 
 attack_categories = {
-    "Textual Integrity Attacks": ["synonym-0.4", "MisspellingAttack", "TypoAttack"],
+    "Textual Integrity Attacks": ["synonym-0.4", "MisspellingAttack", "TypoAttack","swap"],
     "Content Manipulation": ["copypaste-1-10", "copypaste-3-10","copypaste-1-25","copypaste-3-25"],
     "Linguistic Variation Attacks": ["ContractionAttack", "ExpansionAttack", "LowercaseAttack"],
-    "Attack-Resistant Strategies": ["swap"],
     "Paraphrase Attack": ["dipper_l20_o0","dipper_l40_o0"]
 }
 
@@ -86,16 +82,16 @@ for category, attacks in attack_categories.items():
     for i, attack in enumerate(attacks):
         for j, dataset in enumerate(datasets):
             values = [data[attack][dataset][method] for method in methods]
-            colors = [color_dict.get(method, "black") for method in methods]
+            colors = [watermark_colors.get(method, "black") for method in methods]
             axs[i // 2][i % 2].bar([x + j*0.4 for x in range(len(methods))], values, width=0.4, label=dataset, color=colors, alpha=alphas[j])
 
-        axs[i // 2][i % 2].set_title(attack)
+        axs[i // 2][i % 2].set_title(attack+"_LLAMA")
         axs[i // 2][i % 2].set_xticks(range(len(methods)))
         axs[i // 2][i % 2].set_xticklabels(methods, rotation=30, ha='right')
         axs[i // 2][i % 2].legend()
 
     plt.tight_layout()
-    plt.savefig(f'./plot/newplot/output/{category.replace(" ", "_")}.pdf')  # Save the figure with the category name
+    plt.savefig(f'./plot/newplot/output/{category.replace(" ", "_")}_llama.pdf')  # Save the figure with the category name
 
     plt.close(fig)  # Close the figure to free up memory
 # \subsubsection{Textual Integrity Attacks: Synonym Substitution, Misspelling, and Typographical Errors}

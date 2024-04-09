@@ -6,17 +6,19 @@ import json
 from sklearn.metrics import roc_curve, auc
 from matplotlib.patches import Rectangle
 from transformers import AutoTokenizer
+import matplotlib
 plt.rcParams['font.size'] = 14
+matplotlib.rcParams['font.family'] = 'optima'
+matplotlib.rcParams['font.weight'] = 'medium'
 tpr_dict = defaultdict(dict)
-dataset = "c4"
-watermark_types = ["john23", "xuandong23b", "aiwei23", "rohith23", "xiaoniu23", "lean23", "scott22", "aiwei23b"]
+dataset = "hc3"
+watermark_types = ["john23", "xuandong23b",  "rohith23", "scott22", "xiaoniu23",  "aiwei23","aiwei23b"]
 replace_dict = {
     "john23": "TGRL",
     "xuandong23b": "UG",
     "aiwei23": "UPV",
     "rohith23": "RDF",
     "xiaoniu23": "UB",
-    "lean23": "CTWL",
     "scott22": "GO",
     "aiwei23b": "SIR",
 }
@@ -24,16 +26,24 @@ replace_dict = {
 tokenizer = AutoTokenizer.from_pretrained("facebook/opt-1.3b")
 fig, axs = plt.subplots(1, 2, figsize=(14, 7))  # 创建两个子图
 
-colors = [
-    'darkorange',
-    'deepskyblue',
-    'limegreen',
-    'violet',
-    'goldenrod',
-    'lightpink',
-    'slategray',
-    'teal'
-]
+# watermark_colors = {
+#     "rohith23": "#1f77b4",  # 蓝色
+#     "xuandong23b": "#ff7f0e",  # 橙色
+#     "john23": "#2ca02c",  # 绿色
+#     "aiwei23": "#d62728",  # 红色
+#     "xiaoniu23": "#9467bd",  # 紫色
+#     "aiwei23b": "#8c564b",  # 棕色
+#     "scott22": "#e377c2"  # 粉色
+# }
+watermark_colors = {
+    "rohith23": "orange",
+    "xuandong23b": "deepskyblue",
+    "john23": "limegreen",
+    "aiwei23": "purple",
+    "xiaoniu23": "magenta",
+    "aiwei23b": "red",
+    "scott22": "royalblue"
+}
 
 models = ['OPT', 'LLAMA2']
 linestyles = ['-', '-']
@@ -100,7 +110,9 @@ for i, watermark_type in enumerate(watermark_types):
         # 将TPR值添加到字典中
         tpr_dict[watermark_type][models[k]] = tpr_at_fpr_0_01
         label = f'{replace_dict[watermark_type]} (AUC = {roc_auc:.3f})'
-        axs[k].plot(new_fpr, new_tpr, lw=2, color=colors[i % len(colors)], linestyle=linestyles[k], label=label)
+        axs[k].plot(new_fpr, new_tpr, lw=2, color=watermark_colors[watermark_type], linestyle=linestyles[k], label=label)
+
+
 
 # 在每个主图上添加放大的子图
 zoomed_inset_coords = [0.0, 0.2, 0.8, 1.0]  # [x1, x2, y1, y2] of the zoomed area
@@ -112,7 +124,7 @@ for ax in axs:
 
     # Iterate over all lines in the main axes to plot them on the inset
     for line in ax.get_lines():
-        axins.plot(line.get_xdata(), line.get_ydata(), color=line.get_color(), linestyle=line.get_linestyle())
+        axins.plot(line.get_xdata(), line.get_ydata(), color=line.get_color(), linestyle=line.get_linestyle(), linewidth=3.0)
 
     # Optionally, add a rectangle in the main plot to show the zoomed area
     rect = Rectangle((zoomed_inset_coords[0], zoomed_inset_coords[2]), zoomed_inset_coords[1]-zoomed_inset_coords[0], zoomed_inset_coords[3]-zoomed_inset_coords[2], linewidth=1, edgecolor='k', facecolor='none')
@@ -127,9 +139,14 @@ for ax in axs:
     ax.set_xlabel('False Positive Rate')
     ax.set_ylabel('True Positive Rate')
     ax.legend(loc="lower right")
+    handles, labels = ax.get_legend_handles_labels()
+    handles = [plt.Line2D([], [], color=handle.get_color(), linewidth=3) for handle in handles]
+
+    ax.legend(handles=handles, labels=labels)
+
 
 plt.tight_layout()
-plt.savefig(f'./plot/auc_clean_model_{dataset}.pdf')
+plt.savefig(f'./plot/newplot/output/auc_clean_model_{dataset}.pdf')
 
 
 
@@ -141,21 +158,28 @@ x = list(range(len(methods)))  # 将range对象转换为列表
 methods = [replace_dict.get(method, method) for method in methods]
 
 
-width = 0.3  # 定义柱子的宽度
+width = 0.26  # 定义柱子的宽度
 
 # Plot
-fig, ax = plt.subplots(figsize=(7, 4))
+fig, ax = plt.subplots(figsize=(9,3.5))
 ax.bar([xi - width/2 for xi in x], opt_scores, width=width, label="OPT", align="center", color='darkorange')
 ax.bar([xi + width/2 for xi in x], llama2_scores, width=width, label="LLAMA2", align="center", color='deepskyblue')
-
-ax.set_xlabel("Methods")
-ax.set_ylabel('TPR at FPR=0.01')
-ax.set_title('TPR at FPR=0.01 for each method and model')
+for y in np.arange(0, 1.01, 0.2):
+    ax.axhline(y, color='gray', linewidth=0.5, linestyle='--', zorder=0)
+# ax.set_xlabel("Methods")
+ax.set_ylabel('TPR (with FPR = 0.01)')
+# ax.set_title('TPR at FPR=0.01 for each method and model')
 ax.set_xticks(x)
 ax.set_xticklabels(methods)
-ax.legend(loc="lower right")
+ax.spines['top'].set_visible(False)
+ax.spines['right'].set_visible(False)
+ax.spines['left'].set_visible(False)
+# 去除y轴的刻度线但保留刻度标签
+ax.tick_params(axis='y', length=0)
+# ax.legend(loc="lower right")
 
 plt.tight_layout()
 
 
-plt.savefig(f'./plot/auc_clean_model_fpr001_{dataset}.pdf')
+plt.savefig(f'./plot/newplot/output/auc_clean_model_fpr001_{dataset}.pdf')
+print(f'./plot/newplot/output/auc_clean_model_fpr001_{dataset}.pdf')

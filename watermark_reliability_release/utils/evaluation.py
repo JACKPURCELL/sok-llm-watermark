@@ -280,11 +280,12 @@ def load_detector(args):
             parts = os.path.split(args.input_dir)
             print(parts)
             # Get the part you need
-            if parts[-1] == "llama" or parts[-1] == "opt":
+            if "llama" in parts[-1]  or "opt" in parts[-1] :
                 needed_part = args.input_dir
             else:
                 needed_part = parts[-2]
-            print(needed_part)
+            # print(needed_part)
+            needed_part = '/home/jkl6486/sok-llm-watermark/runs/token_200/aiwei23b/c4/opt/'
             # args.embedding_input_path = os.path.join(needed_part, "data/sts/train.jsonl")
             args.embedding_output_path = os.path.join(needed_part, "data/embeddings/train_embeddings.txt")
             # args.aiwei23b_model_path = os.path.join(needed_part, "model/compositional-bert-large-uncased")

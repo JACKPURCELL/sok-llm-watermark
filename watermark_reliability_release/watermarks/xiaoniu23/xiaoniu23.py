@@ -33,7 +33,8 @@ def get_threshold(n, alpha):
     return -1*log(alpha)+log(n)
 
 # def load_model(model_str, num_beams, temps=0.7): 03262114
-def load_model(model_str, num_beams, temps=1.0):
+def load_model(model_str, num_beams, temps,top_p):
+    print("model_str:", model_str,num_beams,temps,top_p)
     if model_str == cache["model_str"]:
         return cache
     else:
@@ -51,12 +52,13 @@ def load_model(model_str, num_beams, temps=1.0):
         else:
             print("Using 2")
             generator = pipeline(
-                "text-generation",
+"text-generation",
                 model=model_str,
                 do_sample=True,
                 num_beams=num_beams,
                 device_map='auto',
                 temperature=temps,
+                top_p=top_p
                 
             )
 
@@ -114,7 +116,7 @@ class xiaoniu23_detector():
         score = RobustLLR_Score_Batch_v2.from_grid([0.0], dist_qs)
         wp = get_wp(watermark_type, key)
         wp.ignore_history = True
-        cache = load_model(model_str, num_beams=self.num_beams)
+        cache = load_model(model_str, num_beams=self.num_beams,temps=self.temperature, top_p=self.top_p)
         inputs = cache["tokenizer"](texts, return_tensors="pt", padding=True)
 
 
@@ -206,7 +208,7 @@ def generate_with_watermark(model_str, input_ids, wp, **kwargs):
         kwargs["num_beams"] = 1
     if "temperature" not in kwargs:
         kwargs["temperature"] = None
-    cache = load_model(model_str, kwargs["num_beams"])
+    cache = load_model(model_str, kwargs["num_beams"],kwargs["temperature"],kwargs["top_p"])
     generator = cache["generator"]
     prompt = [cache["tokenizer"].decode(i) for i in input_ids]
     kwargs = {"max_new_tokens": kwargs["max_new_tokens"]}
