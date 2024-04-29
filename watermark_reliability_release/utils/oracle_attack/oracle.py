@@ -22,7 +22,6 @@ load_dotenv(dotenv_path='./.env') # take environment variables from .env with OP
 from openai import OpenAI
 client = OpenAI(
     # This is the default and can be omitted
-    # api_key="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",
     api_key=os.environ.get("OPENAI_API_KEY")
 )
 

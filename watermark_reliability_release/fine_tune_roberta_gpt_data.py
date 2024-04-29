@@ -64,7 +64,7 @@ generations = []
 labels = []
 original_detector_predictions = []
 w_wm_output_attacked = []
-client = OpenAI(api_key="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")
+client = OpenAI(api_key="api_key")
 
 
 

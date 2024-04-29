@@ -47,7 +47,7 @@ generations = []
 labels = []
 original_detector_predictions = []
 w_wm_output_attacked = []
-client = OpenAI(api_key="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")
+client = OpenAI(api_key="api_key")
 # Load threshold
 thresholds = {
     "john23": 2.358025378986253,
