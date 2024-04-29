@@ -25,7 +25,7 @@ replace_dict = {
     "john23": "TGRL",
     "xuandong23b": "UG",
     "aiwei23": "UPV",
-    "rohith23": "RDF",1
+    "rohith23": "RDF",
     "xiaoniu23": "UB",
     "lean23": "CTWL",
     "scott22": "GO",

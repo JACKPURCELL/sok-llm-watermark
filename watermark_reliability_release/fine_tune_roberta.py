@@ -26,7 +26,7 @@ parser.add_argument('--num_epochs', type=int, default=20)
 parser.add_argument('--lr', type=float, default=1e-5)
 parser.add_argument('--batch_size', type=int, default=32)
 # parser.add_argument('--gpus', type=str, default="0,1,2,3")
-parser.add_argument('--train', type=bool, default=True)
+parser.add_argument('--train', type=bool, default=False)
 parser.add_argument('--eva_attack', type=bool, default=True)
 parser.add_argument('--model_name', type=str, default="gpt-3.5-turbo")
 parser.add_argument('--max_tokens', type=int, default=200)
@@ -62,6 +62,7 @@ thresholds = {
 threshold = thresholds[args.method_name]
 generations_2 = []
 labels_2 = []
+baseline_zero_test = []
 i = 0
 with open(args.train_path, "r") as f:
     for line in f:
@@ -73,8 +74,9 @@ with open(args.train_path, "r") as f:
         generations_2.append(data["w_wm_output_attacked"])
         labels_2.append(1)
         ### Other variables
-        original_detector_predictions.append(1 if data["w_wm_output_attacked_z_score"] > threshold else 0)
+        #original_detector_predictions.append(1 if data["w_wm_output_attacked_z_score"] #> threshold else 0)
         # w_wm_output_attacked.append(data["w_wm_output_attacked"])
+        #baseline_zero_test.append(data["baseline_completion"])
         i += 1
 # with open('/home/jkl6486/sok-llm-watermark/runs/token_200/roberta_data/gpt_saved_llama.jsonl', 'w') as file:
 #   for idx in range(len(generations)):

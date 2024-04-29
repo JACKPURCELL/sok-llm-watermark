@@ -3,7 +3,7 @@
     # usecommand nohup bash shell/finetune_roberta.sh > shell/0421_finetune_roberta_chatgpt.log 2>&1 &
     #===============================================================================
     # watermark_types=("john23" "scott22" "rohith23" "xuandong23b")
-    watermark_types=("aiwei23" "aiwei23b" "scott22")
+    watermark_types=("scott22")
     # "aiwei23" "aiwei23b" "xiaoniu23" "scott22"
     # "xuandong23b" "aiwei23" "aiwei23b" "scott22"
     #"john23" "lean23" "rohith23" "xiaoniu23"

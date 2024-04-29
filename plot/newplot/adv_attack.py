@@ -16,13 +16,16 @@ plt.rcParams['ytick.labelsize'] = 18
 # matplotlib.rcParams['font.weight'] = 'medium'
 # Data initialization and normalization
 data = {
-    "john23": [8, 161, 8, 498], #g0s0,g1s0,g0s1,g1s1
-    "rohith23": [11, 31, 67, 566],
-    "xiaoniu23": [19, 516, 3, 137],
-    "xuandong23b": [21, 59, 4, 591],
-    "aiwei23": [43, 626, 1, 5],
-    "aiwei23b": [14, 138, 21, 502],
-    "scott22": [3, 81, 19, 572]
+    #g0s0,g1s0,g0s1,g1s1
+"john23": [0.74, 0.21, 0.05, 0.01],
+"rohith23": [0.42, 0.08, 0.42, 0.08],
+"xiaoniu23": [0.49, 0.49, 0.01, 0.01],
+
+"xuandong23b": [0.09, 0.53, 0.07, 0.3],
+"aiwei23": [0.86, 0.01, 0.13, 0.0],
+"aiwei23b": [0.98, 0.01, 0.01, 0.0],
+"scott22": [0.89, 0.04, 0.06, 0.01],
+
 }
 for k, v in data.items():
     data[k] = (np.array(v) / np.sum(v)).reshape((2, 2)).T
@@ -64,7 +67,7 @@ sm._A = []  # Fake up the array of the scalar mappable to avoid errors
 fig.colorbar(sm, cax=cbar_ax)
 plt.tight_layout(rect=[0, 0, 0.9, 1])  # Adjust the rect to fit the colorbar
 
-plt.savefig('/home/jkl6486/sok-llm-watermark/plot/newplot/output/heatmap.pdf')
+plt.savefig('/home/jkl6486/sok-llm-watermark/plot/newplot/output/adv_heatmap.pdf')
 
 
 

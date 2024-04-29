@@ -33,13 +33,14 @@ colors = [
 
 
 # attacks = ["ContractionAttack", "copypaste-3-10", "ExpansionAttack",  "MisspellingAttack", "synonym-0.4", "copypaste-1-10", "dipper_l20_o0", "LowercaseAttack", "swap", "TypoAttack"]
-attacks = ["swap","translation","synonym-0.4", "copypaste-1-10","copypaste-3-10","copypaste-1-25","copypaste-3-25", "ContractionAttack", "ExpansionAttack",  "MisspellingAttack",   "dipper_l20_o0", "dipper_l40_o0",  "dipper_l60_o0",  "dipper_l40_o20", "dipper_l60_o20",     "dipper_l60_o40",    "LowercaseAttack", "TypoAttack"]
+attacks = ["swap","translation","synonym-0.4", "copypaste-1-10","copypaste-3-10","copypaste-1-25","copypaste-3-25", "ContractionAttack", "ExpansionAttack",  "MisspellingAttack",   "dipper_l20_o0", "dipper_l40_o0",   "LowercaseAttack", "TypoAttack"]
+# attacks = ["swap","translation","synonym-0.4", "copypaste-1-10","copypaste-3-10","copypaste-1-25","copypaste-3-25", "ContractionAttack", "ExpansionAttack",  "MisspellingAttack",   "dipper_l20_o0", "dipper_l40_o0",  "dipper_l60_o0",  "dipper_l40_o20", "dipper_l60_o20",     "dipper_l60_o40",    "LowercaseAttack", "TypoAttack"]
 # attacks = ["ContractionAttack",  "ExpansionAttack",  "MisspellingAttack", "synonym-0.4",  "LowercaseAttack", "swap", "TypoAttack"]
 # 常用颜色
 # colors = ['b', 'g',  'c', 'm', 'y', 'k']
-tpr_dict = defaultdict(d1ict)
+tpr_dict = defaultdict(dict)
 dataset = 'c4'
-model = 'opt'
+model = 'llama'
 # 创建一个空字典来存储roc_auc值
 roc_auc_dict = {}
 
@@ -87,13 +88,13 @@ axs = axs.flatten()
 bar_width = 0.35
 opacity = 0.8
 tokenizer = AutoTokenizer.from_pretrained("facebook/opt-1.3b")
-# tokenizer = AutoTokenizer.from_pretrained("meta-opt/opt-2-7b-chat-hf")
+# tokenizer = AutoTokenizer.from_pretrained("meta-llama/llama-2-7b-chat-hf")
 for i, watermark_type in enumerate(watermark_types):
     f1_scores = []
     tpr_scores = []
     fpr_scores = []  # 新增 FPR 列表
     
-    clean_data_list = read_file(f'/home/jkl6486/sok-llm-watermark/runs/token_200/{watermark_type}/{dataset}/opt/gen_table_w_metrics.jsonl')
+    clean_data_list = read_file(f'/home/jkl6486/sok-llm-watermark/runs/token_200/{watermark_type}/{dataset}/llama/gen_table_w_metrics.jsonl')
     if "baseline_completion_z_score" in clean_data_list[0]:
         clean_baseline_completion_z_score = [data["baseline_completion_z_score"] for data in clean_data_list]
         clean_baseline_completion_z_score = [score if not math.isinf(score) and not math.isnan(score) else 0 for score in clean_baseline_completion_z_score]
@@ -137,7 +138,7 @@ for i, watermark_type in enumerate(watermark_types):
     for j, attack in enumerate(attacks):
         # print(f"Processing {watermark_type} with {attack}...")
         try:
-            data_list = read_file(f'/home/jkl6486/sok-llm-watermark/runs/token_200/{watermark_type}/{dataset}/opt/{attack}/gen_table_w_metrics.jsonl')
+            data_list = read_file(f'/home/jkl6486/sok-llm-watermark/runs/token_200/{watermark_type}/{dataset}/llama/{attack}/gen_table_w_metrics.jsonl')
         except:
             print(f"Missing {watermark_type} with {attack}...")
             continue

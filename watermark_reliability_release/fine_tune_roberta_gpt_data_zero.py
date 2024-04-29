@@ -34,7 +34,7 @@ parser.add_argument('--num_epochs', type=int, default=25)
 parser.add_argument('--lr', type=float, default=1e-5)
 parser.add_argument('--batch_size', type=int, default=32)
 parser.add_argument('--gpus', type=str, default="0,1,2,3")
-parser.add_argument('--train', type=bool, default=True)
+parser.add_argument('--train', type=bool, default=False)
 parser.add_argument('--eva_attack', type=bool, default=True)
 parser.add_argument('--model_name', type=str, default="gpt-3.5-turbo")
 parser.add_argument('--max_tokens', type=int, default=200)
@@ -81,7 +81,7 @@ thresholds = {
    "aiwei23b": 0.2496753585975497
 }
 threshold = thresholds[args.method_name]
-baseline_zero_test = []
+baseline_zero_test_text = []
 
 i = 0
 with open('/home/jkl6486/sok-llm-watermark/runs/token_200/roberta_data/gpt_saved_no_prompt.jsonl', 'r') as file:
@@ -103,12 +103,13 @@ with open(args.train_path, "r") as f:
        generations.append(data["w_wm_output"])
        labels.append(1)
 
-      
-       original_detector_predictions.append(1 if data["w_wm_output_attacked_z_score"] > threshold else 0)
-       w_wm_output_attacked.append(data["w_wm_output_attacked"])
+       
+       baseline_zero_test_text.append(data["baseline_completion"])
+       
+       #original_detector_predictions.append(1 if data["w_wm_output_attacked_z_score"] > threshold else 0)
+       #w_wm_output_attacked.append(data["w_wm_output_attacked"])
        i2 += 1
-       if i2 == i:
-          break
+       
        
 print(str(i2) + " 1 samples loaded")
 
@@ -229,38 +230,40 @@ if args.train:
 
 
 if args.eva_attack:
-   res = trainer.predict(dataset(w_wm_output_attacked, [1]*len(w_wm_output_attacked)))
    #res = trainer.predict(dataset(w_wm_output_attacked, [1]*len(w_wm_output_attacked)))
+   res = trainer.predict(dataset(baseline_zero_test_text, [0]*len(baseline_zero_test_text)))
    res_labels = res.predictions.argmax(axis=-1)
-   acc = sum(res_labels == 1)/len(res_labels)
-   print("Accuracy on attacked watermarked samples:")
-   print(acc)
-   g_0_s_0 = 0
-   g_1_s_0 = 0
-   g_0_s_1 = 0
-   g_1_s_1 = 0
-   for t in range(len(res_labels)):
-       if (res_labels[t] == 1) and (original_detector_predictions[t] == 1):
-           g_1_s_1 += 1
-       elif(res_labels[t] == 0) and (original_detector_predictions[t] == 1):
-           g_0_s_1 += 1
-       elif(res_labels[t] == 1) and (original_detector_predictions[t] == 0):
-           g_1_s_0 += 1
-       else:
-           g_0_s_0 += 1
-   print("g_0_s_0: ", g_0_s_0)
-   print("g_1_s_0: ", g_1_s_0)
-   print("g_0_s_1: ", g_0_s_1)
-   print("g_1_s_1: ", g_1_s_1)
+   acc = sum(res_labels == 0)/len(res_labels)
+   print(f"Accuracy on baseline completion: {acc}")
+   # acc = sum(res_labels == 1)/len(res_labels)
+   # print("Accuracy on attacked watermarked samples:")
+   # print(acc)
+   # g_0_s_0 = 0
+   # g_1_s_0 = 0
+   # g_0_s_1 = 0
+   # g_1_s_1 = 0
+   # for t in range(len(res_labels)):
+   #     if (res_labels[t] == 1) and (original_detector_predictions[t] == 1):
+   #         g_1_s_1 += 1
+   #     elif(res_labels[t] == 0) and (original_detector_predictions[t] == 1):
+   #         g_0_s_1 += 1
+   #     elif(res_labels[t] == 1) and (original_detector_predictions[t] == 0):
+   #         g_1_s_0 += 1
+   #     else:
+   #         g_0_s_0 += 1
+   # print("g_0_s_0: ", g_0_s_0)
+   # print("g_1_s_0: ", g_1_s_0)
+   # print("g_0_s_1: ", g_0_s_1)
+   # print("g_1_s_1: ", g_1_s_1)
 
 
-   print("Number of 0 predictions:")
-   print(sum(res_labels == 0))
-   print("Number of 1 predictions:")
-   print(sum(res_labels == 1))
-   acc_count = sum(1 for x, y in zip(res_labels, original_detector_predictions) if x == 0 and y == 0)
-   print("Accuracy on non-watermarked samples:")
-   print(acc_count/sum(res_labels == 0))
+   # print("Number of 0 predictions:")
+   # print(sum(res_labels == 0))
+   # print("Number of 1 predictions:")
+   # print(sum(res_labels == 1))
+   # acc_count = sum(1 for x, y in zip(res_labels, original_detector_predictions) if x == 0 and y == 0)
+   # print("Accuracy on non-watermarked samples:")
+   # print(acc_count/sum(res_labels == 0))
 
 
 

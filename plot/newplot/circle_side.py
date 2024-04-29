@@ -14,8 +14,8 @@ watermark_types = [
     ["john23", "aiwei23", "xiaoniu23", "aiwei23b", "scott22"],
     ["xuandong23b"],
     
-    ["john23", "xuandong23b", "aiwei23","aiwei23b"],
-    [  "xiaoniu23"],
+    ["john23", "xuandong23b", "aiwei23",],
+    [ "aiwei23b", "xiaoniu23"],
     [ "rohith23", "scott22"] ,
     
     [ "john23",  "aiwei23b", "scott22","xuandong23b", "rohith23"],
@@ -80,9 +80,20 @@ for j, (attack_category, attacks) in enumerate(attack_categories.items()):
     plt.subplots_adjust(wspace=0.3, hspace=0.3, top=0.8, bottom=0.1, left=0.1, right=0.9)
     for k, rp in replace_dict.items():
         legend_elements.append(Line2D([0], [0], color=watermark_colors[k], lw=2.5, label=rp))
-    
+    # 在循环开始前定义y坐标
+    # y_coords = [0.6, 0.34, 0.0]
+    # texts = ['Context Dependency', 'Generation Strategy', 'Detection Strategy']
+
     for i, watermark_type in enumerate(watermark_types):
-        
+        # 在每个图左侧添加文字
+        # if i % 3 == 0:
+        #     plt.text(-0.1, y_coords[i//3], texts[i//3], transform=plt.gcf().transFigure, rotation=90)
+
+        # # 在第一和第二行之间，以及第二和第三行之间添加分隔线
+        # if i % 3 == 2:
+        #     line = Line2D([-0.1, 1.1], [y_coords[i//3] - 0.15, y_coords[i//3] - 0.15], color='black', linewidth=2, transform=plt.gcf().transFigure, figure=plt.gcf())
+        #     plt.gcf().lines.extend([line])
+
         dim_num = len(attacks)
         if dim_num == 4:
             offset = np.pi / 4 # 45 degrees in radians
@@ -93,7 +104,7 @@ for j, (attack_category, attacks) in enumerate(attack_categories.items()):
         radians = np.concatenate((radians, [radians[0]]))
 
         data = DefaultDict(list)
-        with open('/home/ljc/sok-llm-watermark/plot/newplot/output/output_c4_opt.txt', newline='') as fp:
+        with open('/home/ljc/sok-llm-watermark/plot/newplot/output/output_c4_llama.txt', newline='') as fp:
             reader = csv.reader(fp, delimiter=',')
             for row in reader:
                 method, attack, val = row[0], row[1], float(row[2])
@@ -126,4 +137,4 @@ for j, (attack_category, attacks) in enumerate(attack_categories.items()):
 
     # plt.tight_layout()
     plt.tight_layout(rect=[0, 0, 1, 0.93])  # 调整布局以避免重叠
-    plt.savefig(f'./plot/newplot/output/tpr_circle_{attack_category}.pdf',bbox_inches='tight')
+    plt.savefig(f'./plot/newplot/output/tpr_circle_{attack_category}_llama.pdf',bbox_inches='tight')

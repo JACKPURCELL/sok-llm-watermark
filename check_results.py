@@ -3,7 +3,7 @@ import os
 if __name__ == "__main__":
     server = "Server 3"
     attackS = ["ContractionAttack", "copypaste-1-10", "copypaste-3-10", "copypaste-1-25", "copypaste-3-25","dipper_l20_o0", "dipper_l40_o0","ExpansionAttack", "LowercaseAttack", "MisspellingAttack", "swap", "synonym-0.4", "TypoAttack","translation"]
-    modelS = ["llama"]
+    modelS = ["opt"]
     # methodS = ["john23", "lean23"]
     methodS = ["aiwei23", "john23",  "rohith23", "xiaoniu23", "xuandong23b","aiwei23b","scott22"]
     no_atk = {}
