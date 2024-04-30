@@ -7,6 +7,8 @@ from matplotlib.ticker import FuncFormatter
 from sklearn.metrics import f1_score, confusion_matrix, roc_curve, auc
 from transformers import AutoTokenizer
 plt.rcParams['font.size'] = 14
+plt.rcParams['axes.titlesize'] = 14
+plt.rcParams['axes.titleweight'] = 'bold' 
 import matplotlib
 matplotlib.rcParams['font.family'] = 'optima'
 matplotlib.rcParams['font.weight'] = 'medium'
@@ -38,7 +40,10 @@ colors = [
 
 
 # attacks = ["ContractionAttack", "copypaste-3-10", "ExpansionAttack",  "MisspellingAttack", "synonym-0.4", "copypaste-1-10", "dipper_l20_o0", "LowercaseAttack", "swap", "TypoAttack"]
-attacks = ["synonym-0.4", "MisspellingAttack", "TypoAttack","swap","copypaste-1-10", "copypaste-3-10","copypaste-1-25","copypaste-3-25","ContractionAttack", "ExpansionAttack", "LowercaseAttack","translation","dipper_l20_o0","dipper_l40_o0"]
+attacks = ["ContractionAttack", "ExpansionAttack", "LowercaseAttack","synonym-0.4", "MisspellingAttack", "TypoAttack","swap","copypaste-1-10", "copypaste-3-10","copypaste-1-25","copypaste-3-25","translation","dipper_l20_o0","dipper_l40_o0",  "dipper_l40_o20",
+    "dipper_l60_o0",
+    "dipper_l60_o20",
+    "dipper_l60_o40",]
 attack_replace_dict = {
     "synonym-0.4": "Syno",
     "MisspellingAttack": "Missp",
@@ -106,10 +111,11 @@ def read_file(file):
                     data_list.append(json.loads(line))      
     data_list = data_list[:500]
     return data_list
-fig, axs = plt.subplots(2,2, figsize=(7,7))
+# fig, axs = plt.subplots(2,4, figsize=(10,9))
+fig, axs = plt.subplots(1,4, figsize=(10,4.5))
 # 将 axs 转换为一维数组，以便我们可以迭代它
 axs = axs.flatten()
-bar_width = 0.8
+bar_width = 0.7
 opacity = 1.0
 tokenizer = AutoTokenizer.from_pretrained("facebook/opt-1.3b")
 # for i, watermark_type in enumerate(watermark_types):
@@ -122,12 +128,27 @@ watermark_type = "scott22"
 #     except:
 #         print(f"Missing {watermark_type} with {attack}...")
 #         continue
+# metrics = [
+# "w_wm_output_vs_w_wm_output_attacked_BERTS",
+# "w_wm_output_vs_w_wm_output_attacked_WER",
+# # "w_wm_output_vs_w_wm_output_attacked_BLEU",
+# "w_wm_output_vs_w_wm_output_attacked_BLEU1",
+# "w_wm_output_vs_w_wm_output_attacked_BLEU2",
+# "w_wm_output_vs_w_wm_output_attacked_BLEU3",
+# "w_wm_output_vs_w_wm_output_attacked_BLEU_4",
+# "w_wm_output_vs_w_wm_output_attacked_p_sp",
+# "w_wm_output_vs_w_wm_output_attacked_mauve"
+# ]
 metrics = [
 "w_wm_output_vs_w_wm_output_attacked_BERTS",
 "w_wm_output_vs_w_wm_output_attacked_p_sp",
 "w_wm_output_vs_w_wm_output_attacked_WER",
+# "w_wm_output_vs_w_wm_output_attacked_BLEU",
 "w_wm_output_vs_w_wm_output_attacked_BLEU1",
-
+# "w_wm_output_vs_w_wm_output_attacked_BLEU2",
+# "w_wm_output_vs_w_wm_output_attacked_BLEU3",
+# "w_wm_output_vs_w_wm_output_attacked_BLEU_4",
+# "w_wm_output_vs_w_wm_output_attacked_mauve"
 ]
 with open('./plot/newplot/output/attack_sentiment——output.txt', 'w') as f:
     for i, metric in enumerate(metrics):
@@ -140,25 +161,23 @@ with open('./plot/newplot/output/attack_sentiment——output.txt', 'w') as f:
 
 for i, metric in enumerate(metrics):
     averages = {attack: np.mean([data[metric] for data in read_file(f'/home/jkl6486/sok-llm-watermark/runs/token_200/{watermark_type}/{dataset}/opt/{attack}/gen_table_w_metrics.jsonl')]) for attack in attacks}
-    bars = axs[i].bar(range(len(attacks)), [averages[attack] for attack in attacks], bar_width, alpha=opacity, color=[colors[j % len(colors)] for j in range(len(attacks))])  # 修改这一行来设置颜色
-    # for j, rect in enumerate(bars):
-    #     height = rect.get_height()
-    #     axs[i].text(rect.get_x() + rect.get_width() / 2, height, '{:.2f}'.format(height), ha='center', va='bottom')
-    if i%2==0:
-        axs[i].set_ylabel('Average Value')
-    axs[i].set_title(f'{metric.replace("w_wm_output_vs_w_wm_output_attacked_", "VS_").upper()} ')
-    labels = [attack_replace_dict[attack] for attack in attacks]
-    axs[i].set_xticks(range(len(attacks)))
-    axs[i].set_xticklabels(labels, rotation=90)
-    axs[i].set_yticks(np.arange(0, 1.05, 0.2))
-            # 在 y 轴上画一条水平线作为参考线
-    for y in np.arange(0, 1.05, 0.2):
-        axs[i].axhline(y, color='gray', linewidth=0.5, linestyle='--', zorder=0)
+    bars = axs[i].barh(range(len(attacks)), [averages[attack] for attack in attacks], bar_width, alpha=opacity, color=[colors[j % len(colors)] for j in range(len(attacks))])  # 修改这一行来设置颜色
+    axs[i].set_title(f'{metric.replace("w_wm_output_vs_w_wm_output_attacked_", "").replace("_", "").replace("psp", "P-SP").upper().replace("BERTS", "BERTScore")} ')
+    axs[i].set_yticks(range(len(attacks)))  # Move this line up
+    if i == 0 or i==4:  # Add this line
+        labels = [attack_replace_dict[attack] for attack in attacks]
+        axs[i].set_yticklabels(labels, rotation=0)
+    else:
+        axs[i].set_yticklabels(['' for _ in axs[i].get_yticks()])
+    axs[i].invert_yaxis()
+    axs[i].set_xticks(np.arange(0, 1.01, 0.2))
+    for x in np.arange(0, 1.01, 0.2):
+        axs[i].axvline(x, color='gray', linewidth=0.5, linestyle='--', zorder=0)
     axs[i].spines['top'].set_visible(False)
     axs[i].spines['right'].set_visible(False)
-    axs[i].spines['left'].set_visible(False)
-    # axs[i].legend()
-    axs[i].tick_params(axis='y', length=0)
+    axs[i].spines['bottom'].set_visible(False)
+    axs[i].tick_params(axis='x', length=0)
 
 plt.tight_layout()
 plt.savefig(f'./plot/newplot/output/attack_sentiment_diff_small.pdf')
+# plt.savefig(f'./plot/newplot/output/attack_sentiment_diff_full.pdf')
