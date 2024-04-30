@@ -1,5 +1,6 @@
 
-# SoK-LLM-Watermark
+# Carved in Stone or Written in Sand? A Robustness Assessment of Language Model Watermarking
+## Code is being cleaned up, please use it later
 ## Apply the permission of LLaMa in huggingface
 ```shell
 https://huggingface.co/meta-llama/Llama-2-7b-chat-hf
