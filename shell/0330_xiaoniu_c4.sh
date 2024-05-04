@@ -1,15 +1,15 @@
 # !/bin/bash
 # ===============================================================================
-# usecommand nohup bash shell/0330_xiaoniu_c4.sh > shell/0330_xiaoniu_c4.log 2>&1 &
+# usecommand nohup bash shell/eva_john23.sh > shell/eva_john23.log 2>&1 &
 # ===============================================================================
 echo "Current date and time: $(date)"
 # ===============================================================================
 
-watermark_types=("xiaoniu23" )
+watermark_types=("john23" )
 
 
 models=("llama" "opt")
-gpus=("1,0")
+gpus=("0")
 
 attack_types=( "swap" "translation")
 synonym_probs=( "0.4" )
@@ -54,11 +54,11 @@ echo "start $watermark_type"
             CUDA_VISIBLE_DEVICES="$gpus" python watermark_reliability_release/evaluation_pipeline.py --overwrite_output_file True --watermark "$watermark_type" --run_name helm-"$helm_attack_method"-neweva-"$watermark_type"-c4-"$model"  --input_dir /home/jkl6486/sok-llm-watermark/runs/"$token"/"$watermark_type"/c4/"$model"/"$helm_attack_method"  --wandb_project c4-eva-attack --overwrite_args True 
         done
 
-        # # # dipper need 48gb memory
-        # for dipper_lex in "${dipper_lexs[@]}"; do
-        #     CUDA_VISIBLE_DEVICES="$gpus" python watermark_reliability_release/evaluation_pipeline.py --only_attack_zscore True   --overwrite_output_file True --watermark "$watermark_type" --run_name dipper-neweva-"$watermark_type"-c4-"$model"-dipper_l"$dipper_lex"_o0   --input_dir /home/jkl6486/sok-llm-watermark/runs/"$token"/"$watermark_type"/c4/"$model"/dipper_l"$dipper_lex"_o0   --wandb_project c4-eva-attack --overwrite_args True 
-        # done
-        # CUDA_VISIBLE_DEVICES="$gpus" python watermark_reliability_release/evaluation_pipeline.py --only_attack_zscore True   --overwrite_output_file True --watermark "$watermark_type" --run_name dipper-neweva-"$watermark_type"-c4-"$model"-dipper_l60_o20   --input_dir /home/jkl6486/sok-llm-watermark/runs/"$token"/"$watermark_type"/c4/"$model"/dipper_l60_o20  --wandb_project c4-eva-attack --overwrite_args True
+        # dipper need 48gb memory
+        for dipper_lex in "${dipper_lexs[@]}"; do
+            CUDA_VISIBLE_DEVICES="$gpus" python watermark_reliability_release/evaluation_pipeline.py --only_attack_zscore True   --overwrite_output_file True --watermark "$watermark_type" --run_name dipper-neweva-"$watermark_type"-c4-"$model"-dipper_l"$dipper_lex"_o0   --input_dir /home/jkl6486/sok-llm-watermark/runs/"$token"/"$watermark_type"/c4/"$model"/dipper_l"$dipper_lex"_o0   --wandb_project c4-eva-attack --overwrite_args True 
+        done
+
     done
     done
     echo "finish $model"

@@ -15,7 +15,7 @@
     echo "start $watermark_type"
         for dipper in "${dippers[@]}"; do
             echo "start $dipper"
-            CUDA_VISIBLE_DEVICES="$gpus" python /home/jkl6486/sok-llm-watermark/watermark_reliability_release/fine_tune_roberta_gpt_data.py --train_path /home/jkl6486/sok-llm-watermark/runs/token_200/"$watermark_type"/c4/opt/dipper_"$dipper"_o0/gen_table_w_metrics.jsonl  --output_path /home/jkl6486/sok-llm-watermark/runs/token_200/"$watermark_type"/c4/opt/dipper_"$dipper"_o0/dipp_roberta_finetuned_chatgpt_new  --method_name "$watermark_type"
+            CUDA_VISIBLE_DEVICES="$gpus" python /home/jkl6486/sok-llm-watermark/generic_detector/fine_tune_roberta_gpt_data.py --train_path /home/jkl6486/sok-llm-watermark/runs/token_200/"$watermark_type"/c4/opt/dipper_"$dipper"_o0/gen_table_w_metrics.jsonl  --output_path /home/jkl6486/sok-llm-watermark/runs/token_200/"$watermark_type"/c4/opt/dipper_"$dipper"_o0/dipp_roberta_finetuned_chatgpt_new  --method_name "$watermark_type"
         done
     done
     echo "finish $watermark_type"
