@@ -58,15 +58,15 @@ Use two GPUs for watermark injection. Commands for running the watermark injecti
 
 - For watermark 'john23':
 ```shell
-  CUDA_VISIBLE_DEVICES=2,0,1,3 python watermark_reliability_release/generation_pipeline.py --watermark john23 --dataset_name c4 --run_name gen-c4-john23 --model_name_or_path meta-llama/Llama-2-7b-chat-hf --min_generations 10
+  CUDA_VISIBLE_DEVICES=2,0,1,3 python watermark_reliability_release/generation_pipeline.py --watermark john23 --dataset_name c4 --run_name gen-c4-john23 --model_name_or_path meta-llama/Llama-2-7b-chat-hf --min_generations 10 --max_new_tokens 200 --use_sampling False --generation_batch_size 1 --num_beams 1
 ```
 - Put it to background:
 ```shell
-  CUDA_VISIBLE_DEVICES=2,0,1,3 nohup python watermark_reliability_release/generation_pipeline.py --watermark john23 --dataset_name c4 --run_name gen-c4-john23 --model_name_or_path meta-llama/Llama-2-7b-chat-hf --min_generations 10 &
+  CUDA_VISIBLE_DEVICES=2,0,1,3 nohup python watermark_reliability_release/generation_pipeline.py --watermark john23 --dataset_name c4 --run_name gen-c4-john23 --model_name_or_path meta-llama/Llama-2-7b-chat-hf --min_generations 10 --max_new_tokens 200 --use_sampling False --generation_batch_size 1 --num_beams 1 &
 ```
 - For watermark 'xuandong23b':
 ```shell
-  CUDA_VISIBLE_DEVICES=1,0,2,3 python watermark_reliability_release/generation_pipeline.py --watermark xuandong23b --dataset_name c4 --run_name gen-c4-xuandong23b --model_name_or_path meta-llama/Llama-2-7b-chat-hf --min_generations 10
+  CUDA_VISIBLE_DEVICES=1,0,2,3 python watermark_reliability_release/generation_pipeline.py --watermark xuandong23b --dataset_name c4 --run_name gen-c4-xuandong23b --model_name_or_path meta-llama/Llama-2-7b-chat-hf --min_generations 10 --max_new_tokens 200 --use_sampling False --generation_batch_size 1 --num_beams 1
 ```
 ## Attack Phase (Optional)
 Attack phase can be skipped. Requires 1 GPU with 46GB memory. Commands for running the attack pipeline.
