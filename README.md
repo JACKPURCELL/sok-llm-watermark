@@ -33,7 +33,7 @@ wandb login
 #Python 3.11
 conda create -n sokwm python=3.11
 conda activate sokwm
-pip install -r watermark_reliability_release/requirements.txt
+cat requirements.txt | xargs -n 1 pip install
 ```
 
 ## Argument Parsers
