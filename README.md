@@ -105,5 +105,3 @@ bash release_shell/multi-gpt-attack.sh > multi-gpt-attack.log 2>&1 &
 - **Robustness**: ΔTPR under attack  
 - **Quality Degradation**: Text similarity metrics under perturbation
 
-
-```
