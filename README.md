@@ -4,9 +4,6 @@
 
 ## 🔍 Overview
 
-<p align="center">
-  <img src="figure/flow.png" alt="WaterPark Pipeline" width="60%">
-</p>
 
 **WaterPark** is the first **unified platform** for evaluating the robustness of LLM watermarking schemes. It integrates:
 - ✅ **10+ watermarking methods**
@@ -18,6 +15,11 @@ This repository supports a full pipeline for:
 - Adversarial removal attacks
 - Fidelity and robustness evaluation
 - Generic detector training
+
+<p align="center">
+  <img src="figure/flow.png" alt="WaterPark Pipeline" width="50%">
+</p>
+
 
 ## 📦 Setup Instructions
 
