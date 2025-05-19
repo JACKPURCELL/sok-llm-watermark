@@ -24,6 +24,9 @@ class WatermarkBase:
         if "facebook/opt" in target_tokenizer.name_or_path:
             self.vocab_size = 50272
             print(target_tokenizer.name_or_path)
+        elif 'Qwen' in target_tokenizer.name_or_path:
+            self.vocab_size = 152064
+            print(target_tokenizer.name_or_path)
         else:
             print(target_tokenizer.name_or_path)
             self.vocab_size = 32000

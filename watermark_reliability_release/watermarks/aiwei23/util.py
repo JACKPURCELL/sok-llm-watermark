@@ -70,6 +70,10 @@ def prepare_data(filepath, train_or_test="train", llm_name="gpt2", bit=16, z_val
                     tokenizer = AutoTokenizer.from_pretrained(
                             "meta-llama/Llama-2-7b-chat-hf", padding_side="left",return_token_type_ids=False
                         )
+                    inputs = tokenizer(inputs, return_tensors="pt", add_special_tokens=True)
+                    
+                elif llm_name == "Qwen/Qwen2.5-14B-Instruct-1M":
+                    tokenizer = AutoTokenizer.from_pretrained("Qwen/Qwen2.5-14B-Instruct-1M", use_fast=False)
         
                     inputs = tokenizer(inputs, return_tensors="pt", add_special_tokens=True)
 

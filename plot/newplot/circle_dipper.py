@@ -74,7 +74,7 @@ radians = np.linspace(0, 2 * np.pi, dim_num, endpoint=False)
 radians = np.concatenate((radians, [radians[0]]))
 
 data = defaultdict(list)
-with open('/home/ljc/sok-llm-watermark/plot/newplot/output/output_c4_opt.txt', newline='') as fp:
+with open('./plot/newplot/output/output_c4_opt.txt', newline='') as fp:
     reader = csv.reader(fp, delimiter=',')
     for csv_row in reader:
         method, attack, val = csv_row[0], csv_row[1], float(csv_row[2])

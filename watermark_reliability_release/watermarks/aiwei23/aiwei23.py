@@ -195,6 +195,9 @@ class aiwei23_WatermarkLogitsProcessor(LogitsProcessor):
             elif self.llm_name == "llama-7b":
                 for b_idx in range(input_ids.shape[0]):
                     scores[b_idx][1] = -10000
+            elif self.llm_name == "Qwen/Qwen2.5-14B-Instruct-1M":
+                for b_idx in range(input_ids.shape[0]):
+                    scores[b_idx][151645] = -10000
             return scores
 
         green_tokens_mask = torch.zeros_like(scores)
@@ -214,7 +217,9 @@ class aiwei23_WatermarkLogitsProcessor(LogitsProcessor):
         elif self.llm_name == "llama-7b":
             for b_idx in range(input_ids.shape[0]):
                 scores[b_idx][1] = -10000
-
+        elif self.llm_name == "Qwen/Qwen2.5-14B-Instruct-1M":
+            for b_idx in range(input_ids.shape[0]):
+                scores[b_idx][151645] = -10000
         return scores
 
 
@@ -254,6 +259,8 @@ class aiwei23_WatermarkDetector:
             self.llm_name = "opt-1.3b"
         elif llm_name == "gpt2":
             self.llm_name = "gpt2"
+        elif llm_name == "Qwen/Qwen2.5-14B-Instruct-1M":
+            self.llm_name = "Qwen/Qwen2.5-14B-Instruct-1M"
         self.data_dir = data_dir
         self.z_value = z_value
         self.layers = layers
@@ -409,6 +416,9 @@ class aiwei23_WatermarkDetector:
         elif self.llm_name == "llama-7b":
             self.lm_tokenizer = AutoTokenizer.from_pretrained("meta-llama/Llama-2-7b-chat-hf")
             self.lm_model = AutoModelForCausalLM.from_pretrained("meta-llama/Llama-2-7b-chat-hf", device_map='auto')
+        elif self.llm_name == "Qwen/Qwen2.5-14B-Instruct-1M":
+            self.lm_tokenizer = AutoTokenizer.from_pretrained("Qwen/Qwen2.5-14B-Instruct-1M")
+            self.lm_model = AutoModelForCausalLM.from_pretrained("Qwen/Qwen2.5-14B-Instruct-1M", device_map='auto')
 
         watermark_processor = aiwei23_WatermarkLogitsProcessor(vocab=list(self.lm_tokenizer.get_vocab().values()),
                                                        delta=self.delta,
@@ -464,10 +474,10 @@ class aiwei23_WatermarkDetector:
         # load dataset
         print("loading dataset...")
         if dataset_name == "c4":
-            with open("/home/jkl6486/sok-llm-watermark/watermark_reliability_release/watermarks/aiwei23/original_data/c4_validation.json", encoding="utf-8") as f1:
+            with open("/data/jiacheng/sok-llm-watermark/watermark_reliability_release/watermarks/aiwei23/original_data/c4_validation.json", encoding="utf-8") as f1:
                 lines = f1.readlines()
         elif dataset_name == "dbpedia":
-            with open("/home/jkl6486/sok-llm-watermark/watermark_reliability_release/watermarks/aiwei23/original_data/dbpedia_validation.json", encoding="utf-8") as f1:
+            with open("/data/jiacheng/sok-llm-watermark/watermark_reliability_release/watermarks/aiwei23/original_data/dbpedia_validation.json", encoding="utf-8") as f1:
                 lines = f1.readlines()
 
         idx = 1
@@ -677,8 +687,8 @@ class aiwei23_WatermarkDetector:
         if self.detector_model is None:
             self.get_detector_model()
         tokenzied_input = self.lm_tokenizer(text, return_tensors="pt", add_special_tokens=True)
-        _, _, stat_z_score = self.green_token_mask_and_stats(tokenzied_input["input_ids"].squeeze(0))
-        
+        # _, _, stat_z_score = self.green_token_mask_and_stats(tokenzied_input["input_ids"].squeeze(0))
+        stat_z_score = 0.0
         mu = 0.5  
         sigma = 0.02  
         input_list = []
@@ -731,6 +741,9 @@ class CustomLogitsProcessor(LogitsProcessor):
             for b_idx in range(input_ids.shape[0]):
                 scores[b_idx][2] = -10000
         elif self.llm_name == "llama-7b":
+            for b_idx in range(input_ids.shape[0]):
+                scores[b_idx][1] = -10000
+        elif self.llm_name == "Qwen/Qwen2.5-14B-Instruct-1M":
             for b_idx in range(input_ids.shape[0]):
                 scores[b_idx][1] = -10000
         return scores

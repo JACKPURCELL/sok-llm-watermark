@@ -15,6 +15,7 @@
 # limitations under the License.
 
 import time
+import datasets
 import torch
 
 # HF classes
@@ -46,7 +47,7 @@ def load_model(args):
         [(model_type in args.model_name_or_path) for model_type in ["t5", "T0"]]
     )
     args.is_decoder_only_model = any(
-        [(model_type in args.model_name_or_path) for model_type in ["gpt", "opt", "bloom", "llama"]]
+        [(model_type in args.model_name_or_path) for model_type in ["gpt", "opt", "bloom", "llama","DeepSeek","Pixtral","Llama","Qwen"]]
     )
     if args.is_seq2seq_model:
         model = AutoModelForSeq2SeqLM.from_pretrained(args.model_name_or_path)
@@ -165,6 +166,43 @@ def load_hf_dataset(args):
             set(args.columns_to_remove + ["source", "chatgpt_answers", "id"])
         )
 
+    elif dataset_name == "arxiv":
+        # 加载arxiv数据集
+        dataset = datasets.load_from_disk("arxiv_enhanced_dataset")
+        # dataset = load_dataset(
+        #     "arxiv_enhanced_dataset",
+        #     None,
+        #     split=args.dataset_split,
+        #     streaming=args.stream_dataset,
+        # )
+        # 显式定义需要保留的字段
+        # Convert the dataset to an IterableDataset
+        # dataset = IterableDataset.from_dict(dataset)
+        dataset = dataset.to_iterable_dataset()
+        preserved_columns = ["full"]
+        remove_columns = [col for col in dataset.column_names if col not in preserved_columns]
+        
+        # 更新参数配置
+        args.__dict__.update({
+            "truncate_input_for_prompt": False,
+            "input_col_name": "full",
+            "ref_output_col_name": "conclusion",
+            "columns_to_remove": remove_columns
+        })
+        
+        args.columns_to_remove = list(
+            set(args.columns_to_remove + remove_columns)
+        )
+        # # 显式移除不需要的列
+        # dataset = dataset.remove_columns(remove_columns)
+        
+        # # 添加索引字段（关键修复）
+        # dataset = dataset.map(
+        #     lambda example, idx: {"idx": idx}, 
+        #     with_indices=True,
+        #     batched=False
+        # )
+    
     else:
         dataset = load_dataset(
             dataset_name,
@@ -199,7 +237,10 @@ def load_hf_dataset(args):
 
     # add index to each row of dataset
     indexed_dataset = dataset.map(add_idx, batched=False, with_indices=True)
-
+    # print("\n=== 数据集验证 ===")
+    # print("特征结构:", indexed_dataset.features)
+    # print("首条样例:", indexed_dataset[0])
+    # assert isinstance(indexed_dataset[0], dict), "数据集样本必须是字典类型!"
     # shuffle the first shuffle_buffer_size rows of streaming dataset, or whole dataset if not streaming
     # and take/select only the first n rows of the dataset (which caps the total number of pipeline iters possible)
     if isinstance(indexed_dataset, IterableDataset):
@@ -426,6 +467,8 @@ def tokenize_for_generation(
     args: dict = None,
 ):
     # preprocessing, generation & scoring
+    if not isinstance(example, dict):
+        example = example.data
     assert isinstance(example, dict), "Expect no batch dimension currently!"
 
     if not args.truncate_input_for_prompt:

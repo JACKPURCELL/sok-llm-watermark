@@ -31,7 +31,7 @@ from metrics.p_sp import evaluate_p_sp
 from metrics.berts import evaluate_sentiment
 
 from metrics.detect_retrieval import detect_retrieval
-from metrics.coherence import get_coherence_score
+# from metrics.coherence import get_coherence_score
 from metrics.mauve import get_mauve_score
 from utils.hypothesis_testing import (
     chi_squared_runs_test,
@@ -201,6 +201,8 @@ def load_detector(args):
                 vocab_size = 50272
             elif "llama" in args.model_name_or_path:
                 vocab_size = 32000
+            elif 'Qwen' in args.model_name_or_path:
+                vocab_size = 152064
             watermark_detector = watermarks.xuandong23b_WatermarkDetector(fraction=args.fraction,
                                                     tokenizer=tokenizer,
                                                     strength=args.strength,
@@ -212,6 +214,8 @@ def load_detector(args):
                 vocab_size = 50272
             elif "llama" in args.model_name_or_path:
                 vocab_size = 32000
+            elif 'Qwen' in args.model_name_or_path:
+                vocab_size = 152064
             watermark_detector = watermarks.rohith23_WatermarkDetector(vocab_size=vocab_size,tokenizer=tokenizer,args=args)
     
         case 'lean23':
@@ -285,7 +289,7 @@ def load_detector(args):
             else:
                 needed_part = parts[-2]
             # print(needed_part)
-            needed_part = '/home/jkl6486/sok-llm-watermark/runs/token_200/aiwei23b/c4/opt/'
+            needed_part = '/data/jiacheng/sok-llm-watermark/runs/token_200/aiwei23b/c4/opt/'
             # args.embedding_input_path = os.path.join(needed_part, "data/sts/train.jsonl")
             args.embedding_output_path = os.path.join(needed_part, "data/embeddings/train_embeddings.txt")
             # args.aiwei23b_model_path = os.path.join(needed_part, "model/compositional-bert-large-uncased")
@@ -857,26 +861,26 @@ def compute_mauve(dataset):
     return dataset
 
 
-def compute_coherence(dataset):
-    """
-    Assumes the first column is the prefix or prompt to the model
-    and the current convention is to repeat the score for all rows in the dataset
-    under the assumption that the final score will be retreived via
-    a groupby + take(1) operation or similar (even a `mean` would be fine)
-    """
-    prefix_column = dataset[COHERENCE_TEXT_COLUMN_NAMES[0]]
-    for generated_text_column in COHERENCE_TEXT_COLUMN_NAMES[1:]:
-        if generated_text_column in dataset.features:
-            coherence_score = get_coherence_score(prefix_column, dataset[generated_text_column])
-            if f"{generated_text_column}_coherence" in dataset.features:
-                print(
-                    f"WARNING: Removing existing {generated_text_column}_coherence column because it was already present"
-                )
-                dataset = dataset.remove_columns([f"{generated_text_column}_coherence"])
-            dataset = dataset.add_column(
-                f"{generated_text_column}_coherence", [coherence_score] * len(dataset)
-            )
-    return dataset
+# def compute_coherence(dataset):
+#     """
+#     Assumes the first column is the prefix or prompt to the model
+#     and the current convention is to repeat the score for all rows in the dataset
+#     under the assumption that the final score will be retreived via
+#     a groupby + take(1) operation or similar (even a `mean` would be fine)
+#     """
+#     prefix_column = dataset[COHERENCE_TEXT_COLUMN_NAMES[0]]
+#     for generated_text_column in COHERENCE_TEXT_COLUMN_NAMES[1:]:
+#         if generated_text_column in dataset.features:
+#             coherence_score = get_coherence_score(prefix_column, dataset[generated_text_column])
+#             if f"{generated_text_column}_coherence" in dataset.features:
+#                 print(
+#                     f"WARNING: Removing existing {generated_text_column}_coherence column because it was already present"
+#                 )
+#                 dataset = dataset.remove_columns([f"{generated_text_column}_coherence"])
+#             dataset = dataset.add_column(
+#                 f"{generated_text_column}_coherence", [coherence_score] * len(dataset)
+#             )
+#     return dataset
 
 
 def compute_detect_retrieval(dataset, args=None):

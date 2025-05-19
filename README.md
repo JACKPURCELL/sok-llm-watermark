@@ -1,8 +1,12 @@
 
-# 🧊 WaterPark: A Robustness Assessment of Language Model Watermarking
+# 🔥 Robustness under Fire: A Red-Team Evaluation of LLM Watermarking
 
 
 ## 🔍 Overview
+
+<p align="center">
+  <img src="figure/flow.png" alt="WaterPark Pipeline" width="60%">
+</p>
 
 **WaterPark** is the first **unified platform** for evaluating the robustness of LLM watermarking schemes. It integrates:
 - ✅ **10+ watermarking methods**

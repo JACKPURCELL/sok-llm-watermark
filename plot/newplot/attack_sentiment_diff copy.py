@@ -6,8 +6,8 @@ from matplotlib.ticker import FuncFormatter
 
 from sklearn.metrics import f1_score, confusion_matrix, roc_curve, auc
 from transformers import AutoTokenizer
-plt.rcParams['font.size'] = 14
-plt.rcParams['axes.titlesize'] = 14
+plt.rcParams['font.size'] = 18
+plt.rcParams['axes.titlesize'] = 18
 plt.rcParams['axes.titleweight'] = 'bold' 
 import matplotlib
 matplotlib.rcParams['font.family'] = 'optima'
@@ -112,7 +112,7 @@ def read_file(file):
     data_list = data_list[:500]
     return data_list
 # fig, axs = plt.subplots(2,4, figsize=(10,9))
-fig, axs = plt.subplots(1,4, figsize=(10,4.5))
+fig, axs = plt.subplots(1,4, figsize=(13,6))
 # 将 axs 转换为一维数组，以便我们可以迭代它
 axs = axs.flatten()
 bar_width = 0.7
