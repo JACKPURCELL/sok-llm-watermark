@@ -1,5 +1,5 @@
 
-# 🔥 Robustness under Fire: A Red-Team Evaluation of LLM Watermarking
+# 🔥 Watermark under Fire: A Robustness Evaluation of LLM Watermarking
 
 
 ## 🔍 Overview
